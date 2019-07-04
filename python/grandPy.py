@@ -21,8 +21,6 @@ def parser(question):
                     "devant","devers","devra","different","differentes","differents",
                     "différent","différente","différentes","différents","dire","directe",
                     "directement","dit","dite","dits","divers","diverse","diverses","dix",
-                    "dix-huit","dix-neuf","dix-sept","dixième","doit","doivent","donc",
-                    "dont","douze","douzième","dring","du","duquel","durant","dès","désormais",
                     "e","effet","egale","egalement","egales","eh","elle","elle-même","elles",
                     "elles-mêmes","en","encore","enfin","entre","envers","environ","es","est",
                     "et","etant","etc","etre","eu","euh","eux","eux-mêmes","exactement",
@@ -40,8 +38,8 @@ def parser(question):
                     "necessaire","necessairement","neuf","neuvième","ni","nombreuses","nombreux",
                     "non","nos","notamment","notre","nous","nous-mêmes","nouveau","nul","néanmoins",
                     "nôtre","nôtres","o","oh","ohé","ollé","olé","on","ont","onze","onzième","ore",
-                    "ou","ouf","ouias","oust","ouste","outre","ouvert","ouverte","ouverts","o|","où"
-                    ,"p","paf","pan","par","parce","parfois","parle","parlent","parler","parmi",
+                    "ou","ouf","ouias","oust","ouste","outre","ouvert","ouverte","ouverts","o|",
+                    "où","p","paf","pan","par","parce","parfois","parle","parlent","parler","parmi",
                     "parseme","partant","particulier","particulière","particulièrement","pas",
                     "passé","pendant","pense","permet","personne","peu","peut","peuvent","peux",
                     "pff","pfft","pfut","pif","pire","plein","plouf","plus","plusieurs","plutôt",
@@ -68,9 +66,9 @@ def parser(question):
                     "vas","vers","via","vif","vifs","vingt","vivat","vive","vives","vlan","voici","voilà",
                     "vont","vos","votre","vous","vous-mêmes","vu","vé","vôtre","vôtres","w","x","y","z","zut",
                     "à","â","ça","ès","étaient","étais","était","étant","été","être","ô"]
-    necessary = ["Paris", "Lyon", "Marseille", "Toulouse", "Bordeaux", "Lille", "Nice", "Nantes", "strasbourg", "Rennes"]
-    result = [wu for wu in list_question if wu.lower() not in unnecessary]
-        
+
+    result = [w for w in list_question if w.lower() not in unnecessary]
+
     return result
 
 print(parser("Ou se situe la mairie de Lille"))
