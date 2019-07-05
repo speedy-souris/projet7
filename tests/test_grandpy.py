@@ -1,20 +1,14 @@
-#parser()
+import grandPy as p
+"""
+Fonction de test sur la separation la chaine de caractere (question posé
+a papyRobot alias grandPy) en plusieurs mots,
+suppression des mots inutiles afin de garder les mots clés pour la
+recherche (historique du lieux & coordonnée géographique)
+"""
+# test de parser sur la question posé à grandPy
 
-# ~ import unittest
-# ~ import require
-# ~ parser = require('../python/grandPy.py')
-# ~ """separer la chaine de caractere en plusieurs mots"""
-
-
-# ~ class TestMot(unittest.TestCase):
-    # ~ """Test du retour de la demande d'adresse"""
-
-    # ~ def test_demande(self):
-        # ~ """ test de la demande """
-        # ~ demande = "ou est situé le restaurant la_nappe_d\'or"
-        # ~ result = parser(demande)
-        # ~ self.assertIn(result, "lyon")
-
-# ~ if __name__ == "__main__":
-    # ~ unittest.main()
+def test_parser():
+    # question posée à grandPy
+    demande = "ou est situé le restaurant la_nappe_d_or de lyon"
+    assert p.parser(demande) == ["restaurant","la_nappe_d_or","lyon"]
 

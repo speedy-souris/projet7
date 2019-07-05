@@ -54,8 +54,8 @@ def parser(question):
                     "restent","restrictif","retour","revoici","revoilà","rien","s","sa","sacrebleu","sait",
                     "sans","sapristi","sauf","se","sein","seize","selon","semblable","semblaient","semble",
                     "semblent","sent","sept","septième","sera","seraient","serait","seront","ses","seul",
-                    "seule","seulement","si","sien","sienne","siennes","siens","sinon","situe","six","sixième",
-                    "soi","soi-même","soit","soixante","son","sont","sous","souvent","specifique",
+                    "seule","seulement","si","sien","sienne","siennes","siens","sinon","situe", "situé",
+                    "six","sixième","soi","soi-même","soit","soixante","son","sont","sous","souvent","specifique",
                     "specifiques","speculatif","stop","strictement","subtiles","suffisant","suffisante",
                     "suffit","suis","suit","suivant","suivante","suivantes","suivants","suivre","superpose",
                     "sur","surtout","t","ta","tac","tant","tardive","te","tel","telle","tellement","telles",
@@ -70,5 +70,3 @@ def parser(question):
     result = [w for w in list_question if w.lower() not in unnecessary]
 
     return result
-
-print(parser("Ou se situe la mairie de Lille"))
