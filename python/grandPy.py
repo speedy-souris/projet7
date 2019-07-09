@@ -70,3 +70,7 @@ def parser(question):
     result = [w for w in list_question if w.lower() not in unnecessary]
 
     return result
+
+    if __name__ == __main__:
+        test = parser("ou est situé le cinéma de paris")
+        print(test)
