@@ -71,6 +71,4 @@ def parser(question):
 
     return result
 
-    if __name__ == __main__:
-        test = parser("ou est situé le cinéma de paris")
-        print(test)
+

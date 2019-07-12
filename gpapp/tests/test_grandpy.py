@@ -1,4 +1,4 @@
-import grandPy as p
+import .grandPy as p
 """
 Fonction de test sur la separation la chaine de caractere (question posé
 a papyRobot alias grandPy) en plusieurs mots,
@@ -12,3 +12,4 @@ def test_parser():
     demande = "ou est situé le restaurant la_nappe_d_or de lyon"
     assert p.parser(demande) == ["restaurant","la_nappe_d_or","lyon"]
 
+# def test_geolocalisation():
