@@ -1,2 +1,2 @@
-from flask import flask
+from flask import Flask
 from .views import app
