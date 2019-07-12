@@ -1,1 +1,1 @@
-key_app = "AIzaSyAvYTtsQk9iVILHgRHmDjFatKgoaWLKTf8"
+key_API_MAP = "AIzaSyAvYTtsQk9iVILHgRHmDjFatKgoaWLKTf8"
