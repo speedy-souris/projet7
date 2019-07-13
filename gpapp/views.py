@@ -8,7 +8,7 @@ app.config.from_object('config')
 
 @app.route('/')
 def index():
-    return "Hello world !"
+    return "Test page"
 
 # ~ if __name__ == "__main__":
     # ~ app.run()
