@@ -15,10 +15,23 @@
     <p><h2>Bonjour mon petit poussin,</h2></p>
     <p><h2>dis moi ce que tu cherche ?</h2></p>
 
-    <!-- Formulaire de la question posé à GrandPy-->
+    <!-- la question posé à GrandPy-->
+    <form methode="post" action="../grandPy.py">
+        <fieldset>
+            <legend>Votre question à GrandPy</legend>
+            <p>
+                <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
+                <input type="text" name="question" id="question"
+                        placeholder="Ex : Ou se trouve l'hotel Napoléon a  75000 paris"
+                        size="180" maxlength="150" autofocus required/>
+            </p>
+            <!-- Valider la question-->
+            <p><input type="submit" value="Envoyer"/></p>
+        </fieldset>
+    </form>
 
+    <!-- la réponse de GrandPy-->
 
-    <!-- Formulaire de la réponse de GrandPy-->
 
 </body>
 
