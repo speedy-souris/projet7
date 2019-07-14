@@ -11,44 +11,56 @@
 
 <body>
     <!-- Acceuil de la page de GrandPy-->
-    <h1>GrandPy, le Papi robot est là pour vous aidez !</h1>
-    <p><img src="../static/image/Grandpy.png" alt="image de grand papy"/></p>
-    <p><img src="../static/image/gprecherche.gif" alt="reflection de grand papy"/></p>
-    <p><img src="../static/image/texte_accueil.png" alt="parole de grand papy"/></p>
+    <header id='haut'>
+        <h1>GrandPy, le Papi robot est là pour vous aidez !</h1>
+        <p><img src="../static/image/Grandpy.png" alt="image de grand papy"/></p>
+        <p><img src="../static/image/gprecherche.gif" alt="reflection de grand papy"/></p>
+        <p><img src="../static/image/texte_accueil.png" alt="parole de grand papy"/></p>
+    </header>
 
     <!-- la question posé à GrandPy-->
     <form methode="post" action="../static/resquest/grandPy.js">
-        <fieldset>
-            <legend>Votre question à GrandPy</legend>
-            <p>
-                <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
-                <input type="text" name="question" id="question"
-                        placeholder="Ex : Ou se trouve l'hotel Napoléon a  75000 paris"
-                        size="180" maxlength="150" autofocus required/>
-            </p>
+
+        <section id='question'>
+            <fieldset>
+                <legend>Votre question à GrandPy</legend>
+                <p>
+                    <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
+                    <input type="text" name="question" id="question"
+                            placeholder="Ex : Ou se trouve l'hotel Napoléon a  75000 paris"
+                            size="180" maxlength="150" autofocus required/>
+                </p>
+
             <!-- Valider la question-->
             <p><input type="submit" value="Envoyer"/></p>
-        </fieldset>
-
-        <!-- la réponse de GrandPy-->
-        <fieldset>
-            <legend>Réponse de GrandPy</legend>
-
-            <!-- Géolocalisation de la demende-->
-            <fieldset>
-                <legend>Localisation</legend>
             </fieldset>
+        </section>
 
-            <!-- Historique sur le contenu de la demande-->
-            <fieldset>
-                <legend>Historique</legend>
-            </fieldset>
+        <section id='reponse'>
+            <!-- la réponse de GrandPy-->
+                <fieldset>
+                    <legend>Réponse de GrandPy</legend>
 
-            <!-- Valider la question-->
-            <p><input type="reset" value="Pose une Autre question"/></p>
+                    <!-- Géolocalisation de la demende-->
+                    <fieldset>
+                        <legend>Localisation</legend>
+                    </fieldset>
 
-        </fieldset>
+                    <!-- Historique sur le contenu de la demande-->
+                    <fieldset>
+                        <legend>Historique</legend>
+                    </fieldset>
+
+                    <!-- Valider la question-->
+                    <p><input type="reset" value="Pose une Autre question"/></p>
+
+                </fieldset>
+        </section>
     </form>
+
+    <footer id='bas'>
+
+    </footer>
 
 </body>
 
