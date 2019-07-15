@@ -12,53 +12,67 @@
 <body>
     <!-- Acceuil de la page de GrandPy-->
     <header id='haut'>
-        <h1>GrandPy, le Papi robot est là pour vous aidez !</h1>
-        <p><img src="../static/image/Grandpy.png" alt="image de grand papy"/></p>
-        <p><img src="../static/image/gprecherche.gif" alt="reflection de grand papy"/></p>
-        <p><img src="../static/image/texte_accueil.png" alt="parole de grand papy"/></p>
+        <h1>GrandPy</h1>
+        <h2>le Papi robot est là pour vous aidez a vous retrouvez dans le quartier!</h2>
     </header>
+
+    <div id="dialogue">
+        <p id="grandpy"><img src="../static/image/Grandpy.png" alt="image de grand papy"/></p>
+        <p class="affiche" id="reflexion" ><img src="../static/image/gprecherche.gif" alt="reflection de grand papy"/></p>
+        <p id="paroleAccueil"><img src="../static/image/texte_accueil.png" alt="parole de grand papy"/></p>
+        <p class="affiche" id="paroleReponse"><img src="../static/image/reponse1.png" alt="parole de grand papy"/></p>
+        <p class="affiche" id="paroleMecontent"><img src="../static/image/reponse2.png" alt="parole de grand papy"/></p>
+    </div>
 
     <!-- la question posé à GrandPy-->
     <form methode="post" action="../static/resquest/grandPy.js">
 
-        <section id='question'>
-            <fieldset>
-                <legend>Votre question à GrandPy</legend>
-                <p>
-                    <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
-                    <input type="text" name="question" id="question"
-                            placeholder="Ex : Ou se trouve l'hotel Napoléon a  75000 paris"
-                            size="180" maxlength="150" autofocus required/>
-                </p>
-
-            <!-- Valider la question-->
-            <p><input type="submit" value="Envoyer"/></p>
-            </fieldset>
-        </section>
-
-        <section id='reponse'>
-            <!-- la réponse de GrandPy-->
-                <fieldset>
-                    <legend>Réponse de GrandPy</legend>
-
-                    <!-- Géolocalisation de la demende-->
-                    <fieldset>
-                        <legend>Localisation</legend>
-                    </fieldset>
-
-                    <!-- Historique sur le contenu de la demande-->
-                    <fieldset>
-                        <legend>Historique</legend>
-                    </fieldset>
+        <div id="form">
+            <section id='question'>
+                <fieldset class="question">
+                    <legend>Votre question à GrandPy</legend>
+                    <p>
+                        <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
+                        <input type="text" name="question" id="question"
+                                placeholder="Ex : Ou se trouve l'hotel Napoléon a  75000 paris"
+                                size="160" maxlength="150" autofocus required/>
+                    </p>
 
                     <!-- Valider la question-->
-                    <p><input type="reset" value="Pose une Autre question"/></p>
-
+                    <p><input type="submit" value="Envoyer"/></p>
                 </fieldset>
-        </section>
+            </section>
+
+            <section id='reponse'>
+                <!-- la réponse de GrandPy-->
+                    <fieldset class="affiche">
+                        <legend>Réponse de GrandPy</legend>
+
+                        <!-- Géolocalisation de la demende-->
+                        <fieldset>
+                            <legend>Localisation</legend>
+                        </fieldset>
+
+                        <!-- Historique sur le contenu de la demande-->
+                        <fieldset>
+                            <legend>Historique</legend>
+                        </fieldset>
+
+                        <!-- Valider la question-->
+                        <p><input type="reset" value="Pose une Autre question"/></p>
+
+                    </fieldset>
+            </section>
+        </div>
     </form>
 
     <footer id='bas'>
+        <p>
+          - Pascal MACCHI -  <a href="https://github.com/speedy-souris/projet7.git">
+                            code source du projet GrandPy</a>
+        <span> - 2019 -</span>
+        </p>
+
 
     </footer>
 

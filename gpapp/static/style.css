@@ -1,0 +1,58 @@
+
+html
+{
+    border: 1px solid black;
+}
+
+/* parametre general Header */
+#haut
+{
+    width: 75%;
+    margin: auto;
+    background-color: #ffbb33;
+    text-align: center;
+}
+
+/* parametre general Footer */
+#bas
+{
+    width: 25%;
+    margin: auto;
+    background-color: #ffbb33;
+    text-align: center;
+}
+
+/* Suppression des parole hors page d'accueil */
+.affiche
+{
+    display: none;
+}
+
+/* position bulle parole d'accueil */
+#dialogue
+{
+    display: flex;
+}
+#paroleAccueil:nth-child(3)
+{
+    margin-top: -35px;
+}
+#grandpy:nth-child(1)
+{
+    margin-top: 190px;
+}
+
+/* position block question a GrandPy */
+#form
+{
+    display:flex;
+    flex-direction: colomn;
+}
+.question:nth-child(1)
+{
+    width: 60%;
+    margin: -10% 0 0 180px;
+
+}
+
+
