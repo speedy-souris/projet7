@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}" />
+    <title>GrandPy</title>
+</head>
+
+<body>
+    <!-- Acceuil de la page de GrandPy-->
+    <header id='haut'>
+        <h1>GrandPy</h1>
+        <h2>le Papi robot est là pour vous aidez a vous retrouvez dans le quartier!</h2>
+    </header>
+
+    <div id="dialogue">
+        <p id="grandpy"><img src="{{ url_for('static', filename='image/Grandpy.png')}}" alt="image de grand papy"/></p>
+        {% block bulle_gp %} {% endblock bulle_gp %}
+    </div>
+
+    <!-- la question posé à GrandPy-->
+    <form methode="post" action="{{ url_for('static', filename='request/grandpy.js')}}">
+
+        <div id="form">
+
+            {% block question_gp %} {% endblock question_gp %}
+            {% block reponse_gp %} {% endblock reponse_gp %}
+
+        </div>
+    </form>
+
+    <footer id='bas'>
+        <p>
+            Pascal MACCHI
+            <p>
+                <a href="{{ url_for('https://github.com/speedy-souris/projet7.git',
+                        filename='code source du projet GrandPy') }}"></a>
+            </p>
+            <P>
+                <a href="{{ url_for('https://trello.com/invite/b/mk3rI1BS/320cd4a3077e3ad9252650d4b7c664f5/grandpy',
+                        filename='suivi du projet par la methode agile  Trello') }}"></a>
+            </P>
+            <p>2019</p>
+        </p>
+
+    </footer>
+
+</body>
+
+</html>
