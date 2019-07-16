@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <!-- Acceuil de la page de GrandPy-->
+    {# Acceuil de la page de GrandPy #}
     <header id='haut'>
         <h1>GrandPy</h1>
         <h2>le Papi robot est là pour vous aidez a vous retrouvez dans le quartier!</h2>
@@ -21,7 +21,7 @@
         {% block bulle_gp %} {% endblock bulle_gp %}
     </div>
 
-    <!-- la question posé à GrandPy-->
+    {# la question posé à GrandPy #}
     <form methode="post" action="{{ url_for('static', filename='request/grandpy.js')}}">
 
         <div id="form">
