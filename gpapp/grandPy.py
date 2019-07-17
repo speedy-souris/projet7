@@ -68,7 +68,6 @@ def parser(question):
                     "à","â","ça","ès","étaient","étais","était","étant","été","être","ô"]
 
     result = [w for w in list_question if w.lower() not in unnecessary]
-
     return result
 
 
