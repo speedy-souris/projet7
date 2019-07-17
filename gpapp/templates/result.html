@@ -1,25 +1,28 @@
 {% extends "base.html" %}
-{% extends "style.html" %}
 
+{# message de Réponse #}
+{% block bulle_gp %}
+<img src="{{ url_for('static', filename='image/reponse1.png')}}" alt="parole de grand papy"/>
+{% endblock bulle_gp %}
+
+{# Réponse de GrandPy #}
 {% block reponse_gp %}
-<section id='reponse'>
-    {# la réponse de GrandPy #}
-    <fieldset class="affiche">
-        <legend>Réponse de GrandPy</legend>
-        {# Géolocalisation de la demende #}
-        <fieldset>
-            <legend>Localisation</legend>
-         </fieldset>
+<fieldset>
 
-        {# Historique sur le contenu de la demande #}
-        <fieldset>
-        <legend>Historique</legend>
+    <legend>Réponse de GrandPy</legend>
+    {# Géolocalisation de la demende #}
+    <div class="conteneur" id="visuel">
+        <fieldset class="element">
+            <legend>Localisation</legend>
         </fieldset>
 
-        {# Valider la question #}
-        <p><input type="reset" value="Pose une Autre question"/></p>
+        {# Historique sur le contenu de la demande #}
+        <fieldset class="element">
+            <legend>Historique</legend>
+        </fieldset>
+    </div>
+    {# Valider la question #}
+    <p>{# <a href="{{ url_for('/', filename='index.html') }}"> #}<input type="reset" value="Pose une Autre question"/>{# </a> #}</p>
 
-    </fieldset>
-</section>
-
+</fieldset>
 {% endblock reponse_gp %}

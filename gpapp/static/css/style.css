@@ -17,37 +17,41 @@
     text-align: center;
 }
 
-/* Suppression des parole hors page d'accueil */
-.affiche
-{
-    display: none;
-}
-
-/* position bulle parole d'accueil */
-#dialogue
+/* gestion flex-box */
+.conteneur
 {
     display: flex;
-}
-#paroleAccueil:nth-child(3)
-{
-    margin-top: -35px;
-}
-#grandpy:nth-child(1)
-{
-    margin-top: 190px;
+    flex-direction: row;
 }
 
-/* position block question a GrandPy */
-#form
+/* position GrandPy */
+#grandpy
 {
-    display:flex;
-    flex-direction: colomn;
-}
-.question:nth-child(1)
-{
-    width: 60%;
-    margin: -10% 0 0 180px;
-
+    margin-top: 178px;
 }
 
+/* position bulle */
+#paroleAccueil
+{
+    margin: -35px 0 0 -50px;
+}
 
+/* Position reponse de GrandPy */
+#reflexiongp
+{
+    margin: 90px 0 0 -17px;
+}
+#reponsegp
+{
+    width: 75%;
+    margin: -140px 0 0 200px;
+}
+.element:nth-child(1)
+{
+    flex: 1;
+    height: 300px;
+}
+.element:nth-child(2)
+{
+    flex: 1;
+}

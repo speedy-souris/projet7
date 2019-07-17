@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -16,18 +16,19 @@
         <h2>le Papi robot est là pour vous aidez a vous retrouvez dans le quartier!</h2>
     </header>
 
-    <div id="dialogue">
-        <p id="grandpy"><img src="{{ url_for('static', filename='image/Grandpy.png')}}" alt="image de grand papy"/></p>
-        {% block bulle_gp %} {% endblock bulle_gp %}
+    <div class="conteneur">
+        <figure id="grandpy"><img src="{{ url_for('static', filename='image/Grandpy.png')}}" alt="image de grand papy"/></figure>
+        <figure id="paroleAccueil">{% block bulle_gp %} {% endblock bulle_gp %}</figure>
+        <figure id="reflexiongp">{% block reflexion_gp %} {% endblock reflexion_gp %}</figure>
     </div>
 
     {# la question posé à GrandPy #}
-    <form methode="post" action="{{ url_for('static', filename='request/grandpy.js')}}">
+    <form methode="post" action="{{ url_for('static', filename='js/grandpy.js')}}">
 
-        <div id="form">
+        <div class="conteneur">
 
-            {% block question_gp %} {% endblock question_gp %}
-            {% block reponse_gp %} {% endblock reponse_gp %}
+            <section>{% block question_gp %} {% endblock question_gp %}</section>
+            <section id='reponsegp'>{% block reponse_gp %} {% endblock reponse_gp %}</section>
 
         </div>
     </form>
@@ -36,12 +37,11 @@
         <p>
             Pascal MACCHI
             <p>
-                <a href="{{ url_for('https://github.com/speedy-souris/projet7.git',
-                        filename='code source du projet GrandPy') }}"></a>
+               {# <a href="https://github.com/speedy-souris/projet7.git">code source du projet GrandPy</a> #}
             </p>
             <P>
-                <a href="{{ url_for('https://trello.com/invite/b/mk3rI1BS/320cd4a3077e3ad9252650d4b7c664f5/grandpy',
-                        filename='suivi du projet par la methode agile  Trello') }}"></a>
+               {# <a href="https://trello.com/invite/b/mk3rI1BS/320cd4a3077e3ad9252650d4b7c664f5/grandpy">
+                            suivi du projet par la methode agile  Trello</a> #}
             </P>
             <p>2019</p>
         </p>

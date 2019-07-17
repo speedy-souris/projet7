@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
+
+{# Message d'accueil grandPy #}
+{% block bulle_gp %}
+<img src="{{ url_for('static', filename='image/texte_accueil.png')}}" alt="parole de grand papy"/>
+{% endblock bulle_gp %}
+
+{# Question posé a Grand Py #}
 {% block question_gp %}
-<section id='question'>
-    <fieldset class="question">
-         <legend>Votre question à GrandPy</legend>
-         <p>
-             <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
-             <input type="text" name="question" id="question"
-                         placeholder="Ex : Ou se trouve l'hotel Napoléon a  75000 paris"
-                         size="160" maxlength="150" autofocus required/>
-        </p>
-        {# Valider la question #}
-        <p><input type="submit" value="Envoyer"/></p>
-    </fieldset>
-</section>
+<fieldset>
+    <legend>Votre question à GrandPy</legend>
+    <p>
+        <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
+        <input type="text" name="question" id="question"
+                    placeholder="Ex : Ou se trouve l'hotel Napoléon a  75000 paris"
+                    size="160" maxlength="150" autofocus required/>
+    </p>
+    {# Valider la question #}
+    <p><input type="submit" value="Envoyer"/></p>
+</fieldset>
 {% endblock question_gp %}
 

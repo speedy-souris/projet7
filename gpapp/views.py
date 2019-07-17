@@ -15,5 +15,13 @@ def index():
 def result():
     return render_template('result.html')
 
+@app.route('/reflexion/')
+def reflexion():
+    return render_template('reflexion.html')
+
+@app.route('/stress/')
+def stress():
+    return render_template('stress.html')
+
 # ~ if __name__ == "__main__":
     # ~ app.run()
