@@ -10,30 +10,30 @@
 </head>
 
 <body>
-    {# Acceuil de la page de GrandPy #}
-    <header id='haut'>
+    {# Home page GrandPy #}
+    <header id='window_top'>
         <h1>GrandPy</h1>
         <h2>le Papi robot est là pour vous aidez a vous retrouvez dans le quartier!</h2>
     </header>
 
-    <div class="conteneur">
+    <div class="container">
         <figure id="grandpy"><img src="{{ url_for('static', filename='image/Grandpy.png')}}" alt="image de grand papy"/></figure>
-        <figure id="paroleAccueil">{% block bulle_gp %} {% endblock bulle_gp %}</figure>
-        <figure id="reflexiongp">{% block reflexion_gp %} {% endblock reflexion_gp %}</figure>
+        <figure id="word_of_welcome">{% block bubble_gp %} {% endblock bubble_gp %}</figure>
+        <figure id="gp_refletion">{% block gp_refletion %} {% endblock gp_refletion %}</figure>
     </div>
 
-    {# la question posé à GrandPy #}
+    {# the question asked to GrandPy #}
     <form methode="post" action="{{ url_for('static', filename='js/grandpy.js')}}">
 
-        <div class="conteneur">
+        <div class="container">
 
             <section>{% block question_gp %} {% endblock question_gp %}</section>
-            <section id='reponsegp'>{% block reponse_gp %} {% endblock reponse_gp %}</section>
+            <section id='gp_reply'>{% block gp_reply %} {% endblock gp_reply %}</section>
 
         </div>
     </form>
 
-    <footer id='bas'>
+    <footer id='window_sill'>
         <p>
             Pascal MACCHI
             <p>

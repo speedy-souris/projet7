@@ -1,3 +1,4 @@
+# parser
 def parser(question):
     list_question = question.split()
     unnecessary = ["a","abord","absolument","afin","ah","ai","aie","ailleurs","ainsi","ait",
@@ -69,5 +70,3 @@ def parser(question):
 
     result = [w for w in list_question if w.lower() not in unnecessary]
     return result
-
-

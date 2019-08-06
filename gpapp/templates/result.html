@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 
-{# message de Réponse #}
-{% block bulle_gp %}
-<img src="{{ url_for('static', filename='image/reponse1.png')}}" alt="parole de grand papy"/>
-{% endblock bulle_gp %}
+{# reply message #}
+{% block bubble_gp %}
+<img src="{{ url_for('static', filename='image/answer1.png')}}" alt="parole de grand papy"/>
+{% endblock bubble_gp %}
 
-{# Réponse de GrandPy #}
-{% block reponse_gp %}
+{# GrandPy's answer #}
+{% block gp_reply %}
 <fieldset>
 
     <legend>Réponse de GrandPy</legend>
-    {# Géolocalisation de la demende #}
-    <div class="conteneur" id="visuel">
+    {# Geolocation of demand #}
+    <div class="container" id="visual">
         <fieldset class="element">
             <legend>Localisation</legend>
         </fieldset>
 
-        {# Historique sur le contenu de la demande #}
+        {# History of the content of the application #}
         <fieldset class="element">
             <legend>Historique</legend>
         </fieldset>
     </div>
-    {# Valider la question #}
+    {# validate the question #}
     <p><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
 
 </fieldset>
-{% endblock reponse_gp %}
+{% endblock gp_reply %}

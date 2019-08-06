@@ -15,9 +15,9 @@ def index():
 def result():
     return render_template('result.html')
 
-@app.route('/reflexion/')
+@app.route('/refletion/')
 def reflexion():
-    return render_template('reflexion.html')
+    return render_template('refletion.html')
 
 @app.route('/stress/')
 def stress():

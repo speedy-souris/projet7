@@ -1,15 +1,16 @@
 from gpapp.grandPy import parser
-"""
-Fonction de test sur la separation la chaine de caractere (question posé
-a papyRobot alias grandPy) en plusieurs mots,
-suppression des mots inutiles afin de garder les mots clés pour la
-recherche (historique du lieux & coordonnée géographique)
-"""
-# test de parser sur la question posé à grandPy
 
+# parser test on the question asked to grandPy
 def test_parser():
-    # question posée à grandPy
-    demande = "ou est situé le restaurant la_nappe_d_or de lyon"
-    assert parser(demande) == ["restaurant","la_nappe_d_or","lyon"]
+    """
+    Test function on the separation of the character string (question asked
+     a papyRobot alias grandPy) in several words,
+     removing unnecessary words in order to keep the keywords for the
+     search (location history & geographic coordinates)
+    """
+    # question asked to grandPy
+    demand = "ou est situé le restaurant la_nappe_d_or de lyon"
 
-# def test_geolocalisation():
+    assert parser(demand) == ["restaurant","la_nappe_d_or","lyon"]
+
+

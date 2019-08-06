@@ -1,6 +1,6 @@
 
-/* parametre general Header */
-#haut
+/* General Parameter Header */
+#window_top
 {
     width: 75%;
     margin: auto;
@@ -8,8 +8,8 @@
     text-align: center;
 }
 
-/* parametre general Footer */
-#bas
+/* General Parameter Footer */
+#window_sill
 {
     width: 25%;
     margin: auto;
@@ -17,31 +17,31 @@
     text-align: center;
 }
 
-/* gestion flex-box */
-.conteneur
+/* flex-box management */
+.container
 {
     display: flex;
     flex-direction: row;
 }
 
-/* position GrandPy */
+/* GrandPy position */
 #grandpy
 {
     margin-top: 178px;
 }
 
-/* position bulle */
-#paroleAccueil
+/* bubble position */
+#word_of_welcome
 {
     margin: -35px 0 0 -50px;
 }
 
-/* Position reponse de GrandPy */
-#reflexiongp
+/* GrandPy's answer position */
+#gp_refletion
 {
     margin: 90px 0 0 -17px;
 }
-#reponsegp
+#gp_reply
 {
     width: 75%;
     margin: -140px 0 0 200px;
