@@ -5,8 +5,21 @@ import urllib.request
 import json
 from io import BytesIO
 
+from gpapp.question_answer import parser
+from gpapp.question_answer import get_place_id, get_address
 
-from gpapp.question_answer import get_place_id
+# parser test on the question asked to grandPy
+def test_parser():
+    """
+    Test function on the separation of the character string (question asked
+     a papyRobot alias grandPy) in several words,
+     removing unnecessary words in order to keep the keywords for the
+     search (location history & geographic coordinates)
+    """
+    # question asked to grandPy
+    demand = "ou est situé le restaurant la_nappe_d_or de lyon"
+
+    assert parser(demand) == ["restaurant","la_nappe_d_or","lyon"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -56,4 +69,4 @@ def test_geolocal_address(monkeypatch):
     monkeypatch.setattr(urllib.request, 'urlopen',
         mockreturn)
 
-    assert get_place_id() == resul_address
+    assert get_address() == resul_address
