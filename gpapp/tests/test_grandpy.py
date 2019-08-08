@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from gpapp.grandPy import parser
 
 # parser test on the question asked to grandPy
