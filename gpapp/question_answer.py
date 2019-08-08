@@ -7,6 +7,12 @@ from config import placeId_default
 
 # parser
 def parser(question):
+    """
+    function that cuts the string of characters (question asked to GrandPy)
+    into a word list then delete all unnecessary words to keep only
+    the keywords for the search
+    """
+
     list_question = question.split()
     unnecessary = ["a","abord","absolument","afin","ah","ai","aie","ailleurs","ainsi","ait",
                     "allaient","allo","allons","allô","alors","ancetre","anterieur","anterieure",
@@ -107,6 +113,8 @@ def get_address(key=key_API_MAP, place_id=placeId_default):
     result = json.loads(address_found.read().decode("utf8"))
 
     return result
+
+
 
 if __name__ == "__main__":
 
