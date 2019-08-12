@@ -6,7 +6,7 @@ from config import key_API_MAP, address_default
 from config import placeId_default
 
 # parser
-def parser(question):
+def parser(question="Salut GrandPy ! peux tu me dire ou se trouve la poste de marseille"):
     """
     function that cuts the string of characters (question asked to GrandPy)
     into a word list then delete all unnecessary words to keep only
@@ -39,7 +39,7 @@ def parser(question):
                     "elles-mêmes","en","encore","enfin","entre","envers","environ","es","est",
                     "et","etant","etc","etre","eu","euh","eux","eux-mêmes","exactement",
                     "excepté","extenso","exterieur","f","fais","faisaient","faisant","fait",
-                    "façon","feront","fi","flac","floc","font","g","gens","h","ha","hein","hem",
+                    "façon","feront","fi","flac","floc","font","g","gens","grandpy","h","ha","hein","hem",
                     "hep","hey","hi","ho","holà","hop","hormis","hors","hou","houp","hue","hui","huit",
                     "huitième","hum","hurrah","hé","hélas","i","il","ils","importe","j","je",
                     "jusqu","jusque","juste","k","l","la","laisser","laquelle","las","le",
@@ -108,20 +108,38 @@ def get_address(key=key_API_MAP, place_id=placeId_default):
 
     address_found= urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/details/"\
-    +"json?placeid={}&fields=formatted_address&key={}".format(place_id, key))
+    +"json?placeid={}&fields=formatted_address,geometry,photo&key={}".format(place_id, key))
 
     result = json.loads(address_found.read().decode("utf8"))
 
     return result
 
+# history search on wikimedia API
+def get_history(search_history="montmartre"):
+    """
+    wikipedia API (Wikimedia) history search
+    """
+
+    history_encode = urllib.parse.quote(search_history)
+
+    history_found= urllib.request.urlopen(
+    "https://fr.wikipedia.org/w/api.php?action=opensearch&search={}"\
+    +"&format=json".format(history_encode))
+
+    result = json.loads(history_found.read().decode("utf8"))
+
+    return result
 
 
 if __name__ == "__main__":
 
-    test_parse = parser("Salut papy  peut tu m'orienter vers la poste de marseille")
+    test_parse = parser()
     test_placeId = get_place_id()
     test_address = get_address()
+    test_history = get_history()
 
     print(test_parse)
     print(test_placeId)
     print(test_address)
+    print(test_history)
+

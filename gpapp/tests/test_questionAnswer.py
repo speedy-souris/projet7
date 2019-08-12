@@ -7,6 +7,7 @@ from io import BytesIO
 
 from gpapp.question_answer import parser
 from gpapp.question_answer import get_place_id, get_address
+from gpapp.question_answer import get_history
 
 # parser test on the question asked to grandPy
 def test_parser():
@@ -46,8 +47,7 @@ def test_geolocal_id(monkeypatch):
 
     assert get_place_id() == resul_pid
 
-
-# ~ # google map API test on address location
+# google map API test on address location
 def test_geolocal_address(monkeypatch):
     """
     Google Map A.P.I test function that returns a file
@@ -70,3 +70,29 @@ def test_geolocal_address(monkeypatch):
         mockreturn)
 
     assert get_address() == resul_address
+
+# WikiMedia APi test on search
+def test_search_wiki(monkeypatch):
+    """
+    A.P.I wikipedia test function (wikimedia) that returns a file
+    Json containing the history of the requested address
+    """
+    resul_history = [
+        [
+
+            """Riche d'un long passé artistique, ce secteur de Paris (France)
+            dominé par la Basilique du Sacré-Cœur a toujours été le symbole d'un mode de vie bohème où,
+            de Picasso à Modigliani, de nombreux artistes trouvèrent refuge."""
+        ]
+    ]
+    def mockreturn(request):
+        """
+        Mock function on hystory search
+        """
+
+        return BytesIO(json.dumps(resul_history).encode())
+
+    monkeypatch.setattr(urllib.request, 'urlopen',
+        mockreturn)
+
+    assert get_history() == resul_history
