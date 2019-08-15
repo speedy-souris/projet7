@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+
+import os
 import json
 import urllib.request, urllib.parse
 
-from config import key_API_MAP, address_default
+from config import address_default
 from config import placeId_default
 
 # parser
@@ -85,11 +87,11 @@ def parser(question="Salut GrandPy ! peux tu me dire ou se trouve la poste de ma
     return result
 
 # place_id search on Google Map API
-def get_place_id(key=key_API_MAP, address=address_default):
+def get_place_id(address=address_default):
     """
     Google map API place_id search function
     """
-
+    key = os.getenv('key_API_MAP')
     address_encode = urllib.parse.quote(address)
 
     place_id = urllib.request.urlopen(
@@ -101,11 +103,12 @@ def get_place_id(key=key_API_MAP, address=address_default):
     return result
 
 # place_id search on Google Map API
-def get_address(key=key_API_MAP, place_id=placeId_default):
+def get_address(place_id=placeId_default):
     """
     Google map API address search with place_id function
     """
 
+    key = os.getenv('key_API_MAP')
     address_found= urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/details/"\
     +"json?placeid={}&fields=formatted_address,geometry,photo&key={}".format(place_id, key))
@@ -123,8 +126,8 @@ def get_history(search_history="montmartre"):
     history_encode = urllib.parse.quote(search_history)
 
     history_found= urllib.request.urlopen(
-    "https://fr.wikipedia.org/w/api.php?action=opensearch&search={}"\
-    +"&format=json".format(history_encode))
+    "https://fr.wikipedia.org/w/api.php?action=opensearch&search={}".format(history_encode)\
+    +"&format=json")
 
     result = json.loads(history_found.read().decode("utf8"))
 
@@ -138,8 +141,8 @@ if __name__ == "__main__":
     test_address = get_address()
     test_history = get_history()
 
-    print(test_parse)
-    print(test_placeId)
-    print(test_address)
+    # ~ print(test_parse)
+    # ~ print(test_placeId)
+    # ~ print(test_address)
     print(test_history)
 
