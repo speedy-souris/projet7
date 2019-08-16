@@ -27,9 +27,9 @@ comme indique ci dessous :
 
 `export VIRTUAL_ENV`
 
-Sauvegarder le script et ca en est finis pour la configuration locale !
+Sauvegarder le script et ça en est finit pour la configuration locale !
 
-cela à pour effet de récuperer la variable d'environnement contenant la clé
+Cela à pour effet de récuperer la variable d'environnement contenant la clé
 
 privé de l'API Google Map à chaque activation de l'environnement virtuel
 
