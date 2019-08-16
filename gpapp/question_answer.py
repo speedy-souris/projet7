@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
-import os
-import json
+from config import address_default, placeId_default, history_default
 
-import urllib.request, urllib.parse
+# environment variable
+def var_env():
+    """
+    call function of the Key_API_MAP environment variable (API key)
+    """
 
-from config import address_default, placeId_default
+    import os
+
+    return os.getenv('key_API_MAP')
 
 # parser
 def parser(question="Salut GrandPy ! peux tu me dire ou se trouve la poste de marseille"):
@@ -92,7 +97,10 @@ def get_place_id(address=address_default):
     Google map API place_id search function
     """
 
-    key = os.getenv('key_API_MAP') # environment variable
+    import json
+    import urllib.request, urllib.parse
+
+    key = var_env() # environment variable
 
     # replacing space by "% 20" in the string of characters
     address_encode = urllib.parse.quote(address)
@@ -111,7 +119,10 @@ def get_address(place_id=placeId_default):
     Google map API address search with place_id function
     """
 
-    key = os.getenv('key_API_MAP') # environment variable
+    import json
+    import urllib.request, urllib.parse
+
+    key = var_env() # environment variable
 
     address_found= urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/details/"\
@@ -122,10 +133,13 @@ def get_address(place_id=placeId_default):
     return result
 
 # history search on wikimedia API
-def get_history(search_history="montmartre"):
+def get_history(search_history=history_default):
     """
     wikipedia API (Wikimedia) history search
     """
+
+    import json
+    import urllib.request, urllib.parse
 
     # replacing space by "% 20" in the string of characters
     history_encode = urllib.parse.quote(search_history)
