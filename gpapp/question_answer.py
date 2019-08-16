@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+import os
+import json
+
+import urllib.request, urllib.parse
+
 from config import address_default, placeId_default, history_default
 
 # environment variable
@@ -7,8 +12,6 @@ def var_env():
     """
     call function of the Key_API_MAP environment variable (API key)
     """
-
-    import os
 
     return os.getenv('key_API_MAP')
 
@@ -97,9 +100,6 @@ def get_place_id(address=address_default):
     Google map API place_id search function
     """
 
-    import json
-    import urllib.request, urllib.parse
-
     key = var_env() # environment variable
 
     # replacing space by "% 20" in the string of characters
@@ -119,9 +119,6 @@ def get_address(place_id=placeId_default):
     Google map API address search with place_id function
     """
 
-    import json
-    import urllib.request, urllib.parse
-
     key = var_env() # environment variable
 
     address_found= urllib.request.urlopen(
@@ -137,9 +134,6 @@ def get_history(search_history=history_default):
     """
     wikipedia API (Wikimedia) history search
     """
-
-    import json
-    import urllib.request, urllib.parse
 
     # replacing space by "% 20" in the string of characters
     history_encode = urllib.parse.quote(search_history)
