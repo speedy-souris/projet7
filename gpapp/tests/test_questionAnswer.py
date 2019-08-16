@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-import urllib.request
-
 import json
 from io import BytesIO
+
+import urllib.request
 
 from gpapp.question_answer import parser
 from gpapp.question_answer import get_place_id, get_address

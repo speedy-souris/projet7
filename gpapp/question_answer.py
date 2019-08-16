@@ -2,10 +2,10 @@
 
 import os
 import json
+
 import urllib.request, urllib.parse
 
-from config import address_default
-from config import placeId_default
+from config import address_default, placeId_default
 
 # parser
 def parser(question="Salut GrandPy ! peux tu me dire ou se trouve la poste de marseille"):
@@ -91,7 +91,10 @@ def get_place_id(address=address_default):
     """
     Google map API place_id search function
     """
-    key = os.getenv('key_API_MAP')
+
+    key = os.getenv('key_API_MAP') # environment variable
+
+    # replacing space by "% 20" in the string of characters
     address_encode = urllib.parse.quote(address)
 
     place_id = urllib.request.urlopen(
@@ -108,7 +111,8 @@ def get_address(place_id=placeId_default):
     Google map API address search with place_id function
     """
 
-    key = os.getenv('key_API_MAP')
+    key = os.getenv('key_API_MAP') # environment variable
+
     address_found= urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/details/"\
     +"json?placeid={}&fields=formatted_address,geometry,photo&key={}".format(place_id, key))
@@ -123,6 +127,7 @@ def get_history(search_history="montmartre"):
     wikipedia API (Wikimedia) history search
     """
 
+    # replacing space by "% 20" in the string of characters
     history_encode = urllib.parse.quote(search_history)
 
     history_found= urllib.request.urlopen(
