@@ -5,8 +5,6 @@ import json
 
 import urllib.request, urllib.parse
 
-from config import address_default, placeId_default, history_default
-
 # environment variable
 def var_env():
     """
@@ -95,7 +93,7 @@ def parser(question="Salut GrandPy ! peux tu me dire ou se trouve la poste de ma
     return result
 
 # place_id search on Google Map API
-def get_place_id(address=address_default):
+def get_place_id(address="paris poste"):
     """
     Google map API place_id search function
     """
@@ -114,7 +112,7 @@ def get_place_id(address=address_default):
     return result
 
 # place_id search on Google Map API
-def get_address(place_id=placeId_default):
+def get_address(place_id="ChIJTei4rhlu5kcRPivTUjAg1RU"):
     """
     Google map API address search with place_id function
     """
@@ -130,7 +128,7 @@ def get_address(place_id=placeId_default):
     return result
 
 # history search on wikimedia API
-def get_history(search_history=history_default):
+def get_history(search_history="montmartre"):
     """
     wikipedia API (Wikimedia) history search
     """
