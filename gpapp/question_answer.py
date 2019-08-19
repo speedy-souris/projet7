@@ -10,7 +10,6 @@ def var_env():
     """
     call function of the Key_API_MAP environment variable (API key)
     """
-
     return os.getenv('key_API_MAP')
 
 # parser
@@ -105,7 +104,7 @@ def get_place_id(address="paris poste"):
 
     place_id = urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/findplacefromtext/"\
-    +f"json?input={adress_encode}&inputtype=textquery&key={key}")
+    +"json?input={}&inputtype=textquery&key={}".format(address_encode,key))
 
     result = json.loads(place_id.read().decode("utf8"))
 
@@ -121,7 +120,7 @@ def get_address(place_id="ChIJTei4rhlu5kcRPivTUjAg1RU"):
 
     address_found= urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/details/"\
-    +f"json?placeid={place_id}&fields=formatted_address,geometry,photo&key={key}")
+    +"json?placeid={}&fields=formatted_address,geometry,photo&key={}".format(place_id,key))
 
     result = json.loads(address_found.read().decode("utf8"))
 
@@ -137,7 +136,7 @@ def get_history(search_history="montmartre"):
     history_encode = urllib.parse.quote(search_history)
 
     history_found= urllib.request.urlopen(
-    f"https://fr.wikipedia.org/w/api.php?action=opensearch&search={history_encode}"\
+    "https://fr.wikipedia.org/w/api.php?action=opensearch&search={}".format(history_encode)\
     +"&format=json")
 
     result = json.loads(history_found.read().decode("utf8"))
@@ -145,15 +144,15 @@ def get_history(search_history="montmartre"):
     return result
 
 
-if __name__ == "__main__":
+# ~ if __name__ == "__main__":
 
-    test_parse = parser()
-    test_placeId = get_place_id()
-    test_address = get_address()
-    test_history = get_history()
+    # ~ test_parse = parser()
+    # ~ test_placeId = get_place_id()
+    # ~ test_address = get_address()
+    # ~ test_history = get_history()
 
     # ~ print(test_parse)
     # ~ print(test_placeId)
     # ~ print(test_address)
-    print(test_history)
+    # ~ print(test_history)
 
