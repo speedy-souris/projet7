@@ -1,3 +1,4 @@
+#coding:utf-8
 #!/usr/bin/env python
 
 import os
@@ -144,15 +145,15 @@ def get_history(search_history="montmartre"):
     return result
 
 
-# ~ if __name__ == "__main__":
+if __name__ == "__main__":
 
     # ~ test_parse = parser()
     # ~ test_placeId = get_place_id()
     # ~ test_address = get_address()
-    # ~ test_history = get_history()
+    test_history = get_history()
 
     # ~ print(test_parse)
     # ~ print(test_placeId)
     # ~ print(test_address)
-    # ~ print(test_history)
+    print(test_history)
 

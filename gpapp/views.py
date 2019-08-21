@@ -1,4 +1,8 @@
-from flask import Flask, render_template
+#coding:utf-8
+
+from flask import Flask, render_template, request
+
+from . import question_answer
 
 app = Flask(__name__)
 
@@ -9,7 +13,11 @@ def index():
 
 @app.route('/result/')
 def result():
-    return render_template('result.html')
+    question = request.args.get('question')
+    # ~ politeness = ['bonjour','salut','bonsoir']
+
+    return render_template('result.html',
+                                question = question)
 
 @app.route('/refletion/')
 def reflexion():
