@@ -8,6 +8,12 @@
     text-align: center;
 }
 
+/* hidden display */
+.answer,#gp_reflection
+{
+    display: none;
+}
+
 /* General Parameter Footer */
 #window_sill
 {
@@ -37,7 +43,7 @@
 }
 
 /* GrandPy's answer position */
-#gp_refletion
+#gp_reflection
 {
     margin: 90px 0 0 -17px;
 }
