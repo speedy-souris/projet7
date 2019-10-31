@@ -46,7 +46,7 @@ def test_geolocal_id(monkeypatch):
     monkeypatch.setattr(urllib.request, 'urlopen',
         mockreturn)
 
-    assert get_place_id() == resul_pid
+    assert get_place_id_list() == resul_pid
 
 # google map API test on address location
 def test_geolocal_address(monkeypatch):

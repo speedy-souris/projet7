@@ -9,7 +9,7 @@
 }
 
 /* hidden display */
-.answer,#gp_reflection
+#answer,#gp_reflection
 {
     display: none;
 }
@@ -37,7 +37,7 @@
 }
 
 /* bubble position */
-#word_of_welcome
+#word_of_welcome,#gp_reply
 {
     margin: -35px 0 0 -50px;
 }
@@ -47,17 +47,8 @@
 {
     margin: 90px 0 0 -17px;
 }
-#gp_reply
+
+#visual
 {
-    width: 75%;
-    margin: -140px 0 0 200px;
-}
-.element:nth-child(1)
-{
-    flex: 1;
-    height: 300px;
-}
-.element:nth-child(2)
-{
-    flex: 1;
+    margin: -350px 0 50px 800px;
 }

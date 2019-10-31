@@ -93,7 +93,7 @@ def parser(question="Salut GrandPy ! peux tu me dire ou se trouve la poste de ma
     return result
 
 # place_id search on Google Map API
-def get_place_id(address="paris poste"):
+def get_place_id_list(address="paris poste"):
     """
     Google map API place_id search function
     """
@@ -121,7 +121,7 @@ def get_address(place_id="ChIJTei4rhlu5kcRPivTUjAg1RU"):
 
     address_found= urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/details/"\
-    +"json?placeid={}&fields=formatted_address,geometry,photo&key={}".format(place_id,key))
+    +"json?placeid={}&fields=formatted_address,geometry&key={}".format(place_id,key))
 
     result = json.loads(address_found.read().decode("utf8"))
 

@@ -18,66 +18,67 @@
         </header>
 
         {# graphic content of grandPy #}
-        <div class="container">
-            <figure id="grandpy">
+        <section id="grandpy">
+            {# persona GrandPy #}
+            <figure>
                 <img src="{{ url_for('static', filename='image/Grandpy.png')}}" alt="image de grand papy"/>
+                {# welcome message #}
+                <img id="word_of_welcome" src="{{ url_for('static', filename='image/text_home.png')}}" alt="parole de grand papy"/>
+                {# reply message #}
+                <img id="gp_reply" src="{{ url_for('static', filename='image/answer1.png')}}" alt="parole de grand papy"/>
+                {# reflection grandPy #}
+                <img id="gp_reflection" src="{{ url_for('static', filename='image/gpsearch.gif')}}" alt="reflexion de grand papy"/>
+                <figcaption>Persona GrandPy, Ce grand-père répond aux questions
+                    qui lui sont posés (Attention à son Caractère...)
+                </figcaption>
             </figure>
-            {# welcome message #}
-            <figure class="home" id="word_of_welcome">
-                <img src="{{ url_for('static', filename='image/text_home.png')}}" alt="parole de grand papy"/>
-            </figure>
-            {# reply message #}
-            <figure class="answer" id="gp_reply">
-                <img src="{{ url_for('static', filename='image/answer1.png')}}" alt="parole de grand papy"/>
-            </figure>
-            {# reflection grandPy #}
-            <figure id="gp_reflection">
-                <img src="{{ url_for('static', filename='image/gpsearch.gif')}}" alt="reflexion de grand papy"/>
-            </figure>
-        </div>
+        </section>
 
         {# textual content of grandPy #}
-        <div class="container">
-            {# the question asked to GrandPy #}
-            <section class="home">
-                <form method='get' id='submit2'>
-                    <fieldset>
-                        <legend>Votre question à GrandPy</legend>
-                        <p>
-                            <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
-                            <input type="text" name="question" id="question"
-                                    placeholder="Ex : Ou se trouve l'hotel Napoléon a 75000 paris"
-                                    size="160" maxlength="150" autofocus required/>
-                        </p>
-                        {# validate the question #}
-                        <p><input type="submit" value="Envoyer"/></p>
-                    </fieldset>
-                </form>
-            </section>
-            {# grandPy's answer #}
-            <section class="answer">
+        {# the question asked to GrandPy #}
+        <section id="ask">
+            <form method='get' id='submit2'>
                 <fieldset>
-                    <legend>Réponse de GrandPy</legend>
-                    {# Geolocation of demand #}
-                    <div class="container" id="visual">
-                        <fieldset class="element">
-                            <legend>Localisation</legend>
-                        </fieldset>
-
-                        {# History of the content of the application #}
-                        <fieldset class="element">
-                            <legend>Historique</legend>
-<!--
-                            {{ question }}
--->
-                        </fieldset>
-                    </div>
+                    <legend>Votre question à GrandPy</legend>
+                    <p>
+                        <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
+                        <input type="text" name="question" id="question"
+                            placeholder="Ex : Ou se trouve l'hotel Napoléon a 75000 paris"
+                            size="160" maxlength="150" autofocus required/>
+                    </p>
                     {# validate the question #}
-                    <p><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
-
+                    <p><input type="submit" value="Envoyer"/></p>
                 </fieldset>
-            </section>
-        </div>
+            </form>
+        </section>
+
+        {# grandPy's answer #}
+        <section id="answer">
+
+            <fieldset>
+                <legend>Réponse de GrandPy</legend>
+                <div>
+                    {# Geolocation of demand #}
+                    <fieldset id="localisation">
+                        <legend>Localisation</legend>
+                        <img id='map'
+                            width = "450"
+                            hauteur = "250"
+                            frameborder = "0" style = "border: 0"/>
+                    </fieldset>
+                    {# History of the content of the application #}
+                    <fieldset id="hystory">
+                        <legend>Historique</legend>
+<!--
+
+-->
+                    </fieldset>
+                </div>
+                {# validate the question #}
+                <p><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
+            </fieldset>
+
+        </section>
 
         {# footer of grandPy #}
         <footer id='window_sill'>
