@@ -22,7 +22,6 @@ def answer_gp(reflection, question):
     place_id = place_id_dict['candidates'][0]['place_id']
 
     response = question_answer.get_address(place_id = place_id)
-
     return response
 
 

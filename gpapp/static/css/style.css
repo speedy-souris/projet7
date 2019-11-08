@@ -9,7 +9,7 @@
 }
 
 /* hidden display */
-#answer,#gp_reflection
+#gp_reply,#gp_reflection,#answer
 {
     display: none;
 }
@@ -23,32 +23,51 @@
     text-align: center;
 }
 
-/* flex-box management */
-.container
+/* home position */
+#home
 {
     display: flex;
-    flex-direction: row;
-}
-
-/* GrandPy position */
-#grandpy
-{
-    margin-top: 178px;
+    flex-direction: column;
 }
 
 /* bubble position */
 #word_of_welcome,#gp_reply
 {
-    margin: -35px 0 0 -50px;
+    margin: -1.5% 0 17% 0;
 }
 
-/* GrandPy's answer position */
+#ask
+{
+    width: 87%;
+}
+#grandpy
+{
+    width: 42%;
+}
+
+/* GrandPy's reflection position */
 #gp_reflection
 {
-    margin: 90px 0 0 -17px;
+    margin: -1.7% 0 22% -1.5%;
 }
 
-#visual
+/* grandPy's answer position */
+#answer
 {
-    margin: -350px 0 50px 800px;
+    width: 600px;
+    margin: -24% 0.5% 2% 47%;
 }
+#map
+{
+    width: 600px;
+    height: 300px;
+}
+/*
+#history
+{
+    width: 34.8%;
+    margin: -28% 0.5% 35% 61%;
+    height: 50%;
+}
+*/
+
