@@ -7,7 +7,7 @@ from io import BytesIO
 import urllib.request
 
 from gpapp.question_answer import parser
-from gpapp.question_answer import get_place_id, get_address
+from gpapp.question_answer import get_place_id_list, get_address
 from gpapp.question_answer import get_history
 
 # parser test on the question asked to grandPy
