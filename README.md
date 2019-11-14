@@ -6,15 +6,17 @@ question Réponses avec GrandPy
 
 #### pour utiliser la clé privé de l'API de Google Map de maniére sécurisé
 
-créer une variable d'environnement  nommée : **key_API_MAP** dans l'environnement virtuel
+créer une premiere variable d'environnement  nommée : **key_API_MAP** ,
 
-avec votre editeur de texte préféré ouvrez le script **activate** qui dans le repertoire  **venv/bin/**
+puis une seconde nommée : **key_API_STATIC_MAP** dans l'environnement virtuel
+
+avec votre editeur de texte préféré ouvrez le script **activate** qui dans le repertoire  **<venv>/bin/**
 
 situé à la racine du projet dans le cas ou votre systeme soit sur une **base UNIX (linux / MAC)**
 
 ou ouvrez le script **activate.bat** dans le repertoire **c:\venv\Scripts\** pour un systeme basé sur windows
 
-inserez la ligne : `export key_API_MAP="<CLE_PRIVE_DE_L'API>"`
+inserez les lignes : `export <key_API>="<CLE_PRIVE_DE_L'API>"`
 
 entre la ligne `VIRTUAL_ENV ="/.../..."`
 
@@ -26,6 +28,8 @@ comme indique ci dessous :
 
 `export key_API_MAP="<VOTRE_CLE_PRIVE>"`
 
+`export key_API_STATIC_MAP="<VOTRE_CLE_PRIVE>"`
+
 `export VIRTUAL_ENV`
 
 
@@ -33,7 +37,7 @@ comme indique ci dessous :
 
 Ajouter le module gpapp dans PYTHONPATH
 
-inserez la ligne : `export PYTHONPATH=${PYTHONPATH}:${HOME/..../projet7}/<NOM DU MODULE DU PROJET>`
+inserez la ligne : `export PYTHONPATH=${PYTHONPATH}:${HOME/..../}/<NOM DU MODULE DU PROJET>`
 
 entre la ligne `PATH="$VIRTUAL_ENV/bin:$PATH"`
 
@@ -43,7 +47,7 @@ comme indique ci dessous :
 
 `PATH="$VIRTUAL_ENV/bin:$PATH"`
 
-`export PYTHONPATH=${PYTHONPATH}:${HOME/..../projet7}/<NOM DU MODULE DU PROJET>`
+`export PYTHONPATH=${PYTHONPATH}:${HOME/...<REPERTOIRE DU PROJET>.../}/<NOM DU MODULE DU PROJET>`
 
 `export PATH`
 
