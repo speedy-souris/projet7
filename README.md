@@ -3,6 +3,7 @@ question Réponses avec GrandPy
 ------------------------------
 
 ### Configuration du projet pour une utilisation locale
+
 #### pour utiliser la clé privé de l'API de Google Map de maniére sécurisé
 
 créer une variable d'environnement  nommée : **key_API_MAP** dans l'environnement virtuel
@@ -27,10 +28,27 @@ comme indique ci dessous :
 
 `export VIRTUAL_ENV`
 
+
+#### pour utiliser correctement le module du projet pendant les tests (pytest)
+
+Ajouter le module gpapp dans PYTHONPATH
+
+inserez la ligne : `export PYTHONPATH=${PYTHONPATH}:${HOME/..../projet7}/<NOM DU MODULE DU PROJET>`
+
+entre la ligne `PATH="$VIRTUAL_ENV/bin:$PATH"`
+
+et la ligne `export PATH`
+
+comme indique ci dessous :
+
+`PATH="$VIRTUAL_ENV/bin:$PATH"`
+
+`export PYTHONPATH=${PYTHONPATH}:${HOME/..../projet7}/<NOM DU MODULE DU PROJET>`
+
+`export PATH`
+
 Sauvegarder le script et ça en est finit pour la configuration locale !
 
-Cela à pour effet de récuperer la variable d'environnement contenant la clé
+Cela à pour effet de récuperer les variables d'environnements contenant les clé
 
-privé de l'API Google Map à chaque activation de l'environnement virtuel
-
-
+privés des differentes APIS à chaque activation de l'environnement virtuel
