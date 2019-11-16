@@ -9,9 +9,13 @@ import urllib.request, urllib.parse
 # environment variable
 def var_env():
     """
-    call function of the Key_API_MAP environment variable (API key)
+    call function of the Key_API_MAP / key_API_STATIC_MAP environments variables (API key)
     """
-    return os.getenv('key_API_MAP')
+    api_key = {
+                "map": os.getenv("key_API_MAP"),
+                "staticMap": os.getenv("key_API_STATIC_MAP")
+    }
+    return api_key
 
 # parser
 def parser(question="Salut GrandPy ! peux tu me dire ou se trouve la poste de marseille"):
@@ -98,7 +102,7 @@ def get_place_id_list(address="paris poste"):
     Google map API place_id search function
     """
 
-    key = var_env() # environment variable
+    key = var_env()["map"] # environment variable
 
     # replacing space by "% 20" in the string of characters
     address_encode = urllib.parse.quote(address)
@@ -117,7 +121,7 @@ def get_address(place_id="ChIJTei4rhlu5kcRPivTUjAg1RU"):
     Google map API address search with place_id function
     """
 
-    key = var_env() # environment variable
+    key = var_env()["map"] # environment variable
 
     address_found= urllib.request.urlopen(
     "https://maps.googleapis.com/maps/api/place/details/"\
@@ -143,6 +147,31 @@ def get_history(search_history="montmartre"):
     result = json.loads(history_found.read().decode("utf8"))
 
     return result
+
+# map display in the Google Map Satic API
+def get_map_static(location_map):
+    """
+    function of displaying the geolocation of the address
+    asked to grandpy on the map of the Google Map Static API
+    """
+
+    key = var_env()["staticMap"]  # environment variable
+
+    # replacing space by "% 20" in the string of characters
+    formatting_address = urllib.parse.quote(location_map["address"])
+    # longitude and latitude display
+    localization = location_map["location"]
+    # display map
+    display_map = urllib.request.urlopen(
+        "https://maps.googleapis.com/maps/api/staticmap?center="
+        +formatting_address+
+        "&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C"+
+        str(localization["lat"])+","+str(localization["lng"])+
+        "&key={}".format(key))
+
+
+    return display_map
+
 
 
 if __name__ == "__main__":
