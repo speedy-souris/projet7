@@ -1,4 +1,4 @@
-
+                        /* desktop screen display */
 /* General Parameter Header */
 #window_top
 {
@@ -6,12 +6,6 @@
     margin: auto;
     background-color: #ffbb33;
     text-align: center;
-}
-
-/* hidden display */
-#gp_reply,#gp_reflection,#answer
-{
-    display: none;
 }
 
 /* General Parameter Footer */
@@ -24,31 +18,54 @@
 }
 
 /* home position */
-#home
-{
-    display: flex;
-    flex-direction: column;
-}
-
-/* bubble position */
-#word_of_welcome,#gp_reply
-{
-    margin: -1.5% 0 17% 0;
-}
-
-#ask
-{
-    width: 87%;
-}
 #grandpy
 {
-    width: 42%;
+    display: flex;
+    flex-direction: row;
+    width: 585px;
+    height: 400px;
+    margin: 0 0 90px 4px;
+    justify-content: left;
+    align-items: center;
+}
+/* grandPy position */
+.element:nth-child(2)
+{
+    width: 465px;
+    text-align: left;
+    height: 280px;
+    align-self: flex-start;
+}
+.element:nth-child(1)
+{
+    width: 130px;
+    align-self: flex-end;
+}
+#gp_tag
+{
+    margin: 570px 0 90px -560px;
+}
+#tag_line
+{
+    margin: -18px 0 -15px 0;
+}
+
+/* length position */
+#ask
+{
+    width: 125px;
 }
 
 /* GrandPy's reflection position */
 #gp_reflection
 {
-    margin: -1.7% 0 22% -1.5%;
+    margin: 140px 0 0 -15px;
+}
+
+/* hidden display */
+#gp_reply,#gp_reflection,#answer
+{
+    display: none;
 }
 
 /* grandPy's answer position */
@@ -62,12 +79,21 @@
     width: 600px;
     height: 300px;
 }
-/*
-#history
+
+                        /* mobile screen display */
+@media screen and (min-width: 640px) and (max-width: 1024px)
 {
-    width: 34.8%;
-    margin: -28% 0.5% 35% 61%;
-    height: 50%;
+    /* hidden display */
+    #gp_reply,#gp_reflection,#answer,#gp_tag,#gp_title,#gp_footer
+    {
+        display: none;
+    }
+
+    #grandpy
+    {
+        margin: 0 0 10px 4px;
+    }
+
+
 }
-*/
 

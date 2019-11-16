@@ -14,66 +14,70 @@
         {# header of grandPy #}
         <header id="window_top">
             <h1>GrandPy</h1>
-            <h2>le Papi robot est là pour vous aidez a vous retrouvez dans le quartier!</h2>
+            <h2 id="gp_title">le Papi robot est là pour vous aidez a vous retrouvez dans le quartier!</h2>
         </header>
 
-        <div id="home">
-            {# graphic content of grandPy #}
-            <section id="grandpy">
-                {# persona GrandPy #}
-                <figure>
-                    <img src="{{ url_for('static', filename='image/Grandpy.png') }}" alt="image de grand papy"/>
+        {# graphic content of grandPy #}
+        <section>
+            {# persona GrandPy #}
+            <figure id="grandpy">
+                <div class="element">
+                    <img id="personna" src="{{ url_for('static', filename='image/Grandpy.png') }}" alt="image de grand papy"/>
+                </div>
+                <div class="element">
                     {# welcome message #}
                     <img id="word_of_welcome" src="{{ url_for('static', filename='image/text_home.png') }}" alt="parole de grand papy"/>
                     {# reply message #}
                     <img id="gp_reply" src="{{ url_for('static', filename='image/answer1.png') }}" alt="parole de grand papy"/>
                     {# reflection grandPy #}
                     <img id="gp_reflection" src="{{ url_for('static', filename='image/gpsearch.gif') }}" alt="reflexion de grand papy"/>
-                    <figcaption>Persona GrandPy, Ce grand-père répond aux questions
-                        qui lui sont posés (Attention à son Caractère !...)
-                    </figcaption>
-                </figure>
-            </section>
+                </div>
+                <div id="gp_tag">
+                    <p>Persona GrandPy,</p>
+                    <p id="tag_line">Ce grand-père répond aux questions qui lui sont posés</p>
+                    <p>(Attention à son Caractère !...)</p>
+                </div>
+            </figure>
+        </section>
 
-            {# textual content of grandPy #}
-            {# the question asked to GrandPy #}
-            <section id="ask">
-                <form method="get" id="submit2">
-                    <fieldset>
-                        <legend>Votre question à GrandPy</legend>
-                        <p>
-                            <label for="question">Pose ta question ici ! (Maxi 150 Caractères)</label>
-                            <input type="text" name="question" id="question"
-                                placeholder="Ex : Ou se trouve l'hotel Napoléon a 75000 paris"
-                                size="155" maxlength="150" autofocus required/>
-                        </p>
-                        {# validate the question #}
-                        <p><input type="submit" value="Envoyer"/></p>
-                    </fieldset>
-                </form>
-            </section>
-        </div>
+        {# textual content of grandPy #}
+        {# the question asked to GrandPy #}
+        <section>
+            <form method="get" id="submit2">
+                <fieldset id="ask">
+                    <legend>Votre question à GrandPy</legend>
+                    <p>
+                        <label for="question">Posez votre question ici ! </label>
+                        <input type="text" name="question" id="question"
+                            placeholder="Ex : Ou se trouve l'hotel Napoléon a 75000 paris"
+                            size="40" autofocus required/>
+                    </p>
+                    {# validate the question #}
+                    <p><input type="submit" value="Envoyer"/></p>
+                </fieldset>
+            </form>
+        </section>
 
         {# grandPy's answer #}
         <div id="answer">
             <fieldset>
                 <p id="address"></p>
                 <legend>Réponse de GrandPy</legend>
-                    {# Geolocation of demand #}
-                    <fieldset >
-                        <legend>Localisation</legend>
-                        <img
-                            id="map"
-                            width = "600"
-                            height = "300"
-                            frameborder = "0" style = "border: 0"/>
-                    </fieldset>
+                {# Geolocation of demand #}
+                <fieldset >
+                    <legend>Localisation</legend>
+                    <img
+                        id="map"
+                        width = "600"
+                        height = "300"
+                        frameborder = "0" style = "border: 0"/>
+                </fieldset>
 
-                    {# History of the content of the application #}
-                    <fieldset >
-                        <legend>Historique</legend>
-                        <p id="history"></p>
-                    </fieldset>
+                {# History of the content of the application #}
+                <fieldset >
+                    <legend>Historique</legend>
+                    <p id="history"></p>
+                </fieldset>
             </fieldset>
             {# validate the question #}
             <p><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
@@ -84,13 +88,15 @@
             <p>
                 Pascal MACCHI
             </p>
-            <p>
-                <a href="https://github.com/speedy-souris/projet7.git">code source du projet GrandPy</a>
-            </p>
-            <P>
-                <a href="https://trello.com/invite/b/mk3rI1BS/320cd4a3077e3ad9252650d4b7c664f5/grandpy">
-                        suivi du projet par la methode agile  Trello</a>
-            </P>
+            <div id="gp_footer">
+                <p>
+                    <a href="https://github.com/speedy-souris/projet7.git">code source du projet GrandPy</a>
+                </p>
+                <P>
+                    <a href="https://trello.com/invite/b/mk3rI1BS/320cd4a3077e3ad9252650d4b7c664f5/grandpy">
+                            suivi du projet par la methode agile  Trello</a>
+                </P>
+            </div>
             <p>2019</p>
         </footer>
         {# javascript content #}
