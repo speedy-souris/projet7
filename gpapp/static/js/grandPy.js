@@ -11,7 +11,7 @@ $(document).ready(function(){
         $("#address").text("l'adresse se situe : "
                             +JSON.stringify(response_json["address"]["result"]["formatted_address"]));
 
-        $("#map").src = "";
+        $("#map").src = response["ref_map"];
 
         wiki_answer = response_json["history"];
 

@@ -67,13 +67,22 @@
 {
     display: none;
 }
-
+@media screen and (min-width: 1280px)
+{
+    /* grandPy's answer position */
+    #answer
+    {
+        width: 600px;
+        margin: -460px 0 20px 600px;
+    }
+}
 /* grandPy's answer position */
 #answer
 {
     width: 600px;
-    margin: -24% 0.5% 2% 47%;
+    margin-bottom: 20px;
 }
+
 #map
 {
     width: 600px;
@@ -88,12 +97,15 @@
     {
         display: none;
     }
-
+    /* home position */
     #grandpy
     {
         margin: 0 0 10px 4px;
     }
 
 
+
 }
+
+
 

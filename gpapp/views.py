@@ -31,11 +31,8 @@ def answer_gp(reflection, question):
                 "location": answer["address"]["result"]["geometry"]["location"]
     }
 
-    display_map = {
-                    "ref_map": question_answer.get_map_static(data_map)
+    display_map = question_answer.get_map_static(data_map)
 
-    }
-
-    return answer,display_map
+    return (answer,display_map)
 
 
