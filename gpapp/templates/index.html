@@ -32,12 +32,12 @@
                     {# reflection grandPy #}
                     <img id="gp_reflection" src="{{ url_for('static', filename='image/gpsearch.gif') }}" alt="reflexion de grand papy"/>
                 </div>
-                <div id="gp_tag">
+            </figure>
+            <div id="gp_tag">
                     <p>Persona GrandPy,</p>
                     <p id="tag_line">Ce grand-père répond aux questions qui lui sont posés</p>
                     <p>(Attention à son Caractère !...)</p>
-                </div>
-            </figure>
+            </div>
         </section>
 
         {# textual content of grandPy #}
@@ -59,29 +59,27 @@
         </section>
 
         {# grandPy's answer #}
-        <div id="answer">
-            <fieldset>
-                <p id="address"></p>
-                <legend>Réponse de GrandPy</legend>
-                {# Geolocation of demand #}
-                <fieldset >
-                    <legend>Localisation</legend>
-                    <img
-                        id="map"
-                        width = "600"
-                        height = "300"
-                        frameborder = "0" style = "border: 0"/>
-                </fieldset>
-
-                {# History of the content of the application #}
-                <fieldset >
-                    <legend>Historique</legend>
-                    <p id="history"></p>
-                </fieldset>
+        <fieldset id="answer">
+            <p id="address"></p>
+            <legend>Réponse de GrandPy</legend>
+            {# Geolocation of demand #}
+            <fieldset >
+                <legend>Localisation</legend>
+                <img
+                    id="map"
+                    width = "600"
+                    height = "300"
+                    frameborder = "0" style = "border: 0"/>
             </fieldset>
-            {# validate the question #}
-            <p><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
-        </div>
+
+            {# History of the content of the application #}
+            <fieldset >
+                <legend>Historique</legend>
+                <p id="history"></p>
+            </fieldset>
+        </fieldset>
+        {# validate the question #}
+        <p><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
 
         {# footer of grandPy #}
         <footer id="window_sill">

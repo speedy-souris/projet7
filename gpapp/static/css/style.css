@@ -1,4 +1,12 @@
                         /* desktop screen display */
+/* background general */
+body
+{
+    background-image: url('../image/background.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
 /* General Parameter Header */
 #window_top
 {
@@ -49,17 +57,25 @@
 {
     margin: -18px 0 -15px 0;
 }
-
-/* length position */
 #ask
 {
     width: 125px;
+    margin: -700px 0 20px 10px;
+    background-color: yellow;
+}
+
+/* grandPy's answer position */
+#answer
+{
+    width: 600px;
+    background-color: yellow;
+    margin: -680px 0 20px 0;
 }
 
 /* GrandPy's reflection position */
 #gp_reflection
 {
-    margin: 140px 0 0 -15px;
+    margin: 130px 0 0 -15px;
 }
 
 /* hidden display */
@@ -67,30 +83,10 @@
 {
     display: none;
 }
-@media screen and (min-width: 1280px)
-{
-    /* grandPy's answer position */
-    #answer
-    {
-        width: 600px;
-        margin: -460px 0 20px 600px;
-    }
-}
-/* grandPy's answer position */
-#answer
-{
-    width: 600px;
-    margin-bottom: 20px;
-}
 
-#map
-{
-    width: 600px;
-    height: 300px;
-}
 
                         /* mobile screen display */
-@media screen and (min-width: 640px) and (max-width: 1024px)
+@media screen and (max-width: 1024px)
 {
     /* hidden display */
     #gp_reply,#gp_reflection,#answer,#gp_tag,#gp_title,#gp_footer
@@ -102,9 +98,46 @@
     {
         margin: 0 0 10px 4px;
     }
-
-
-
+    #ask
+    {
+        width: 125px;
+        margin: 10px 0 20px 10px;
+        background-color: yellow;
+    }
+    /* grandPy's answer position */
+    #answer
+    {
+        width: 600px;
+        background-color: yellow;
+        margin: 0 0 20px 10px;
+    }
+}
+@media screen and (min-width: 1124px)
+{
+    /* length position */
+    #ask
+    {
+        width: 125px;
+        margin: -1050px 0 250px 660px;
+        background-color: yellow;
+    }
+    /* grandPy's answer position */
+    #answer
+    {
+        width: 600px;
+        background-color: yellow;
+        margin: -680px 0 20px 10px;
+    }
+}
+@media screen and (min-width: 1280px)
+{
+    /* grandPy's answer position */
+    #answer
+    {
+        width: 600px;
+        background-color: yellow;
+        margin: -1050px 0 20px 600px;
+    }
 }
 
 
