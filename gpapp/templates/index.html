@@ -29,6 +29,8 @@
                     <img id="word_of_welcome" src="{{ url_for('static', filename='image/text_home.png') }}" alt="parole de grand papy"/>
                     {# reply message #}
                     <img id="gp_reply" src="{{ url_for('static', filename='image/answer1.png') }}" alt="parole de grand papy"/>
+                    {# over quotas message#}
+                    <img id="quotas" src="{{ url_for('static', filename='image/over_quotas.png') }}" alt="parole de grand papy"/>
                     {# reflection grandPy #}
                     <img id="gp_reflection" src="{{ url_for('static', filename='image/gpsearch.gif') }}" alt="reflexion de grand papy"/>
                 </div>
@@ -36,7 +38,7 @@
             <div id="gp_tag">
                     <p>Persona GrandPy,</p>
                     <p id="tag_line">Ce grand-père répond aux questions qui lui sont posés</p>
-                    <p>(Attention à son Caractère !...)</p>
+                    <p><strong>(Attention à son Caractère !...)</strong></p>
             </div>
         </section>
 
@@ -79,7 +81,7 @@
             </fieldset>
         </fieldset>
         {# validate the question #}
-        <p><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
+        <p id="other"><a href="{{ url_for('index') }}"> Pose une Autre question</a> </p>
 
         {# footer of grandPy #}
         <footer id="window_sill">

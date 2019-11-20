@@ -79,7 +79,7 @@ body
 }
 
 /* hidden display */
-#gp_reply,#gp_reflection,#answer
+#gp_reply,#gp_reflection,#answer,#quotas,#other
 {
     display: none;
 }
