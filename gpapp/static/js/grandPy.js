@@ -10,12 +10,20 @@ $(document).ready(function(){
             $("#window_sill").hide();
             $("#quotas").show();
         }
+        else if (response_json["quotas_api"]["comprehension"] == "False"){
+            $("#gp_reflection").hide();
+            $("#ask").hide();
+            $("#other").hide();
+            $("#ask").show();
+            $("#comprehension").show();
+        }
         else{
             $("#ask").hide();
             $("#word_of_welcome").hide();
+            $("#gp_reflection").hide();
+            $("#comprehension").hide();
             $("#gp_reply").show();
             $("#answer").show();
-            $("#gp_reflection").hide();
             $("#other").show();
 
             $("#address").text("l'adresse se situe : "

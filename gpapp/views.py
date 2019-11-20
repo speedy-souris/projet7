@@ -14,7 +14,7 @@ def index():
 
 @app.route("/index/<reflection>/<question>")
 def answer_gp(reflection, question):
-    quotas_api = {"over_quotas": "False"}
+    quotas_api = {"over_quotas": "False", "comprehension": "True"}
     time_reflection = time.sleep(int(reflection))
     parse_answer = question_answer.parser(question = question)
 
@@ -22,7 +22,7 @@ def answer_gp(reflection, question):
     try:
         place_id = place_id_dict["candidates"][0]["place_id"]
     except IndexError:
-        quotas_api["over_quotas"] = "True"
+        quotas_api["comprehension"] = "False"
         return {"quotas_api": quotas_api}
 
     answer = {
@@ -37,6 +37,7 @@ def answer_gp(reflection, question):
         }
     except KeyError:
         quotas_api["over_quotas"] = "True"
+        print("\nKey Erreur\n")
         return {"quotas_api": quotas_api}
 
     display_map = question_answer.get_map_static(data_map)
