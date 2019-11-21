@@ -25,7 +25,6 @@ $(document).ready(function(){
             $("#gp_reflection").hide();
             $("#ask").hide();
             $("#other").hide();
-            $("#question").text.value(" ");
             $("#ask").show();
             $("#comprehension").show();
         }

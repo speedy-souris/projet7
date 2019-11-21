@@ -21,7 +21,7 @@ body
 #window_sill
 {
     width: 25%;
-    margin: 60px 0 0 300px;
+    margin: 180px 0 0 300px;
     background-color: #ffbb33;
     text-align: center;
 }
@@ -61,7 +61,8 @@ body
 #ask
 {
     width: 125px;
-    margin: 20px 0 20px 0;     /* position of the question form for the persona */
+    background-color: yellow;   /* position of the question form for the persona */
+    margin: 20px 0 20px 0;
 }
 
 /* display persona's answer by default*/
@@ -69,7 +70,6 @@ body
 {
     display: flex;
     flex-direction: column;
-    background-color: green;
     width: 660px;
     height: 870px;
     margin-top: 10px;
@@ -126,12 +126,13 @@ body
 /* grandPy's answer position adaptation */
     #answer
     {
+        background-color: yellow;
         margin: -10px 0 20px 0;
     }
 /* Adaptation Parameter Footer */
     #window_sill
     {
-        margin-top: 60px;
+        margin-top: 200px;
     }
 }
 @media screen and (min-width: 1124px)
@@ -180,7 +181,7 @@ body
 /* Adaptation Parameter Footer */
     #window_sill
     {
-        margin-top: 60px;
+        margin-top: 200px;
     }
 }
 @media screen and (min-width: 1280px)
@@ -195,9 +196,14 @@ body
 /* grandPy's answer position adaptation */
     #answer
     {
+        background-color: yellow;
         margin: 20px 0 50px 10px;
     }
-
+    /* Adaptation Parameter Footer */
+    #window_sill
+    {
+        margin-top: 200px;
+    }
 }
 
 

@@ -43,7 +43,7 @@ def answer_gp(reflection, question):
         return {"quotas_api": quotas_api}
 
     display_map = question_answer.get_map_static(data_map)
-    nb_response += 1
+    # ~ nb_response += 1
 
     response = {"answer": answer, "display_map": display_map, "quotas_api": quotas_api}
 
