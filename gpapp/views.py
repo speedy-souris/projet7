@@ -7,6 +7,8 @@ from . import question_answer
 
 app = Flask(__name__)
 
+nb_response = 0
+
 @app.route("/")
 def index():
 
@@ -14,7 +16,8 @@ def index():
 
 @app.route("/index/<reflection>/<question>")
 def answer_gp(reflection, question):
-    quotas_api = {"over_quotas": "False", "comprehension": "True"}
+    global nb_response
+    quotas_api = {"over_quotas": "False", "comprehension": "True", "nb_response": nb_response}
     time_reflection = time.sleep(int(reflection))
     parse_answer = question_answer.parser(question = question)
 
@@ -37,10 +40,11 @@ def answer_gp(reflection, question):
         }
     except KeyError:
         quotas_api["over_quotas"] = "True"
-        print("\nKey Erreur\n")
         return {"quotas_api": quotas_api}
 
     display_map = question_answer.get_map_static(data_map)
+    nb_response += 1
+
     response = {"answer": answer, "display_map": display_map, "quotas_api": quotas_api}
 
     return response

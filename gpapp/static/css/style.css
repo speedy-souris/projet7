@@ -7,6 +7,7 @@ body
     background-attachment: fixed;
     background-size: cover;
 }
+
 /* General Parameter Header */
 #window_top
 {
@@ -20,124 +21,183 @@ body
 #window_sill
 {
     width: 25%;
-    margin: auto;
+    margin: 60px 0 0 300px;
     background-color: #ffbb33;
     text-align: center;
 }
 
-/* home position */
+                    /* display questions for grandpy by default */
 #grandpy
 {
     display: flex;
     flex-direction: row;
     width: 585px;
-    height: 400px;
-    margin: 0 0 90px 4px;
-    justify-content: left;
-    align-items: center;
+    height: 400px;              /* message of the persona */
+    margin: 10px 0 20px 0;
 }
-/* grandPy position */
-.element:nth-child(2)
+        /*-------------------*/
+#gp_reflection
 {
-    width: 465px;
-    text-align: left;
-    height: 280px;
-    align-self: flex-start;
+    margin-top: 130px;          /* position of the persona reflection message */
 }
+        /*-------------------*/
 .element:nth-child(1)
 {
-    width: 130px;
     align-self: flex-end;
-}
-#gp_tag
+}                               /* position of the message according to the persona */
+.element:nth-child(2)
 {
-    margin: 570px 0 90px -560px;
+    align-self: flex-start;
 }
-#tag_line
+        /*-------------------*/
+#persona
 {
-    margin: -18px 0 -15px 0;
+    display: flex;
+    flex-direction: column;
+    width: 585px;               /* persona with his description */
+    height: 400px;
 }
+        /*-------------------*/
 #ask
 {
     width: 125px;
-    margin: -700px 0 20px 10px;
-    background-color: yellow;
+    margin: 20px 0 20px 0;     /* position of the question form for the persona */
 }
 
-/* grandPy's answer position */
+/* display persona's answer by default*/
+#general
+{
+    display: flex;
+    flex-direction: column;
+    background-color: green;
+    width: 660px;
+    height: 870px;
+    margin-top: 10px;
+}
+/* grandPy's answer position by default */
 #answer
 {
     width: 600px;
     background-color: yellow;
-    margin: -680px 0 20px 0;
-}
-
-/* GrandPy's reflection position */
-#gp_reflection
-{
-    margin: 130px 0 0 -15px;
+    margin: 20px 0 20px 0;
 }
 
 /* hidden display */
-#gp_reply,#gp_reflection,#answer,#quotas,#other,#comprehension
+#gp_title,#gp_reply,#gp_reflection,#answer,#gp_tag,#quotas,#other,#comprehension,#overstrain
 {
     display: none;
 }
 
-
                         /* mobile screen display */
-@media screen and (max-width: 1024px)
+@media screen and (min-width: 1070px) and (max-width: 1123px)
 {
-    /* hidden display */
-    #gp_reply,#gp_reflection,#answer,#gp_tag,#gp_title,#gp_footer
+/* title adaptation of the page header */
+    #gp_title
     {
-        display: none;
+        display: inline;
     }
-    /* home position */
-    #grandpy
+/* adaptation of the height of answer */
+    #general
     {
-        margin: 0 0 10px 4px;
+        height: 950px;
     }
+/* adaptation of the persona */
+    #persona
+    {
+        width: 585px;
+        height: 480px;
+        margin: 10px 0 20px 0;
+    }
+/* adaptation of the description of the persona */
+    #gp_tag
+    {
+        display: block;
+        margin: -25px 0 650px 10px;
+    }
+    #tag_line
+    {
+        margin: -18px 0 -15px 0;
+    }
+/* adaptation of the question for grandpy */
     #ask
     {
-        width: 125px;
-        margin: 10px 0 20px 10px;
-        background-color: yellow;
+        margin: -10px 0 20px 0;
     }
-    /* grandPy's answer position */
+/* grandPy's answer position adaptation */
     #answer
     {
-        width: 600px;
-        background-color: yellow;
-        margin: 0 0 20px 10px;
+        margin: -10px 0 20px 0;
+    }
+/* Adaptation Parameter Footer */
+    #window_sill
+    {
+        margin-top: 60px;
     }
 }
 @media screen and (min-width: 1124px)
 {
-    /* length position */
+/* title adaptation of the page header */
+    #gp_title
+    {
+        display: inline;
+    }
+/* adaptation of the parameters of answer by grandpy */
+    #general
+    {
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 1060px;
+        height: 950px;
+    }
+/* adaptation of the persona */
+    #persona
+    {
+        width: 585px;
+        height: 480px;
+        margin: 10px 0 20px 0;
+    }
+/* adaptation of the question for grandpy */
     #ask
     {
-        width: 125px;
-        margin: -1050px 0 250px 660px;
-        background-color: yellow;
+        margin: 150px 0 180px 20px;
     }
-    /* grandPy's answer position */
+/* adaptation of the description of the persona */
+    #gp_tag
+    {
+        display: block;
+        margin: -25px 0 650px 10px;
+    }
+    #tag_line
+    {
+        margin: -18px 0 -15px 0;
+    }
+
+/* grandPy's answer position adaptation */
     #answer
     {
-        width: 600px;
-        background-color: yellow;
-        margin: -680px 0 20px 10px;
+        margin: -10px 0 20px 0;
+    }
+/* Adaptation Parameter Footer */
+    #window_sill
+    {
+        margin-top: 60px;
     }
 }
 @media screen and (min-width: 1280px)
 {
-    /* grandPy's answer position */
+/* adaptation answer */
+    #general
+    {
+        flex-wrap: nowrap;
+        width: 1260px;
+        height: 500px;
+    }
+/* grandPy's answer position adaptation */
     #answer
     {
-        width: 600px;
-        background-color: yellow;
-        margin: -1050px 0 20px 600px;
+        margin: 20px 0 50px 10px;
     }
+
 }
 
 
