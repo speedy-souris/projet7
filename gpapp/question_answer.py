@@ -6,6 +6,7 @@ import json
 
 import urllib.request, urllib.parse
 
+
 # environment variable
 def var_env():
     """
@@ -154,7 +155,6 @@ def get_map_static(location_map):
     function of displaying the geolocation of the address
     asked to grandpy on the map of the Google Map Static API
     """
-
     key = var_env()["staticMap"]  # environment variable
 
     # replacing space by "% 20" in the string of characters
@@ -162,10 +162,13 @@ def get_map_static(location_map):
     # longitude and latitude display
     localization = location_map["location"]
     # display map
+
     display_map = "https://maps.googleapis.com/maps/api/staticmap?center="\
         +formatting_address+\
-        "&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C"+\
-        str(localization["lat"])+","+str(localization["lng"])+"&key={}".format(key)
+        "&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C"\
+        +str(localization['lat'])+","\
+        +str(localization['lng'])+\
+        "&key={}".format(key)
 
     return display_map
 
