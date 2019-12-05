@@ -1,7 +1,7 @@
                         /* desktop screen display */
 /* background general */
-body
-{
+body{
+
     background-image: url('../image/background.png');
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -9,8 +9,8 @@ body
 }
 
 /* General Parameter Header */
-#window_top
-{
+#window_top{
+
     width: 75%;
     margin: auto;
     background-color: #ffbb33;
@@ -18,8 +18,8 @@ body
 }
 
 /* General Parameter Footer */
-#window_sill
-{
+#window_sill{
+
     width: 25%;
     margin: 180px 0 0 300px;
     background-color: #ffbb33;
@@ -27,8 +27,8 @@ body
 }
 
                     /* display questions for grandpy by default */
-#grandpy
-{
+#grandpy{
+
     display: flex;
     flex-direction: row;
     width: 585px;
@@ -36,38 +36,38 @@ body
     margin: 10px 0 20px 0;
 }
         /*-------------------*/
-#gp_reflection
-{
+#gp_reflection{
+
     margin-top: 130px;          /* position of the persona reflection message */
 }
         /*-------------------*/
-.element:nth-child(1)
-{
+.element:nth-child(1){
+
     align-self: flex-end;
 }                               /* position of the message according to the persona */
-.element:nth-child(2)
-{
+.element:nth-child(2){
+
     align-self: flex-start;
 }
         /*-------------------*/
-#persona
-{
+#persona{
+
     display: flex;
     flex-direction: column;
     width: 585px;               /* persona with his description */
     height: 400px;
 }
         /*-------------------*/
-#ask
-{
+#ask{
+
     width: 125px;
     background-color: yellow;   /* position of the question form for the persona */
     margin: 20px 0 20px 0;
 }
 
 /* display persona's answer by default*/
-#general
-{
+#general{
+
     display: flex;
     flex-direction: column;
     width: 660px;
@@ -75,8 +75,8 @@ body
     margin-top: 10px;
 }
 /* grandPy's answer position by default */
-#answer
-{
+#answer{
+
     width: 600px;
     background-color: yellow;
     margin: 20px 0 20px 0;
@@ -85,126 +85,126 @@ body
 /* hidden display (grandpy's message)*/
 #gp_title,#answer,#gp_tag,#other,#word_of_welcome,
 #gp_reflection,#quotas,#comprehension,#overstrain,
-#gp_reply1,#gp_reply2,#gp_reply3,#gp_reply4,#gp_reply5,#gp_reply6,#gp_reply7
-{
+#gp_reply1,#gp_reply2,#gp_reply3,#gp_reply4,#gp_reply5,#gp_reply6,#gp_reply7{
+
     display: none;
 }
 
 
                         /* mobile screen display */
-@media screen and (min-width: 1070px) and (max-width: 1123px)
-{
+@media screen and (min-width: 1070px) and (max-width: 1123px){
+
 /* title adaptation of the page header */
-    #gp_title
-    {
+    #gp_title{
+
         display: inline;
     }
 /* adaptation of the height of answer */
-    #general
-    {
+    #general{
+
         height: 950px;
     }
 /* adaptation of the persona */
-    #persona
-    {
+    #persona{
+
         width: 585px;
         height: 480px;
         margin: 10px 0 20px 0;
     }
 /* adaptation of the description of the persona */
-    #gp_tag
-    {
+    #gp_tag{
+
         display: block;
         margin: -25px 0 650px 10px;
     }
-    #tag_line
-    {
+    #tag_line{
+
         margin: -18px 0 -15px 0;
     }
 /* adaptation of the question for grandpy */
-    #ask
-    {
+    #ask{
+
         margin: -10px 0 20px 0;
     }
 /* grandPy's answer position adaptation */
-    #answer
-    {
+    #answer{
+
         background-color: yellow;
         margin: -10px 0 20px 0;
     }
 /* Adaptation Parameter Footer */
-    #window_sill
-    {
+    #window_sill{
+
         margin-top: 200px;
     }
 }
-@media screen and (min-width: 1124px)
-{
+@media screen and (min-width: 1124px){
+
 /* title adaptation of the page header */
-    #gp_title
-    {
+    #gp_title{
+
         display: inline;
     }
 /* adaptation of the parameters of answer by grandpy */
-    #general
-    {
+    #general{
+
         flex-direction: row;
         flex-wrap: wrap;
         width: 1060px;
         height: 950px;
     }
 /* adaptation of the persona */
-    #persona
-    {
+    #persona{
+
         width: 585px;
         height: 480px;
         margin: 10px 0 20px 0;
     }
 /* adaptation of the question for grandpy */
-    #ask
-    {
+    #ask{
+
         margin: 150px 0 180px 20px;
     }
 /* adaptation of the description of the persona */
-    #gp_tag
-    {
+    #gp_tag{
+
         display: block;
         margin: -25px 0 650px 10px;
     }
-    #tag_line
-    {
+    #tag_line{
+
         margin: -18px 0 -15px 0;
     }
 
 /* grandPy's answer position adaptation */
-    #answer
-    {
+    #answer{
+
         margin: -10px 0 20px 0;
     }
 /* Adaptation Parameter Footer */
-    #window_sill
-    {
+    #window_sill{
+
         margin-top: 200px;
     }
 }
-@media screen and (min-width: 1280px)
-{
+@media screen and (min-width: 1280px){
+
 /* adaptation answer */
-    #general
-    {
+    #general{
+
         flex-wrap: nowrap;
         width: 1260px;
         height: 500px;
     }
 /* grandPy's answer position adaptation */
-    #answer
-    {
+    #answer{
+
         background-color: yellow;
         margin: 20px 0 50px 10px;
     }
     /* Adaptation Parameter Footer */
-    #window_sill
-    {
+    #window_sill{
+
         margin-top: 200px;
     }
 }
