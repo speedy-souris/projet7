@@ -4,7 +4,7 @@ $(document).ready(function(){
       * with and without the constraints
       * (number of questions, misunderstanding, lack of respect ...)
     */
-    //~ TIME = 0
+
     /*
       *========================
       * display answer on question not included
@@ -84,7 +84,6 @@ $(document).ready(function(){
     function answer_gp(response){
         var response_json = JSON.parse(response);
         console.log(response_json);
-        //~ TIME = response_json["nb_request"];
         var lt_mes =[
                     "#gp_reply4","#gp_reply5",
                     "#gp_reply6","#gp_reply7"
@@ -175,17 +174,9 @@ $(document).ready(function(){
         $("#word_of_welcome").hide();
         $("#comprehension").hide();
         $("#gp_reflection").show();
-        var time_reflection = 2;
-        //~ console.log("time", TIME);
-        //~ if (TIME == 5){
-            //~ time_reflection = 4;
-        //~ } else if (TIME == 10){
-            //~ time_reflection = 6;
-        //~ };
 
-        console.log("valeur de reflection",time_reflection);
         $.ajax({
-            url: "/index/"+parseInt(time_reflection)+"/" + $("#question").val().toString(),
+            url: "/index/2/" + $("#question").val().toString(),
             type: "GET",
             dataType: "html",
             success: answer_gp

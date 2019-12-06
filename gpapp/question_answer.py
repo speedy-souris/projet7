@@ -194,7 +194,7 @@ def get_map_static(location_map):
     display_map = "https://maps.googleapis.com/maps/api/staticmap?center="\
         +formatting_address+\
         "&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C"\
-        ,localization['lat'],",",localization['lng'],f"&key={key}"
+        +str(localization['lat'])+","+str(localization['lng'])+f"&key={key}"
 
     return display_map
 
