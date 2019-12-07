@@ -2,6 +2,16 @@
 question Réponses avec GrandPy
 ------------------------------
 
+Le projet se compose d'une page web qui affiche un jeu de question / réponse
+les demandes sont faites à un papy robot via un formulaire
+les réponses données par le robot utilise plusieurs APIS de google
+a savoir l'**API Google Map** et l'**API Google Map Static**
+
+Le serveur local utiliser pour developper le projet est **FLASK**
+python est là pour le langage serveur et javascript pour le langage client
+
+Le serveur web pour deployer l'application est le cloud **Heroku** avec la dependance **GUNICORN**
+pour gérer le langage python
 ### Configuration du projet pour une utilisation locale
 
 #### pour utiliser la clé privé de l'API de Google Map de maniére sécurisé
@@ -51,8 +61,10 @@ comme indique ci dessous :
 
 `export PATH`
 
-Sauvegarder le script et ça en est finit pour la configuration locale !
-
 Cela à pour effet de récuperer les variables d'environnements contenant les clé
 
 privés des differentes APIS à chaque activation de l'environnement virtuel
+
+Sauvegarder le script et ça en est finit pour la configuration locale !
+
+
