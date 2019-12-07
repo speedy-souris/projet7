@@ -67,4 +67,32 @@ privés des differentes APIS à chaque activation de l'environnement virtuel
 
 Sauvegarder le script et ça en est finit pour la configuration locale !
 
+### Configuration du projet pour une utilisation en Production avec le cloud **HEROKU**
+Ajouter le serveur web **gunicorn** dans python (pip install gunicor)
+
+Créer le fichier requirements.txt (liste des librairie installer dans python)
+
+Créer le fichier Profile pour utiliser python sur le cloud
+
+Dans les variables d'environement du cloud **HEROKU**,
+
+créer une premiere variable d'environnement  nommée : **HEROKU_KEY_API_MAP**
+
+puis une seconde nommée : **HEROKU_kEY_API_STATIC_MAP**
+
+### Dans une console:
+
+heroku login pour lancer l'application **HEROKU** (projet creer pour l'occasion)
+
+dans le dashboard, aller sur **setting** puis sur l'onglet **"Reveal Config Vars"**
+
+dans le formulaire **KEY** remplisser avec le nom de variable precedement cité
+
+dans le formulaire **VALUE** remplisser avec votre clé privé de l'api concerné
+
+puis cliquer le bouton **Add** pour valider
+
+faire un `git push origin master` pour sauvegarder le script sur github
+
+et pour finir `git push heroku master` pour mettre en ligne votre application
 
