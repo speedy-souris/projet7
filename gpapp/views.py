@@ -1,6 +1,6 @@
 #coding:utf-8
 import time
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from . import question_answer
 
 app = Flask(__name__)
@@ -98,7 +98,7 @@ class Politeness:
         global PARAMETER  # loading parameter for incivility
 
         lst_civility = self.LST_CIVILITY
-        if self.question in lst_civility:
+        if self.question.lower() in lst_civility:
             PARAMETER["CIVILITY"] = True
             PARAMETER["NB_REQUEST"] += 1
 
@@ -116,7 +116,7 @@ class Politeness:
         global PARAMETER   # loading parameter for wickedness
 
         lst_indecency = self.LST_INDECENCY
-        if self.question in lst_indecency:
+        if self.question.lower() in lst_indecency:
             PARAMETER["DECENCY"] = False
 
         else:
@@ -179,7 +179,6 @@ def map_display(question, grandpy_status):
 
     # response parameter to send
     return grandpy_status
-#==============================
 
 #==============================
 # update data
@@ -208,9 +207,13 @@ def update_data(grandpy_status):
     }
     return update_status
 
+#==============================
+# main function for displaying answers
+#==============================
 @app.route("/")
 def index():
-    return render_template("index.html")
+    global PARAMETER
+    return render_template("index.html", nb_request=PARAMETER["NB_REQUEST"])
 
 @app.route("/index/<reflection>/<question>")
 def answer_gp(reflection, question):
@@ -220,9 +223,13 @@ def answer_gp(reflection, question):
         general global variable for counting grandpy responses
         and the state of civility in questions
 
+            - OVER_QUOTAS
+            - CIVILITY
+            - DECENCY
+            - NB_REQUEST
     """
     global PARAMETER
-
+    # Initialization parameters
     politeness = Politeness(question)
     grandpy_status = {
         "quotas_api": PARAMETER ["OVER_QUOTAS"],
@@ -261,6 +268,7 @@ def answer_gp(reflection, question):
         grandpy_status["comprehension"] = False
         return grandpy_status
 
+    # last initialization of parameters before sending
     new_status = update_data(coordonate_map)
 
     if PARAMETER["CIVILITY"]:
