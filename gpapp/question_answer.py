@@ -92,13 +92,36 @@ UNNECESSARY = [
 #==============================
 def var_env():
     """
-        call function of the Key_API_MAP / key_API_STATIC_MAP
-        environments variables (API key)
+        environment variable management function
+
+            - call function of the Key_API_MAP / key_API_STATIC_MAP
+            local environments variables (API key)
+
+            - call function of the HEROKU_API_MAP / HEROKU_API_STATIC_MAP
+            cloud environments variables (API key)
+
+            - Key_API_MAP
+            - Key_STATIC_MAP
+            - HEROKU_API_MAP
+            - HEROKU_API_STATIC_MAP
+
     """
     api_key = {
-        "map": os.getenv("key_API_MAP"),
-        "staticMap": os.getenv("key_API_STATIC_MAP")
+        "map": "",
+        "staticMap": ""
     }
+    if ((os.environ.get(
+        "HEROKU_KEY_API_MAP") is None)
+        and (
+        os.environ.get("HEROKU_KEY_API_MAP") is None)):
+
+        api_key["map"] = os.getenv(os.environ["key_API_MAP"])
+        api_key["staticMap"] = os.getenv(os.environ["key_API_STATIC_MAP"])
+
+    else:
+        api_key["map"] = os.getenv(os.environ["HEROKU_KEY_API_MAP"])
+        api_key["staticMap"] = os.getenv(os.environ["HEROKU_KEY_API_STATIC_MAP"])
+
     return api_key
 
 #==============================
