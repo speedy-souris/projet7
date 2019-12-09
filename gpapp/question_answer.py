@@ -101,9 +101,9 @@ def var_env():
         # ~ "map": os.getenv("key_API_MAP"),
         # ~ "staticMap": os.getenv("key_API_STATIC_MAP")
     }
-    if (
+    if ((
             os.environ.get("HEROKU_KEY_API_STATIC_MAP") is None
-            ) and (os.environ.get("HEROKU_KEY_API_MAP") is None):
+            ) and (os.environ.get("HEROKU_KEY_API_MAP") is None)):
         api_key["map"] = os.getenv("key_API_MAP")
         api_key["staticMap"] = os.getenv("key_API_STATIC_MAP")
     else:
