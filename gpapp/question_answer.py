@@ -107,8 +107,10 @@ def var_env():
         api_key["map"] = os.getenv("key_API_MAP")
         api_key["staticMap"] = os.getenv("key_API_STATIC_MAP")
     else:
-        api_key["map"] = os.getenv("HEROKU_kEY_API_MAP")
-        api_key["staticMap"] = os.getenv("HEROKU_kEY_API_STATIC_MAP")
+        vars = os.environ["HEROKU_kEY_API_MAP"]
+        vars2 = os.environ["HEROKU_kEY_API_STATIC_MAP"]
+        api_key["map"] = vars
+        api_key["staticMap"] = vars2
 
     return api_key
 
