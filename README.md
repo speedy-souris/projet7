@@ -42,7 +42,6 @@ comme indique ci dessous :
 
 `export VIRTUAL_ENV`
 
-
 #### pour utiliser correctement le module du projet pendant les tests (pytest)
 
 Ajouter le module gpapp dans PYTHONPATH
@@ -61,43 +60,7 @@ comme indique ci dessous :
 
 `export PATH`
 
-<<<<<<< HEAD
-Sauvegarder le script et ça en est finit pour la configuration locale !
-
-<<<<<<< HEAD
-### Configuration du projet pour une utilisation en Production avec le cloud **HEROKU**
-Ajouter le serveur web **gunicorn** dans python (pip install gunicor)
-
-Créer le fichier requirements.txt (liste des librairie installer dans python)
-
-Créer le fichier Profile pour utiliser python sur le cloud
-
-Dans les variables d'environement du cloud **HEROKU**,
-
-créer une premiere variable d'environnement  nommée : **HEROKU_KEY_API_MAP**
-
-puis une seconde nommée : **HEROKU_kEY_API_STATIC_MAP**
-
-### Dans une console:
-
-heroku login pour lancer l'application **HEROKU** (projet creer pour l'occasion)
-
-dans le dashboard, aller sur **setting** puis sur l'onglet **"Reveal Config Vars"**
-
-dans le formulaire **KEY** remplisser avec le nom de variable precedement cité
-
-dans le formulaire **VALUE** remplisser avec votre clé privé de l'api concerné
-
-puis cliquer le bouton **Add** pour valider
-
-faire un `git push origin master` pour sauvegarder le script sur github
-
-et pour finir `git push heroku master` pour mettre en ligne votre application
-=======
-=======
->>>>>>> a9be1c0f19e483b50b820f70fd3817c1a98b4719
 Cela à pour effet de récuperer les variables d'environnements contenant les clé
->>>>>>> parent of 9da611f... modifier fichier README
 
 privés des differentes APIS à chaque activation de l'environnement virtuel
 
@@ -108,7 +71,7 @@ Ajouter le serveur web **gunicorn** dans python (pip install gunicor)
 
 Créer le fichier requirements.txt (liste des librairie installer dans python)
 
-Créer le fichier Profile pour utiliser python sur le cloud
+Créer le fichier Procfile pour utiliser python sur le cloud
 
 Dans les variables d'environement du cloud **HEROKU**,
 
@@ -120,15 +83,14 @@ puis une seconde nommée : **HEROKU_kEY_API_STATIC_MAP**
 
 heroku login pour lancer l'application **HEROKU** (projet creer pour l'occasion)
 
-dans le dashboard, aller sur **setting** puis sur l'onglet **"Reveal Config Vars"**
+`heroku config:set HEROKU_KEY_API_MAP=<MA PREMIERE CLE API>` pour creer ma premiere variable
 
-dans le formulaire **KEY** remplisser avec le nom de variable precedement cité
+`heroku config:set HEROKU_kEY_API_STATIC_MAP=<MA DEUXIEME CLE API>` pour la deuxieme
 
-dans le formulaire **VALUE** remplisser avec votre clé privé de l'api concerné
-
-puis cliquer le bouton **Add** pour valider
-
-faire un `git push origin master` pour sauvegarder le script sur github
+Ensuite faire un `git push origin master` pour sauvegarder le script sur github
 
 et pour finir `git push heroku master` pour mettre en ligne votre application
+
+
+
 
