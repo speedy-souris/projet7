@@ -213,7 +213,7 @@ def update_data(grandpy_status):
 @app.route("/")
 def index():
     global PARAMETER
-    return render_template("index.html", nb_request=PARAMETER["NB_REQUEST"])
+    return render_template("index.html")
 
 @app.route("/index/<reflection>/<question>")
 def answer_gp(reflection, question):

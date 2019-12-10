@@ -77,7 +77,7 @@ Dans les variables d'environement du cloud **HEROKU**,
 
 créer une premiere variable d'environnement  nommée : **HEROKU_KEY_API_MAP**
 
-puis une seconde nommée : **HEROKU_kEY_API_STATIC_MAP**
+puis une seconde nommée : **HEROKU_KEY_API_STATIC_MAP**
 
 ### Dans une console:
 
@@ -85,7 +85,7 @@ heroku login pour lancer l'application **HEROKU** (projet creer pour l'occasion)
 
 `heroku config:set HEROKU_KEY_API_MAP=<MA PREMIERE CLE API>` pour creer ma premiere variable
 
-`heroku config:set HEROKU_kEY_API_STATIC_MAP=<MA DEUXIEME CLE API>` pour la deuxieme
+`heroku config:set HEROKU_KEY_API_STATIC_MAP=<MA DEUXIEME CLE API>` pour la deuxieme
 
 Ensuite faire un `git push origin master` pour sauvegarder le script sur github
 
