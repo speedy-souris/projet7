@@ -123,9 +123,7 @@ def var_env():
         api_key["map"] = os.environ["HEROKU_kEY_API_MAP"]
         api_key["staticMap"] = os.environ["HEROKU_kEY_API_STATIC_MAP"]
 
-    }
-
-    return api_key
+        return api_key
 
 #==============================
 # parser
