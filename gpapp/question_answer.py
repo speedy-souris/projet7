@@ -5,10 +5,10 @@ import os
 import json
 
 import urllib.request, urllib.parse
-from config.parameter import production
-from config.parameter import default
-from config.parameter import testing
-from config.parameter import constant
+from config.Parameter import production
+from config.Parameter import default
+from config.Parameter import testing
+from config.Parameter import constant
 
 #==============================
 # environment variable

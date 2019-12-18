@@ -7,8 +7,8 @@ from .question_answer import parser as needless
 from .question_answer import get_address as address
 from .question_answer import get_history as wiki
 from .question_answer import get_map_static as geo_location
-from .config.parameter import base
-from .config.parameter import constant
+from .config.Parameter import base
+from .config.Parameter import constant
 
 app = Flask(__name__)
 

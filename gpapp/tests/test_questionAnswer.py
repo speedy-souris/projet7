@@ -9,7 +9,7 @@ import urllib.request
 from ..question_answer import parser
 from ..question_answer import get_place_id_list, get_address
 from ..question_answer import get_history
-from ..config.parameter import testing
+from ..config.Parameter import testing
 
 # parser test on the question asked to grandPy
 def test_parser():

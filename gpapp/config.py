@@ -138,7 +138,7 @@ class DefaultConf:
             "comprehension": self.comprehension
         }
 
-class DevConf():
+class DevConf:
     """
 
     """
@@ -151,7 +151,7 @@ class DevConf():
 
         return env_key((self.Key_API_MAP, self.Key_API_STATIC_MAP))
 
-class TestingConf():
+class TestingConf:
     """
 
     """
@@ -199,7 +199,7 @@ class TestingConf():
         }
 
 
-class ProdConf():
+class ProdConf:
     """
 
     """
@@ -213,7 +213,7 @@ class ProdConf():
 
         return env_key((self.Key_API_MAP, self.Key_API_STATIC_MAP))
 
-class parameter :
+class Parameter:
     """
 
     """
