@@ -1,27 +1,25 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-#===============================
-# Parameter and Quotas API
-#===============================
-parameter = {
-    "OVER_QUOTAS": False,
-    "NB_REQUEST": 0,
-    "CIVILITY": False,
-    "DECENCY": True
-}
+def env_key(key_api):
 
-#==============================
-# list for politeness and respect for the persona
-#==============================
-politeness = {
-    "lst_civility": [
+    return {
+        "Key_API_MAP": key_api[0],
+        "Key_API_STATIC_MAP": key_api[1]
+    }
+
+class DefaultConf:
+    """
+
+    """
+
+    LST_CIVILITY = [
         "bonjour grandpy","bonsoir grandpy","salut grandpy",
         "hello grandpy","bonjour grandPy comment vas tu",
         "comment allez vous grandpy","salut grandpy comment ca va"
         "bonjour", "bonsoir","salut","hello"
-    ],
-    "lst_indecency": [
+    ]
+    LST_INDENCY = [
         "salut vieux","salut vieux con","salut vieux poussierieux",
         "salut ancetre demode","salut vieillard senille","salut dinosaure decrepit",
         "salut arriere rococo","salut centenaire senille","salut vieillot archaique",
@@ -42,13 +40,7 @@ politeness = {
         "centenaire senille","vieillot archaique","vieux gateux","vieux croulant",
         "antiquite","vieille baderne","vieux fossile"
     ]
-}
-
-#==============================
-# Word list to parse
-#==============================
-string_to_delete {
-    "UNNECESSARY": [
+    UNNECESSARY = [
         "a","abord","absolument","afin","ah","ai","aie","ailleurs","ainsi","ait",
         "allaient","allo","allons","allô","alors","ancetre","ancetre demode",
         "anterieur","anterieure","anterieures","antiquite","apres","après",
@@ -125,4 +117,130 @@ string_to_delete {
         "zut","à","â","ça","ès","étaient","étais","était","étant","été","être","ô",",",
         ";",".","?","!"
     ]
-}
+    def __init__(self):
+
+        self.over_quotas = False
+        self.nb_request = 0
+        self.civility = False
+        self.decency = True
+        self.comprehension = True
+
+    @property
+    def params(self):
+
+        return {
+            "over_quotas": self.over_quotas,
+            "nb_request": self.nb_request,
+            "politeness": {
+                "civility": self.civility,
+                "decency": self.decency
+            },
+            "comprehension": self.comprehension
+        }
+
+class DevConf():
+    """
+
+    """
+    def __init__(self):
+        self.Key_API_MAP = "Key_API_MAP"
+        self.Key_API_STATIC_MAP = "Key_API_STATIC_MAP"
+
+    @property
+    def env_dev(self):
+
+        return env_key((self.Key_API_MAP, self.Key_API_STATIC_MAP))
+
+class TestingConf():
+    """
+
+    """
+    def __init__(self):
+
+        self.demand = "ou est situé le restaurant la_nappe_d_or de lyon"
+        self.parsed = ["restaurant","la_nappe_d_or","lyon"]
+        self.placeId = "ChIJTei4rhlu5kcRPivTUjAg1RU"
+        self.geoPlaceId = {
+            'candidates': [{
+                'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
+            }]
+        }
+        self.address = "16 Rue Étienne Marcel, 75002 Paris, France"
+        self.question = "ou se trouve la poste de marseille"
+        self.addressPlace = "paris poste"
+        self.formatAddress = {
+            'result': {
+                'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
+            }
+        }
+
+        self.history = [[
+            """
+                Riche d'un long passé artistique, ce secteur de Paris (France)
+                dominé par la Basilique du Sacré-Cœur a toujours été le symbole
+                d'un mode de vie bohème où, de Picasso à Modigliani, de nombreux artistes
+                trouvèrent refuge.
+            """
+        ]]
+
+    @property
+    def test_data(self):
+
+        return {
+            "demand": self.demand,
+            "parsed": self.parsed,
+            "placeId": self.placeId,
+            "geoPlaceId": self.geoPlaceId,
+            "address": self.address,
+            "question": self.question,
+            "addressPlace": self.addressPlace,
+            "formatAddress": self.formatAddress,
+            "history": self.history
+        }
+
+
+class ProdConf():
+    """
+
+    """
+    def __init__(self):
+
+        self.Key_API_MAP = "HEROKU_KEY_API_MAP"
+        self.Key_API_STATIC_MAP = "HEROKU_KEY_API_STATIC_MAP"
+
+    @property
+    def env_dev(self):
+
+        return env_key((self.Key_API_MAP, self.Key_API_STATIC_MAP))
+
+class parameter :
+    """
+
+    """
+    def __init__(self):
+
+        self.baseConfig = DefaultConf()
+        self.varConfig = DefaultConf
+        self.developmentConfig = DevConf()
+        self.productionConfig = ProdConf()
+        self.testingConfig = TestingConf()
+
+    @property
+    def base(self):
+        return self.baseConfig
+
+    @property
+    def constant(self):
+        return self.varConfig
+
+    @property
+    def default(self):
+        return self.developmentConfig
+
+    @property
+    def production(self):
+        return self.productionConfig
+
+    @property
+    def testing(self):
+        return self.testingConfig

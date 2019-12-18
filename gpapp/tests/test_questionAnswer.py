@@ -9,6 +9,7 @@ import urllib.request
 from ..question_answer import parser
 from ..question_answer import get_place_id_list, get_address
 from ..question_answer import get_history
+from ..config.parameter import testing
 
 # parser test on the question asked to grandPy
 def test_parser():
@@ -19,9 +20,9 @@ def test_parser():
         search (location history & geographic coordinates)
     """
     # question asked to grandPy
-    demand = "ou est situé le restaurant la_nappe_d_or de lyon"
+    demand = testing.test_data["demand"]
 
-    assert parser(demand) == ["restaurant","la_nappe_d_or","lyon"]
+    assert parser(demand) == testing.test_data["parsed"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -30,11 +31,7 @@ def test_geolocal_id(monkeypatch):
         Json containing the reference ID of the address asked
     """
 
-    resul_pid = {
-        'candidates': [{
-            'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
-        }]
-    }
+    resul_pid = testing.test_data["geoPlaceId"]
 
     def mockreturn(request):
         """
@@ -55,11 +52,7 @@ def test_geolocal_address(monkeypatch):
         Google Map A.P.I test function that returns a file
         Json containing the reference of the requested address
     """
-    resul_address = {
-        'result': {
-            'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
-        }
-    }
+    resul_address = testing.test_data["formatAddress"]
 
     def mockreturn(request):
         """
@@ -80,13 +73,7 @@ def test_search_wiki(monkeypatch):
         A.P.I wikipedia test function (wikimedia) that returns a file
         Json containing the history of the requested address
     """
-    resul_history = [[
-        """
-            Riche d'un long passé artistique, ce secteur de Paris (France)
-            dominé par la Basilique du Sacré-Cœur a toujours été le symbole d'un mode de vie bohème où,
-            de Picasso à Modigliani, de nombreux artistes trouvèrent refuge.
-        """
-    ]]
+    resul_history = testing.test_data["history"]
 
     def mockreturn(request):
         """

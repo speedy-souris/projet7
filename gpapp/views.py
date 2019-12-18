@@ -1,151 +1,96 @@
 #coding:utf-8
+#!/usr/bin/env python
+
 import time
 from flask import Flask, render_template
-from . import question_answer
+from .question_answer import parser as needless
+from .question_answer import get_address as address
+from .question_answer import get_history as wiki
+from .question_answer import get_map_static as geo_location
+from .config.parameter import base
+from .config.parameter import constant
 
 app = Flask(__name__)
 
-#===============================
-# Parameter and Quotas API
-#===============================
-PARAMETER = {
-    "OVER_QUOTAS": False,
-    "NB_REQUEST": 0,
-    "CIVILITY": False,
-    "DECENCY": True
-}
-#==============================
-# Parameter for politenes
-#==============================
-class Politeness:
+#=============
+# update data
+#=============
+def update_data(data):
     """
-        politeness management class for persona (grandpy)
-        Initialization of civility with "incivility" property
-        Initialisation of indecency with "wickedness" property
+        update function of data status
+    """
+    return {
+        "question": data[0]["question"],
+        "grandpy_status": data[1]
+    }
 
-        Args for Politeness class :
+#===========================
+# Initialization wickedness
+#===========================
+def wickedness(data):
+    """
+        Disrespect management function
+        initialization of wickedness
 
+            - decency
+     """
+    question = data[0]["question"]
+    grandpy_status = data[1]
+    lst_indecency = constant.LST_INDENCY
+
+    if question.lower() in lst_indecency:
+        grandpy_status["politeness"]["decency"] = False
+    else:
+        grandpy_status["politeness"]["decency"] = True
+
+    return grandpy_status
+
+#=========================
+# Initialization Civility
+#=========================
+def incivility(data):
+    """
+        Incivility management function
+        initialization of incivility
             - civility
-            - dencency
-            - question
-
-        Vars Params for Politeness class :
-
-            - LST_CIVILITY ==> preferable civility
-                                at the first contact for the persona character
-
-            - LST_INDECENCY ==> avoid the lack of courtesy towards the persona
     """
-    global PARAMETER  # loading parameter for incivility and wickedness
-    # list for politeness and respect for the persona
-    LST_CIVILITY = [
-        "bonjour grandpy","bonsoir grandpy","salut grandpy",
-        "hello grandpy","bonjour grandPy comment vas tu",
-        "comment allez vous grandpy","salut grandpy comment ca va"
-        "bonjour", "bonsoir","salut","hello"
-    ]
-    LST_INDECENCY = [
-        "salut vieux","salut vieux con","salut vieux poussierieux",
-        "salut ancetre demode","salut vieillard senille","salut dinosaure decrepit",
-        "salut arriere rococo","salut centenaire senille","salut vieillot archaique",
-        "salut vieux","salut vieux gateux","salut vieux croulant","salut antiquite",
-        "salut vieille baderne","salut vieux fossile","bonjour vieux",
-        "bonjour vieux con","bonjour vieux poussierieux","bonjour ancetre demode",
-        "bonjour vieillard senille","bonjour dinosaure decrepit",
-        "bonjour arriere rococo","bonjour centenaire senille",
-        "bonjour vieillot archaique","bonjour vieux","bonjour vieux gateux",
-        "bonjour vieux croulant","bonjour antiquite","bonjour vieille baderne",
-        "bonjour vieux fossile","bonsoir vieux poussierieux","bonsoir ancetre demode",
-        "bonsoir vieillard senille","bonsoir dinosaure decrepit",
-        "bonsoir arriere rococo","bonsoir centenaire senille",
-        "bonsoir vieillot archaique","bonsoir vieux","bonsoir vieux gateux",
-        "bonsoir vieux croulant","bonsoir antiquite","bonsoir vieille baderne",
-        "bonsoir vieux fossile","sale vieux","vieux con","vieux poussierieux",
-        "ancetre demode","vieillard senille","dinosaure decrepit","arriere rococo",
-        "centenaire senille","vieillot archaique","vieux gateux","vieux croulant",
-        "antiquite","vieille baderne","vieux fossile"
-    ]
-                        #============================
-                        # Initialisazion Parameters
-                        #============================
+    question = data[0]["question"]
+    grandpy_status = data[1]
+    lst_civility = constant.LST_CIVILITY
 
-    def __init__(self, question):
-        """
-            Initialization of incivility / decency (by default))
-            initialization of question (for grandPy)
+    if question.lower() in lst_civility:
+        grandpy_status["politeness"]["civility"] = True
+        grandpy_status["nb_request"] += 1
 
-                - civility
-                - decency
-                - question
+    return grandpy_status
 
-        """
-        self.civility = PARAMETER["CIVILITY"]
-        self.decency  = PARAMETER["DECENCY"]
-        self.question = question
-
-                        #============================
-                        # Initialisazion Civility
-                        #============================
-
-    @property
-    def incivility(self):
-        """
-            Incivility management function
-            initialization of incivility
-
-                - civility
-        """
-        global PARAMETER  # loading parameter for incivility
-
-        lst_civility = self.LST_CIVILITY
-        if self.question.lower() in lst_civility:
-            PARAMETER["CIVILITY"] = True
-            PARAMETER["NB_REQUEST"] += 1
-
-                        #============================
-                        # Initialisazion wickedness
-                        #============================
-    @property
-    def wickedness(self):
-        """
-            Disrespect management function
-            initialization of wickedness
-
-                - decency
-        """
-        global PARAMETER   # loading parameter for wickedness
-
-        lst_indecency = self.LST_INDECENCY
-        if self.question.lower() in lst_indecency:
-            PARAMETER["DECENCY"] = False
-
-        else:
-            PARAMETER["DECENCY"] = True
-
-#==============================
+#================================
 # address coordinate calculation
-#==============================
-def map_coordinates(question, grandpy_status):
+#================================
+def map_coordinates(data):
+    """
+        calculating the coordinates of the question asked to granbpy
+        Vars :
 
-    global PARAMETER    # loading parameter for updating data
+            - parser_answer
+            - place_id_dict
+            - grandpy_status
+    """
+    question = data[0]["question"]
+    grandpy_status = data[1]
     # keyword isolation for question
-    parse_answer = question_answer.parser(question = question)
-    place_id_dict = question_answer.get_place_id_list(
-        address = " ".join(parse_answer)
-    )
+    parse_answer = needless(question = question)
+    place_id_dict = reference_id(address = " ".join(parse_answer))
     # creation and test public key api google map
     try:
         place_id = place_id_dict["candidates"][0]["place_id"]
     except IndexError:
         grandpy_status["comprehension"] = False
-
         return grandpy_status
     # creation of api google map coordinate address display setting
     # and wikipedia address history display setting
-    grandpy_status["answer"]["address"] = question_answer.get_address(
-        place_id = place_id
-    )
-    grandpy_status["answer"]["history"] = question_answer.get_history(
+    grandpy_status["answer"]["address"] = address(place_id = place_id)
+    grandpy_status["answer"]["history"] = wiki(
         search_history = " ".join(parse_answer)
     )
     grandpy_status["data_map"]["address"] = grandpy_status[
@@ -156,89 +101,66 @@ def map_coordinates(question, grandpy_status):
     try:
         grandpy_status["data_map"]
     except KeyError:
-        PARAMETER ["OVER_QUOTAS"] = True
-        grandpy_status["quotas_api"] = PARAMETER ["OVER_QUOTAS"]
-
+        grandpy_status["over_quotas"] = True
         return grandpy_status
 
     return grandpy_status
 
-#==============================
+#========================
 # map coordinate display
-#==============================
-def map_display(question, grandpy_status):
+#========================
+def map_display(data):
+    """
+        display calculated coordinates for the map
+        Vars:
 
-    global PARAMETER    # loading parameter for updating data
+            - display_map
+            - grandpy_status
+    """
+    question = data[0]["question"]
+    grandpy_status = data[1]
     # display parameter map of requested coordinates
-    display_map = question_answer.get_map_static(grandpy_status["data_map"])
+    display_map = geo_location(grandpy_status["data_map"])
     grandpy_status["display_map"] = display_map
     # counting answer grandpy
-    if PARAMETER["NB_REQUEST"] == 10:
-        PARAMETER ["OVER_QUOTAS"] = True
-        grandpy_status["quotas_api"] = PARAMETER ["OVER_QUOTAS"]
+    if grandpy_status["nb_request"] == 10:
+        grandpy_status["over_quotas"] = True
 
     # response parameter to send
     return grandpy_status
 
-#==============================
-# update data
-#==============================
-def update_data(grandpy_status):
 
-    global PARAMETER
-
-    update_status = {
-        "answer": {
-            "address": grandpy_status["answer"]["address"],
-            "history": grandpy_status["answer"]["history"]
-        },
-        "comprehension": grandpy_status["comprehension"],
-        "data_map": {
-            "address": grandpy_status["data_map"]["address"],
-            "location": grandpy_status["data_map"]["location"]
-        },
-        "display_map": grandpy_status["display_map"],
-        "nb_request": PARAMETER["NB_REQUEST"],
-        "politeness": {
-            "civility": PARAMETER["CIVILITY"],
-            "decency": PARAMETER["DECENCY"]
-        },
-        "quotas_api": PARAMETER ["OVER_QUOTAS"]
-    }
-    return update_status
-
-#==============================
+#======================================
 # main function for displaying answers
-#==============================
+#======================================
 @app.route("/")
 def index():
-    global PARAMETER
+    """
+        Initialization of the index.html page
+        single home page
+    """
     return render_template("index.html")
 
 @app.route("/index/<reflection>/<question>")
 def answer_gp(reflection, question):
     """ display function of grandpy answers
         setting up parameter for grandpy's answers
-
         general global variable for counting grandpy responses
         and the state of civility in questions
-
-            - OVER_QUOTAS
-            - CIVILITY
-            - DECENCY
-            - NB_REQUEST
+            - over_quotas
+            - civility
+            - decency
+            - nb_request
     """
-    global PARAMETER
     # Initialization parameters
-    politeness = Politeness(question)
     grandpy_status = {
-        "quotas_api": PARAMETER ["OVER_QUOTAS"],
+        "over_quotas": base.params["over_quotas"],
         "politeness": {
-            "civility": PARAMETER["CIVILITY"],
-            "decency": PARAMETER["DECENCY"]
+            "civility": base.params["politeness"]["civility"],
+            "decency": base.params["politeness"]["decency"]
         },
-        "comprehension": True,
-        "nb_request": PARAMETER["NB_REQUEST"],
+        "comprehension": base.params["comprehension"],
+        "nb_request": base.params["nb_request"],
         "answer": {
             "address": "",
             "history": ""
@@ -247,33 +169,45 @@ def answer_gp(reflection, question):
             "address": "",
             "location": ""
         },
-        "display_map": ""
+        "display_map": "",
+    }
+    data = {
+        "question": question,
+        "qrandpy_status": grandpy_status
     }
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
-    # management incivility and disrespect
-    politeness.wickedness
-    grandpy_status["politeness"]["decency"] = PARAMETER["DECENCY"]
+    nastiness = wickedness(data)
+    grandpy_status = nastiness
+    data = update_data((data,grandpy_status))
 
-    if not PARAMETER["CIVILITY"]:
-        politeness.incivility
-    grandpy_status["politeness"]["civility"] = PARAMETER["CIVILITY"]
+    if not grandpy_status["politeness"]["civility"]:
+        courtesy = incivility(data)
+    grandpy_status = courtesy
+    data = update_data((data,grandpy_status))
 
     # coordinate calculation
-    data_status = map_coordinates(question, grandpy_status)
+    data_status = map_coordinates(data)
+    grandpy_status = data_status
+    data = update_data((data,grandpy_status))
+
     try:
         # map coordinate display
-        coordonate_map = map_display(question, update_data(data_status))
+        coordonate_map = map_display(data)
     except TypeError:
         grandpy_status["comprehension"] = False
         return grandpy_status
 
-    # last initialization of parameters before sending
-    new_status = update_data(coordonate_map)
+    grandpy_status = coordonate_map
 
-    if PARAMETER["CIVILITY"]:
-        PARAMETER["NB_REQUEST"] += 1
-    return new_status
+    if grandpy_status["politeness"]["civility"]:
+        grandpy_status["nb_request"] += 1
+
+    return grandpy_status
+
+
+
+
 
 
 
