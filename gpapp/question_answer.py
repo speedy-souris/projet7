@@ -5,50 +5,12 @@ import os
 import json
 
 import urllib.request, urllib.parse
-from config.Parameter import production
-from config.Parameter import default
-from config.Parameter import testing
-from config.Parameter import constant
-
-#==============================
-# environment variable
-#==============================
-def var_env():
-    """
-        environment variable management function
-
-            - call function of the Key_API_MAP / key_API_STATIC_MAP
-            local environments variables (API key)
-
-            - call function of the HEROKU_API_MAP / HEROKU_API_STATIC_MAP
-            cloud environments variables (API key)
-
-            - Key_API_MAP
-            - Key_STATIC_MAP
-
-
-    """
-    api_key = {
-        "map": {
-            "key_API_MAP": os.getenv(
-                production.env_dev["Key_API_MAP"],
-                default = defaut.env_dev["Key_API_MAP"]
-            )
-        },
-        "staticMap": {
-            "key_API_STATIC_MAP": os.getenv(
-                production.env_dev["key_API_STATIC_MAP"],
-                default = default.env_dev["key_API_STATIC_MAP"]
-            )
-        }
-    }
-
-    return api_key
+from .initial import config as conf
 
 #==============================
 # parser
 #==============================
-def parser(question=testing.test_data["question"]):
+def parser(question=conf.testing["question"]):
     """
         function that cuts the string of characters (question asked to GrandPy)
         into a word list then delete all unnecessary words to keep only
@@ -57,20 +19,19 @@ def parser(question=testing.test_data["question"]):
 
     # list of words to remove in questions
     list_question = question.split()
-    unnecessary = constant.UNNECESSARY
+    unnecessary = conf.constant["unnecessary"]
     result = [w for w in list_question if w.lower() not in unnecessary]
 
     return result
 
 #------------------------
 # place_id search on Google Map API
-def get_place_id_list(
-    address=testing.test_data["addressPlace"]):
+def get_place_id_list(address=conf.testing["addressPlace"]):
     """
         Google map API place_id search function
     """
 
-    key = var_env()["map"] # environment variable
+    key = conf.status_env # environment variable
 
     # replacing space by "% 20" in the string of characters
     address_encode = urllib.parse.quote(address)
@@ -86,12 +47,12 @@ def get_place_id_list(
 
 #------------------------
 # place_id search on Google Map API
-def get_address(place_id=testing.test_data["placeId"]):
+def get_address(place_id=conf.testing["placeId"]):
     """
         Google map API address search with place_id function
     """
 
-    key = var_env()["map"] # environment variable
+    key = conf.status_env # environment variable
 
     address_found= urllib.request.urlopen(
         "https://maps.googleapis.com/maps/api/place/details/"\
@@ -104,7 +65,7 @@ def get_address(place_id=testing.test_data["placeId"]):
 
 #------------------------
 # history search on wikimedia API
-def get_history(search_history=testing.test_data["history"]):
+def get_history(search_history=conf.testing["search"]):
     """
         wikipedia API (Wikimedia) history search
     """
@@ -128,7 +89,7 @@ def get_map_static(location_map):
         function of displaying the geolocation of the address
         asked to grandpy on the map of the Google Map Static API
     """
-    key = var_env()["staticMap"]  # environment variable
+    key = conf.status_env  # environment variable
 
     # replacing space by "% 20" in the string of characters
     formatting_address = urllib.parse.quote(location_map["address"])

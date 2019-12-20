@@ -9,7 +9,7 @@ import urllib.request
 from ..question_answer import parser
 from ..question_answer import get_place_id_list, get_address
 from ..question_answer import get_history
-from ..config.Parameter import testing
+from ..initial import config as conf
 
 # parser test on the question asked to grandPy
 def test_parser():
@@ -20,9 +20,9 @@ def test_parser():
         search (location history & geographic coordinates)
     """
     # question asked to grandPy
-    demand = testing.test_data["demand"]
+    demand = conf.testing["demand"]
 
-    assert parser(demand) == testing.test_data["parsed"]
+    assert parser(demand) == conf.testing["parsed"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -31,7 +31,7 @@ def test_geolocal_id(monkeypatch):
         Json containing the reference ID of the address asked
     """
 
-    resul_pid = testing.test_data["geoPlaceId"]
+    resul_pid = conf.testing["geoPlaceId"]
 
     def mockreturn(request):
         """
@@ -52,7 +52,7 @@ def test_geolocal_address(monkeypatch):
         Google Map A.P.I test function that returns a file
         Json containing the reference of the requested address
     """
-    resul_address = testing.test_data["formatAddress"]
+    resul_address = conf.testing["address"]
 
     def mockreturn(request):
         """
@@ -73,11 +73,11 @@ def test_search_wiki(monkeypatch):
         A.P.I wikipedia test function (wikimedia) that returns a file
         Json containing the history of the requested address
     """
-    resul_history = testing.test_data["history"]
+    resul_history = conf.testing["history"]
 
     def mockreturn(request):
         """
-            Mock function on hystory search
+            Mock function on history search
         """
 
         return BytesIO(json.dumps(resul_history).encode())

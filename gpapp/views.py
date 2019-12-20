@@ -7,8 +7,7 @@ from .question_answer import parser as needless
 from .question_answer import get_address as address
 from .question_answer import get_history as wiki
 from .question_answer import get_map_static as geo_location
-from .config.Parameter import base
-from .config.Parameter import constant
+from .initial import config as conf, NB_REQUEST as counter
 
 app = Flask(__name__)
 
@@ -34,11 +33,10 @@ def wickedness(data):
 
             - decency
      """
-    question = data[0]["question"]
-    grandpy_status = data[1]
-    lst_indecency = constant.LST_INDENCY
 
-    if question.lower() in lst_indecency:
+    grandpy_status = data[1]
+
+    if data[0]["question"].lower() in conf.constant["lst_indecency"]:
         grandpy_status["politeness"]["decency"] = False
     else:
         grandpy_status["politeness"]["decency"] = True
@@ -54,13 +52,12 @@ def incivility(data):
         initialization of incivility
             - civility
     """
-    question = data[0]["question"]
     grandpy_status = data[1]
-    lst_civility = constant.LST_CIVILITY
 
-    if question.lower() in lst_civility:
+    if data[0]["question"].lower() in conf.constant["lst_civility"]:
         grandpy_status["politeness"]["civility"] = True
-        grandpy_status["nb_request"] += 1
+        counter += 1
+    grandpy_status["nb_request"] = counter
 
     return grandpy_status
 
@@ -76,10 +73,9 @@ def map_coordinates(data):
             - place_id_dict
             - grandpy_status
     """
-    question = data[0]["question"]
     grandpy_status = data[1]
     # keyword isolation for question
-    parse_answer = needless(question = question)
+    parse_answer = needless(question = data[0]["question"])
     place_id_dict = reference_id(address = " ".join(parse_answer))
     # creation and test public key api google map
     try:
@@ -117,8 +113,7 @@ def map_display(data):
             - display_map
             - grandpy_status
     """
-    question = data[0]["question"]
-    grandpy_status = data[1]
+    grandpy_status = data
     # display parameter map of requested coordinates
     display_map = geo_location(grandpy_status["data_map"])
     grandpy_status["display_map"] = display_map
@@ -154,13 +149,13 @@ def answer_gp(reflection, question):
     """
     # Initialization parameters
     grandpy_status = {
-        "over_quotas": base.params["over_quotas"],
+        "over_quotas": conf.base["over_quotas"],
         "politeness": {
-            "civility": base.params["politeness"]["civility"],
-            "decency": base.params["politeness"]["decency"]
+            "civility": conf.base["politeness"]["civility"],
+            "decency": conf.base["politeness"]["decency"]
         },
-        "comprehension": base.params["comprehension"],
-        "nb_request": base.params["nb_request"],
+        "comprehension": conf.base["comprehension"],
+        "nb_request": counter,
         "answer": {
             "address": "",
             "history": ""
@@ -189,11 +184,10 @@ def answer_gp(reflection, question):
     # coordinate calculation
     data_status = map_coordinates(data)
     grandpy_status = data_status
-    data = update_data((data,grandpy_status))
 
     try:
         # map coordinate display
-        coordonate_map = map_display(data)
+        coordonate_map = map_display(grandpy_status)
     except TypeError:
         grandpy_status["comprehension"] = False
         return grandpy_status
@@ -201,7 +195,8 @@ def answer_gp(reflection, question):
     grandpy_status = coordonate_map
 
     if grandpy_status["politeness"]["civility"]:
-        grandpy_status["nb_request"] += 1
+        counter += 1
+        grandpy_status["nb_request"] = counter
 
     return grandpy_status
 

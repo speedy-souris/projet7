@@ -1,12 +1,9 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-def env_key(key_api):
+import os
 
-    return {
-        "Key_API_MAP": key_api[0],
-        "Key_API_STATIC_MAP": key_api[1]
-    }
+NB_REQUEST = 0
 
 class DefaultConf:
     """
@@ -19,7 +16,7 @@ class DefaultConf:
         "comment allez vous grandpy","salut grandpy comment ca va"
         "bonjour", "bonsoir","salut","hello"
     ]
-    LST_INDENCY = [
+    LST_INDECENCY = [
         "salut vieux","salut vieux con","salut vieux poussierieux",
         "salut ancetre demode","salut vieillard senille","salut dinosaure decrepit",
         "salut arriere rococo","salut centenaire senille","salut vieillot archaique",
@@ -40,7 +37,7 @@ class DefaultConf:
         "centenaire senille","vieillot archaique","vieux gateux","vieux croulant",
         "antiquite","vieille baderne","vieux fossile"
     ]
-    UNNECESSARY = [
+    LST_UNNECESSARY = [
         "a","abord","absolument","afin","ah","ai","aie","ailleurs","ainsi","ait",
         "allaient","allo","allons","allô","alors","ancetre","ancetre demode",
         "anterieur","anterieure","anterieures","antiquite","apres","après",
@@ -100,7 +97,7 @@ class DefaultConf:
         "sauf","se","sein","seize","selon","semblable","semblaient","semble",
         "semblent","sent","sept","septième","sera","seraient","serait","seront","ses",
         "seul","seule","seulement","si","sien","sienne","siennes","siens","sinon",
-        "situe", "situé","six","sixième","soi","soi-même","soit","soixante","son",
+        "situe","situé","six","sixième","soi","soi-même","soit","soixante","son",
         "sont","sous","souvent","specifique","specifiques","speculatif","stop",
         "strictement","subtiles","suffisant","suffisante","suffit","suis","suit",
         "suivant","suivante","suivantes","suivants","suivre","superpose","sur",
@@ -120,7 +117,6 @@ class DefaultConf:
     def __init__(self):
 
         self.over_quotas = False
-        self.nb_request = 0
         self.civility = False
         self.decency = True
         self.comprehension = True
@@ -130,7 +126,6 @@ class DefaultConf:
 
         return {
             "over_quotas": self.over_quotas,
-            "nb_request": self.nb_request,
             "politeness": {
                 "civility": self.civility,
                 "decency": self.decency
@@ -138,18 +133,21 @@ class DefaultConf:
             "comprehension": self.comprehension
         }
 
-class DevConf:
+class VarConf:
     """
 
     """
-    def __init__(self):
-        self.Key_API_MAP = "Key_API_MAP"
-        self.Key_API_STATIC_MAP = "Key_API_STATIC_MAP"
+    def __init__(self, var_env):
+        self.var_map = var_env["map"]
+        self.var_static_map = var_env["static_map"]
+
 
     @property
-    def env_dev(self):
-
-        return env_key((self.Key_API_MAP, self.Key_API_STATIC_MAP))
+    def var_env(self):
+        return {
+            "map": os.getenv(self.var_map),
+            "static_map": os.getenv(self.var_static_map)
+        }
 
 class TestingConf:
     """
@@ -160,20 +158,19 @@ class TestingConf:
         self.demand = "ou est situé le restaurant la_nappe_d_or de lyon"
         self.parsed = ["restaurant","la_nappe_d_or","lyon"]
         self.placeId = "ChIJTei4rhlu5kcRPivTUjAg1RU"
+        self.question = "ou se trouve la poste de marseille"
+        self.addressPlace = "paris poste"
+        self.search = "montmartre"
         self.geoPlaceId = {
             'candidates': [{
                 'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
             }]
         }
-        self.address = "16 Rue Étienne Marcel, 75002 Paris, France"
-        self.question = "ou se trouve la poste de marseille"
-        self.addressPlace = "paris poste"
-        self.formatAddress = {
+        self.address = {
             'result': {
                 'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
             }
         }
-
         self.history = [[
             """
                 Riche d'un long passé artistique, ce secteur de Paris (France)
@@ -185,7 +182,6 @@ class TestingConf:
 
     @property
     def test_data(self):
-
         return {
             "demand": self.demand,
             "parsed": self.parsed,
@@ -194,24 +190,9 @@ class TestingConf:
             "address": self.address,
             "question": self.question,
             "addressPlace": self.addressPlace,
-            "formatAddress": self.formatAddress,
+            "search": self.search,
             "history": self.history
         }
-
-
-class ProdConf:
-    """
-
-    """
-    def __init__(self):
-
-        self.Key_API_MAP = "HEROKU_KEY_API_MAP"
-        self.Key_API_STATIC_MAP = "HEROKU_KEY_API_STATIC_MAP"
-
-    @property
-    def env_dev(self):
-
-        return env_key((self.Key_API_MAP, self.Key_API_STATIC_MAP))
 
 class Parameter:
     """
@@ -220,27 +201,75 @@ class Parameter:
     def __init__(self):
 
         self.baseConfig = DefaultConf()
-        self.varConfig = DefaultConf
-        self.developmentConfig = DevConf()
-        self.productionConfig = ProdConf()
+        self.dataConfig = DefaultConf
+        if os.environ.get("HEROKU_KEY_API_MAP") is None:
+            var_env = {
+            "map": "Key_API_MAP",
+            "static_map": "Key_API_STAIC_MAP"
+            }
+        else:
+            var_env = {
+            "map": "HEROKU_KEY_API_MAP",
+            "static_map": "HEROKU_KEY_API_STAIC_MAP"
+            }
+        self.varsConfig = VarConf(var_env)
         self.testingConfig = TestingConf()
 
     @property
     def base(self):
-        return self.baseConfig
+        return {
+            self.baseConfig.params["over_quotas"],
+            self.baseConfig.params["politeness"],
+            self.baseConfig.params["comprehension"]
+        }
 
     @property
     def constant(self):
-        return self.varConfig
+        return {
+            "lst_civility": self.dataConfig.LST_CIVILITY,
+            "lst_indecency": self.dataConfig.LST_INDECENCY,
+            "unnecessary": self.dataConfig.LST_UNNECESSARY
+        }
+
+    @property
+    def status_env(self):
+        if os.environ.get("HEROKU_KEY_API_MAP") is None:
+            return Parameter.default
+        else:
+            return Parameter.production
 
     @property
     def default(self):
-        return self.developmentConfig
+        loc_env["map"] = "Key_API_MAP"
+        loc_env["static"] = "Key_API_STATIC_MAP"
+
+        return self.varsConfig.var_env[loc_env]
+
 
     @property
     def production(self):
-        return self.productionConfig
+        ext_env["map"] = "HEROKU_KEY_API_MAP"
+        ext_env["static"]: "HEROKU_KEY_API_STATIC_MAP"
+
+        return self.varsConfig.var_env[ext_env]
 
     @property
     def testing(self):
-        return self.testingConfig
+        return {
+            "demand": self.testingConfig.test_data["demand"],
+            "parsed": self.testingConfig.test_data["parsed"],
+            "placeId": self.testingConfig.test_data["placeId"],
+            "geoPlaceId": self.testingConfig.test_data["geoPlaceId"],
+            "address": self.testingConfig.test_data["address"],
+            "question": self.testingConfig.test_data["question"],
+            "addressPlace": self.testingConfig.test_data["addressPlace"],
+            "search": self.testingConfig.test_data["search"],
+            "history": self.testingConfig.test_data["history"]
+        }
+
+config = Parameter()
+
+if __name__ == "__main__":
+
+    pass
+
