@@ -123,9 +123,8 @@ class DefaultConf:
 
     @property
     def params(self):
-
-        return {
-            "over_quotas": self.over_quotas,
+        data = {
+            "quotas_api": self.over_quotas,
             "politeness": {
                 "civility": self.civility,
                 "decency": self.decency
@@ -133,21 +132,31 @@ class DefaultConf:
             "comprehension": self.comprehension
         }
 
+        return data
+
 class VarConf:
     """
 
     """
-    def __init__(self, var_env):
-        self.var_map = var_env["map"]
-        self.var_static_map = var_env["static_map"]
-
+    def __init__(self):
+        self.var_map = os.getenv("Key_API_MAP")
+        self.var_static_map = os.getenv("Key_API_STATIC_MAP")
+        self.var_heroku_map = os.getenv("HEROKU_KEY_API_MAP")
+        self.var_heroku_static_map = os.getenv("HEROKU_KEY_API_STATIC_MAP")
 
     @property
     def var_env(self):
-        return {
-            "map": os.getenv(self.var_map),
-            "static_map": os.getenv(self.var_static_map)
-        }
+        if os.environ.get("HEROKU_KEY_API_MAP") is None:
+            key_env = {
+            "map": self.var_map,
+            "staticMap": self.var_static_map
+            }
+        else:
+            key_env = {
+            "map": self.var_heroku_map,
+            "staticMap": self.var_heroku_static_map
+            }
+        return key_env
 
 class TestingConf:
     """
@@ -182,7 +191,7 @@ class TestingConf:
 
     @property
     def test_data(self):
-        return {
+        data = {
             "demand": self.demand,
             "parsed": self.parsed,
             "placeId": self.placeId,
@@ -193,6 +202,7 @@ class TestingConf:
             "search": self.search,
             "history": self.history
         }
+        return data
 
 class Parameter:
     """
@@ -202,60 +212,34 @@ class Parameter:
 
         self.baseConfig = DefaultConf()
         self.dataConfig = DefaultConf
-        if os.environ.get("HEROKU_KEY_API_MAP") is None:
-            var_env = {
-            "map": "Key_API_MAP",
-            "static_map": "Key_API_STAIC_MAP"
-            }
-        else:
-            var_env = {
-            "map": "HEROKU_KEY_API_MAP",
-            "static_map": "HEROKU_KEY_API_STAIC_MAP"
-            }
-        self.varsConfig = VarConf(var_env)
+        self.varsConfig = VarConf()
         self.testingConfig = TestingConf()
 
     @property
     def base(self):
-        return {
-            self.baseConfig.params["over_quotas"],
-            self.baseConfig.params["politeness"],
-            self.baseConfig.params["comprehension"]
+        data = {
+            "quotas_api": self.baseConfig.params["quotas_api"],
+            "politeness": self.baseConfig.params["politeness"],
+            "comprehension": self.baseConfig.params["comprehension"]
         }
+        return data
 
     @property
     def constant(self):
-        return {
+        data = {
             "lst_civility": self.dataConfig.LST_CIVILITY,
             "lst_indecency": self.dataConfig.LST_INDECENCY,
             "unnecessary": self.dataConfig.LST_UNNECESSARY
         }
+        return data
 
     @property
     def status_env(self):
-        if os.environ.get("HEROKU_KEY_API_MAP") is None:
-            return Parameter.default
-        else:
-            return Parameter.production
-
-    @property
-    def default(self):
-        loc_env["map"] = "Key_API_MAP"
-        loc_env["static"] = "Key_API_STATIC_MAP"
-
-        return self.varsConfig.var_env[loc_env]
-
-
-    @property
-    def production(self):
-        ext_env["map"] = "HEROKU_KEY_API_MAP"
-        ext_env["static"]: "HEROKU_KEY_API_STATIC_MAP"
-
-        return self.varsConfig.var_env[ext_env]
+        return self.varsConfig.var_env
 
     @property
     def testing(self):
-        return {
+        data = {
             "demand": self.testingConfig.test_data["demand"],
             "parsed": self.testingConfig.test_data["parsed"],
             "placeId": self.testingConfig.test_data["placeId"],
@@ -266,6 +250,7 @@ class Parameter:
             "search": self.testingConfig.test_data["search"],
             "history": self.testingConfig.test_data["history"]
         }
+        return data
 
 config = Parameter()
 

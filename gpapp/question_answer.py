@@ -31,15 +31,16 @@ def get_place_id_list(address=conf.testing["addressPlace"]):
         Google map API place_id search function
     """
 
-    key = conf.status_env # environment variable
+    key = conf.status_env["map"] # environment variable
 
     # replacing space by "% 20" in the string of characters
     address_encode = urllib.parse.quote(address)
-
     place_id = urllib.request.urlopen(
         "https://maps.googleapis.com/maps/api/place/findplacefromtext/"\
         +f"json?input={address_encode}&inputtype=textquery&key={key}"
     )
+    print("\nhttps://maps.googleapis.com/maps/api/place/findplacefromtext/"\
+        +f"json?input={address_encode}&inputtype=textquery&key={key}\n")
 
     result = json.loads(place_id.read().decode("utf8"))
 
@@ -52,7 +53,7 @@ def get_address(place_id=conf.testing["placeId"]):
         Google map API address search with place_id function
     """
 
-    key = conf.status_env # environment variable
+    key = conf.status_env["map"] # environment variable
 
     address_found= urllib.request.urlopen(
         "https://maps.googleapis.com/maps/api/place/details/"\
@@ -89,7 +90,7 @@ def get_map_static(location_map):
         function of displaying the geolocation of the address
         asked to grandpy on the map of the Google Map Static API
     """
-    key = conf.status_env  # environment variable
+    key = conf.status_env["staticMap"]  # environment variable
 
     # replacing space by "% 20" in the string of characters
     formatting_address = urllib.parse.quote(location_map["address"])

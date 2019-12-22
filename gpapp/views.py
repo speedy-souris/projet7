@@ -4,24 +4,15 @@
 import time
 from flask import Flask, render_template
 from .question_answer import parser as needless
-from .question_answer import get_address as address
+from .question_answer import get_address
+from .question_answer import get_place_id_list as reference_id
 from .question_answer import get_history as wiki
 from .question_answer import get_map_static as geo_location
-from .initial import config as conf, NB_REQUEST as counter
+from . import initial as init
+from .initial import config as conf
+
 
 app = Flask(__name__)
-
-#=============
-# update data
-#=============
-def update_data(data):
-    """
-        update function of data status
-    """
-    return {
-        "question": data[0]["question"],
-        "grandpy_status": data[1]
-    }
 
 #===========================
 # Initialization wickedness
@@ -34,9 +25,9 @@ def wickedness(data):
             - decency
      """
 
-    grandpy_status = data[1]
+    grandpy_status = data["grandpy_status"]
 
-    if data[0]["question"].lower() in conf.constant["lst_indecency"]:
+    if data["question"].lower() in conf.constant["lst_indecency"]:
         grandpy_status["politeness"]["decency"] = False
     else:
         grandpy_status["politeness"]["decency"] = True
@@ -52,12 +43,12 @@ def incivility(data):
         initialization of incivility
             - civility
     """
-    grandpy_status = data[1]
+    grandpy_status = data["grandpy_status"]
 
-    if data[0]["question"].lower() in conf.constant["lst_civility"]:
+    if data["question"].lower() in conf.constant["lst_civility"]:
         grandpy_status["politeness"]["civility"] = True
-        counter += 1
-    grandpy_status["nb_request"] = counter
+        init.NB_REQUEST += 1
+    grandpy_status["nb_request"] = init.NB_REQUEST
 
     return grandpy_status
 
@@ -73,9 +64,9 @@ def map_coordinates(data):
             - place_id_dict
             - grandpy_status
     """
-    grandpy_status = data[1]
+    grandpy_status = data["grandpy_status"]
     # keyword isolation for question
-    parse_answer = needless(question = data[0]["question"])
+    parse_answer = needless(question = data["question"])
     place_id_dict = reference_id(address = " ".join(parse_answer))
     # creation and test public key api google map
     try:
@@ -85,7 +76,7 @@ def map_coordinates(data):
         return grandpy_status
     # creation of api google map coordinate address display setting
     # and wikipedia address history display setting
-    grandpy_status["answer"]["address"] = address(place_id = place_id)
+    grandpy_status["answer"]["address"] = get_address(place_id = place_id)
     grandpy_status["answer"]["history"] = wiki(
         search_history = " ".join(parse_answer)
     )
@@ -97,7 +88,7 @@ def map_coordinates(data):
     try:
         grandpy_status["data_map"]
     except KeyError:
-        grandpy_status["over_quotas"] = True
+        grandpy_status["quotas_api"] = True
         return grandpy_status
 
     return grandpy_status
@@ -119,7 +110,7 @@ def map_display(data):
     grandpy_status["display_map"] = display_map
     # counting answer grandpy
     if grandpy_status["nb_request"] == 10:
-        grandpy_status["over_quotas"] = True
+        grandpy_status["quotas_api"] = True
 
     # response parameter to send
     return grandpy_status
@@ -142,20 +133,20 @@ def answer_gp(reflection, question):
         setting up parameter for grandpy's answers
         general global variable for counting grandpy responses
         and the state of civility in questions
-            - over_quotas
+            - quotas_api
             - civility
             - decency
             - nb_request
     """
     # Initialization parameters
     grandpy_status = {
-        "over_quotas": conf.base["over_quotas"],
+        "quotas_api": conf.base["quotas_api"],
         "politeness": {
             "civility": conf.base["politeness"]["civility"],
             "decency": conf.base["politeness"]["decency"]
         },
         "comprehension": conf.base["comprehension"],
-        "nb_request": counter,
+        "nb_request": init.NB_REQUEST,
         "answer": {
             "address": "",
             "history": ""
@@ -168,23 +159,22 @@ def answer_gp(reflection, question):
     }
     data = {
         "question": question,
-        "qrandpy_status": grandpy_status
+        "grandpy_status": grandpy_status
     }
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     nastiness = wickedness(data)
     grandpy_status = nastiness
-    data = update_data((data,grandpy_status))
+    data["grandpy_status"] = grandpy_status
 
     if not grandpy_status["politeness"]["civility"]:
         courtesy = incivility(data)
     grandpy_status = courtesy
-    data = update_data((data,grandpy_status))
+    data["grandpy_status"] = grandpy_status
 
     # coordinate calculation
     data_status = map_coordinates(data)
     grandpy_status = data_status
-
     try:
         # map coordinate display
         coordonate_map = map_display(grandpy_status)
@@ -195,8 +185,8 @@ def answer_gp(reflection, question):
     grandpy_status = coordonate_map
 
     if grandpy_status["politeness"]["civility"]:
-        counter += 1
-        grandpy_status["nb_request"] = counter
+        init.NB_REQUEST += 1
+        grandpy_status["nb_request"] = init.NB_REQUEST
 
     return grandpy_status
 
