@@ -11,7 +11,6 @@ from .question_answer import get_map_static as geo_location
 from . import initial as init
 from .initial import config as conf
 
-
 app = Flask(__name__)
 
 #===========================
@@ -189,13 +188,3 @@ def answer_gp(reflection, question):
         grandpy_status["nb_request"] = init.NB_REQUEST
 
     return grandpy_status
-
-
-
-
-
-
-
-
-
-
