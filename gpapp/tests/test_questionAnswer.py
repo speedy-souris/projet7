@@ -3,15 +3,15 @@
 
 import json
 from io import BytesIO
-
 import urllib.request
-
 from ..question_answer import parser
 from ..question_answer import get_place_id_list, get_address
 from ..question_answer import get_history
 from ..initial import config as conf
 
+#==============================================
 # parser test on the question asked to grandPy
+#==============================================
 def test_parser():
     """
         Test function on the separation of the character string (question asked
@@ -24,29 +24,29 @@ def test_parser():
 
     assert parser(demand) == conf.testing["parsed"]
 
+#==========================================
 # google map API test on place id location
+#==========================================
 def test_geolocal_id(monkeypatch):
     """
         Google Map A.P.I test function that returns a file
         Json containing the reference ID of the address asked
     """
-
     resul_pid = conf.testing["geoPlaceId"]
 
     def mockreturn(request):
         """
             Mock function on place_id object
         """
-
         return BytesIO(json.dumps(resul_pid).encode())
 
-    monkeypatch.setattr(
-        urllib.request, 'urlopen',mockreturn
-    )
+    monkeypatch.setattr(urllib.request,'urlopen',mockreturn)
 
     assert get_place_id_list() == resul_pid
 
+#=========================================
 # google map API test on address location
+#=========================================
 def test_geolocal_address(monkeypatch):
     """
         Google Map A.P.I test function that returns a file
@@ -61,13 +61,13 @@ def test_geolocal_address(monkeypatch):
 
         return BytesIO(json.dumps(resul_address).encode())
 
-    monkeypatch.setattr(
-        urllib.request, 'urlopen',mockreturn
-    )
+    monkeypatch.setattr(urllib.request,'urlopen',mockreturn)
 
     assert get_address() == resul_address
 
+#==============================
 # WikiMedia APi test on search
+#==============================
 def test_search_wiki(monkeypatch):
     """
         A.P.I wikipedia test function (wikimedia) that returns a file
@@ -82,8 +82,6 @@ def test_search_wiki(monkeypatch):
 
         return BytesIO(json.dumps(resul_history).encode())
 
-    monkeypatch.setattr(
-        urllib.request, 'urlopen',mockreturn
-    )
+    monkeypatch.setattr(urllib.request,'urlopen',mockreturn)
 
     assert get_history() == resul_history

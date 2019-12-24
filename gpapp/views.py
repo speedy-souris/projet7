@@ -3,11 +3,10 @@
 
 import time
 from flask import Flask, render_template
-from .question_answer import parser as needless
-from .question_answer import get_address
-from .question_answer import get_place_id_list as reference_id
-from .question_answer import get_history as wiki
-from .question_answer import get_map_static as geo_location
+from .question_answer import parser
+from .question_answer import get_address, get_place_id_list
+from .question_answer import get_history
+from .question_answer import get_map_static
 from . import initial as init
 from .initial import config as conf
 
@@ -20,10 +19,8 @@ def wickedness(data):
     """
         Disrespect management function
         initialization of wickedness
-
             - decency
      """
-
     grandpy_status = data["grandpy_status"]
 
     if data["question"].lower() in conf.constant["lst_indecency"]:
@@ -58,15 +55,14 @@ def map_coordinates(data):
     """
         calculating the coordinates of the question asked to granbpy
         Vars :
-
             - parser_answer
             - place_id_dict
             - grandpy_status
     """
     grandpy_status = data["grandpy_status"]
     # keyword isolation for question
-    parse_answer = needless(question = data["question"])
-    place_id_dict = reference_id(address = " ".join(parse_answer))
+    parse_answer = parser(question = data["question"])
+    place_id_dict = get_place_id_list(address = " ".join(parse_answer))
     # creation and test public key api google map
     try:
         place_id = place_id_dict["candidates"][0]["place_id"]
@@ -76,7 +72,7 @@ def map_coordinates(data):
     # creation of api google map coordinate address display setting
     # and wikipedia address history display setting
     grandpy_status["answer"]["address"] = get_address(place_id = place_id)
-    grandpy_status["answer"]["history"] = wiki(
+    grandpy_status["answer"]["history"] = get_history(
         search_history = " ".join(parse_answer)
     )
     grandpy_status["data_map"]["address"] = grandpy_status[
@@ -99,13 +95,12 @@ def map_display(data):
     """
         display calculated coordinates for the map
         Vars:
-
             - display_map
             - grandpy_status
     """
     grandpy_status = data
     # display parameter map of requested coordinates
-    display_map = geo_location(grandpy_status["data_map"])
+    display_map = get_map_static(grandpy_status["data_map"])
     grandpy_status["display_map"] = display_map
     # counting answer grandpy
     if grandpy_status["nb_request"] == 10:
@@ -113,7 +108,6 @@ def map_display(data):
 
     # response parameter to send
     return grandpy_status
-
 
 #======================================
 # main function for displaying answers
@@ -170,7 +164,6 @@ def answer_gp(reflection, question):
         courtesy = incivility(data)
     grandpy_status = courtesy
     data["grandpy_status"] = grandpy_status
-
     # coordinate calculation
     data_status = map_coordinates(data)
     grandpy_status = data_status
