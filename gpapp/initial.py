@@ -3,11 +3,13 @@
 
 import os
 
-NB_REQUEST = 0
-
 class DefaultConf:
     """
-
+        Constants management:
+            - USABLE_LST
+                - civility list
+                - list for indecency
+                - word list not necessary
     """
     USABLE_LST = [
         [ # CIVILITY LIST
@@ -116,27 +118,15 @@ class DefaultConf:
         ]
     ]
 
-    def __init__(self):
-        self.over_quotas = False
-        self.civility = False
-        self.decency = True
-        self.comprehension = True
-
-    @property
-    def params(self):
-        data = {
-            "quotas_api": self.over_quotas,
-            "politeness": {
-                "civility": self.civility,
-                "decency": self.decency
-            },
-            "comprehension": self.comprehension
-        }
-        return data
-
 class VarConf:
     """
-
+        API Private Key Management class:
+            local (development)
+                - KEY_API_MAP
+                - KEY_API_STATIC_MAP
+            external (production)
+                - HEROKU_KEY_API_MAP
+                - HEROKU_KEY_API_STATIC_MAP
     """
     def __init__(self):
         self.map = "KEY_API_MAP"
@@ -154,69 +144,15 @@ class VarConf:
         }
         return data
 
-class TestingConf:
-    """
-
-    """
-    def __init__(self):
-        self.demand = "ou est situé le restaurant la_nappe_d_or de lyon"
-        self.parsed = ["restaurant","la_nappe_d_or","lyon"]
-        self.placeId = "ChIJTei4rhlu5kcRPivTUjAg1RU"
-        self.question = "ou se trouve la poste de marseille"
-        self.addressPlace = "paris poste"
-        self.search = "montmartre"
-        self.geoPlaceId = {
-            'candidates': [{
-                'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
-            }]
-        }
-        self.address = {
-            'result': {
-                'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
-            }
-        }
-        self.history = [[
-            """
-                Riche d'un long passé artistique, ce secteur de Paris (France)
-                dominé par la Basilique du Sacré-Cœur a toujours été le symbole
-                d'un mode de vie bohème où, de Picasso à Modigliani, de nombreux artistes
-                trouvèrent refuge.
-            """
-        ]]
-
-    @property
-    def test_data(self):
-        data = {
-            "demand": self.demand,
-            "parsed": self.parsed,
-            "placeId": self.placeId,
-            "geoPlaceId": self.geoPlaceId,
-            "address": self.address,
-            "question": self.question,
-            "addressPlace": self.addressPlace,
-            "search": self.search,
-            "history": self.history
-        }
-        return data
-
 class Parameter:
     """
-
+        Parameter Call Management Class:
+            - constant ==> call to constants
+            - status_env ==> call of private keys (local / external)
     """
     def __init__(self):
-        self.baseConfig = DefaultConf()
         self.dataConfig = DefaultConf
         self.varsConfig = VarConf()
-        self.testingConfig = TestingConf()
-
-    @property
-    def base(self):
-        data = {
-            "quotas_api": self.baseConfig.params["quotas_api"],
-            "politeness": self.baseConfig.params["politeness"],
-            "comprehension": self.baseConfig.params["comprehension"]
-        }
-        return data
 
     @property
     def constant(self):
@@ -234,7 +170,6 @@ class Parameter:
                 "map": os.getenv(self.varsConfig.var_env["KEY_API_MAP"]),
                 "staticMap": os.getenv(self.varsConfig.var_env["KEY_API_STATIC_MAP"])
             }
-
             return default
         else:
             prod = {
@@ -243,24 +178,10 @@ class Parameter:
             }
             return prod
 
-    @property
-    def testing(self):
-        data = {
-            "demand": self.testingConfig.test_data["demand"],
-            "parsed": self.testingConfig.test_data["parsed"],
-            "placeId": self.testingConfig.test_data["placeId"],
-            "geoPlaceId": self.testingConfig.test_data["geoPlaceId"],
-            "address": self.testingConfig.test_data["address"],
-            "question": self.testingConfig.test_data["question"],
-            "addressPlace": self.testingConfig.test_data["addressPlace"],
-            "search": self.testingConfig.test_data["search"],
-            "history": self.testingConfig.test_data["history"]
-        }
-        return data
-
-config = Parameter()
+conf = Parameter()
 
 if __name__ == "__main__":
 
-    pass
+    print(conf.constant["lst_indecency"])
+
 

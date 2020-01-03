@@ -4,17 +4,56 @@
 import os
 import json
 import urllib.request, urllib.parse
-from .initial import config as conf
+from .initial import conf
 
-#========
+class DataAnswer:
+    """
+    """
+    def __init__(self):
+
+        self.placeId = "ChIJTei4rhlu5kcRPivTUjAg1RU"
+        self.question = "ou se trouve la poste de marseille"
+        self.addressPlace = "paris poste"
+        self.search = "montmartre"
+
+    @property
+    def data(self):
+        data = {
+            "placeId": self.placeId,
+            "question": self.question,
+            "addressPlace": self.addressPlace,
+            "search": self.search
+        }
+        return data
+
+class Parameter:
+    """
+    """
+    def __init__(self):
+        self.dataAnswer = DataAnswer()
+
+    @property
+    def data_test(self):
+        data = {
+            "placeId": self.dataAnswer.data["placeId"],
+            "question": self.dataAnswer.data["question"],
+            "addressPlace": self.dataAnswer.data["addressPlace"],
+            "search": self.dataAnswer.data["search"]
+        }
+        return data
+
+data_config = Parameter()
+
+#==============================
 # parser
-#========
-def parser(question=conf.testing["question"]):
+#==============================
+def parser(question=data_config.data_test["question"]):
     """
         function that cuts the string of characters (question asked to GrandPy)
         into a word list then delete all unnecessary words to keep only
         the keywords for the search
     """
+
     # list of words to remove in questions
     list_question = question.split()
     result = [
@@ -23,13 +62,13 @@ def parser(question=conf.testing["question"]):
 
     return result
 
-#===================================
+#------------------------
 # place_id search on Google Map API
-#===================================
-def get_place_id_list(address=conf.testing["addressPlace"]):
+def get_place_id_list(address = data_config.data_test["addressPlace"]):
     """
         Google map API place_id search function
     """
+
     key = conf.status_env["map"] # environment variable
     # replacing space by "% 20" in the string of characters
     address_encode = urllib.parse.quote(address)
@@ -43,15 +82,13 @@ def get_place_id_list(address=conf.testing["addressPlace"]):
 
     return result
 
-#===================================
+#------------------------
 # place_id search on Google Map API
-#===================================
-def get_address(place_id=conf.testing["placeId"]):
+def get_address(place_id=data_config.data_test["placeId"]):
     """
         Google map API address search with place_id function
     """
     key = conf.status_env["map"] # environment variable
-
     address_found= urllib.request.urlopen(
         "https://maps.googleapis.com/maps/api/place/details/"\
         f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
@@ -61,13 +98,13 @@ def get_address(place_id=conf.testing["placeId"]):
 
     return result
 
-#=================================
+#------------------------
 # history search on wikimedia API
-#=================================
-def get_history(search_history=conf.testing["search"]):
+def get_history(search_history=data_config.data_test["search"]):
     """
         wikipedia API (Wikimedia) history search
     """
+
     # replacing space by "% 20" in the string of characters
     history_encode = urllib.parse.quote(search_history)
 
@@ -80,15 +117,15 @@ def get_history(search_history=conf.testing["search"]):
 
     return result
 
-#=========================================
+#------------------------
 # map display in the Google Map Satic API
-#=========================================
 def get_map_static(location_map):
     """
         function of displaying the geolocation of the address
         asked to grandpy on the map of the Google Map Static API
     """
     key = conf.status_env["staticMap"]  # environment variable
+
     # replacing space by "% 20" in the string of characters
     formatting_address = urllib.parse.quote(location_map["address"])
     # longitude and latitude display

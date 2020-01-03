@@ -41,7 +41,8 @@ $(document).ready(function(){
 
     /*
       *========================
-      * default answer display (without constraints)
+      * default answer display
+      * (without constraints)
       *========================
     */
     function display_default(response_json){
@@ -58,12 +59,13 @@ $(document).ready(function(){
           * redisplay question and
           * display map / address / history (wiki)
        */
-        var wiki_answer = response_json["answer"]["history"];
+        var wiki_answer = response_json["map_status"]["answer"]["history"];
         instruction.push(
             $("#address").text("l'adresse "+wiki_answer[0]+" se situe : "
-            + JSON.stringify(response_json["answer"]["address"]["result"]["formatted_address"])));
+            + JSON.stringify(response_json["map_status"]["answer"]["address"]["result"]["formatted_address"]))
+        );
 
-        instruction.push($("#map")[0].src = response_json["display_map"]);
+        instruction.push($("#map")[0].src = response_json["map_status"]["display_map"]);
 
         if (wiki_answer[2][0]){
             var texte = $("#history").text(JSON.stringify(wiki_answer[2][0]));
@@ -88,26 +90,26 @@ $(document).ready(function(){
                     "#gp_reply6","#gp_reply7"
         ];
         $("#question").val("");
-
+        console.log(response_json);
 
         // answer display with politeness of the user
-        if ((response_json["politeness"]["civility"]) &&
-            (!response_json["quotas_api"])){
+        if ((response_json["parameter_status"]["politeness"]["civility"]) &&
+            (!response_json["parameter_status"]["quotas_api"])){
                 // welcome message
-                if (response_json["nb_request"] <= 1){
+                if (response_json["parameter_status"]["nb_request"] <= 1){
 
                     $("#gp_reflection").hide();
                     $("#word_of_welcome").show();
                     $("#ask").show();
                 // overwork message
-                }else if (response_json["nb_request"] == 5){
+                }else if (response_json["parameter_status"]["nb_request"] == 5){
 
                     $("#overstrain").show();
                     $.each(display_default(response_json), function(value){
                         $(value);
                     });
                 // grandpy burnout message
-                }else if (response_json["nb_request"] >= 10){
+                }else if (response_json["parameter_status"]["nb_request"] >= 10){
 
                     $("#quotas").show();
                     $("#window_sill").hide();
@@ -115,13 +117,13 @@ $(document).ready(function(){
                     $("#gp_reflection").hide();
                     $("#ask").hide();
                 // message of misunderstanding
-                }else if (!response_json["comprehension"]){
+                }else if (!response_json["parameter_status"]["comprehension"]){
 
                     $.each(display_incomprehension(), function(value){
                         $(value);
                     });
                 // message of disgrace for disrespect
-                }else if (!response_json["politeness"]["decency"]){
+                }else if (!response_json["parameter_status"]["politeness"]["decency"]){
 
                     $.each(display_politeness(), function(value){
                         $(value);
@@ -135,13 +137,13 @@ $(document).ready(function(){
                 };
         // quota overrun for API requests
         }else{
-                if (!response_json["politeness"]["decency"]){
+                if (!response_json["parameter_status"]["politeness"]["decency"]){
 
                     $.each(display_politeness(), function(value){
                         $(value);
                     });
 
-                }else if (!response_json["comprehension"]){
+                }else if (!response_json["parameter_status"]["comprehension"]){
 
                     $.each(display_incomprehension(), function(value){
                         $(value);
