@@ -6,9 +6,26 @@ $(document).ready(function(){
     */
 
     /*
-      *========================
+      *=================================
+      * display with API quotas reached
+      *=================================
+    */
+    function display_quotas(){
+
+        var instruction = [
+            $("#quotas").show(),
+            $("#window_sill").hide(),
+            $("#other").hide(),
+            $("#gp_reflection").hide(),
+            $("#ask").hide()
+        ];
+        return instruction
+    };
+
+    /*
+      *=========================================
       * display answer on question not included
-      *========================
+      *=========================================
     */
     function display_incomprehension(){
 
@@ -23,9 +40,9 @@ $(document).ready(function(){
     };
 
     /*
-      *========================
+      *===================================
       * display answer without politeness
-      *========================
+      *===================================
     */
     function display_politeness(){
 
@@ -46,6 +63,7 @@ $(document).ready(function(){
       *========================
     */
     function display_default(response_json){
+
         var instruction = [
                 $("#ask").hide(),
                 $("#word_of_welcome").hide(),
@@ -62,13 +80,17 @@ $(document).ready(function(){
         var wiki_answer = response_json["map_status"]["answer"]["history"];
         instruction.push(
             $("#address").text("l'adresse "+wiki_answer[0]+" se situe : "
-            + JSON.stringify(response_json["map_status"]["answer"]["address"]["result"]["formatted_address"]))
+            + JSON.stringify(
+                response_json["map_status"]["answer"]["address"]
+                    ["result"]["formatted_address"]
+                )
+            )
         );
 
         instruction.push($("#map")[0].src = response_json["map_status"]["display_map"]);
-
-        if (wiki_answer[2][0]){
-            var texte = $("#history").text(JSON.stringify(wiki_answer[2][0]));
+        console.log(wiki_answer);
+        if (wiki_answer[3][1]){
+            var texte = $("#history").text(JSON.stringify(wiki_answer[3][1]));
         }else{
             var texte = $("#history").text("Aie aie aie, le \'WIKI\' est vide... !");
         };
@@ -79,11 +101,11 @@ $(document).ready(function(){
     };
 
     /*
-      *========================
+      *===============================================
       * general display of responses with constraints
-      *=========================
+      *===============================================
     */
-    function answer_gp(response){
+    function answer(response){
         var response_json = JSON.parse(response);
         var lt_mes =[
                     "#gp_reply4","#gp_reply5",
@@ -93,7 +115,7 @@ $(document).ready(function(){
         console.log(response_json);
 
         // answer display with politeness of the user
-        if ((response_json["parameter_status"]["politeness"]["civility"]) &&
+        if ((response_json["parameter_status"]["civility"]) &&
             (!response_json["parameter_status"]["quotas_api"])){
                 // welcome message
                 if (response_json["parameter_status"]["nb_request"] <= 1){
@@ -111,11 +133,9 @@ $(document).ready(function(){
                 // grandpy burnout message
                 }else if (response_json["parameter_status"]["nb_request"] >= 10){
 
-                    $("#quotas").show();
-                    $("#window_sill").hide();
-                    $("#other").hide();
-                    $("#gp_reflection").hide();
-                    $("#ask").hide();
+                    $.each(display_quotas(), function(value){
+                        $(value);
+                    });
                 // message of misunderstanding
                 }else if (!response_json["parameter_status"]["comprehension"]){
 
@@ -123,7 +143,7 @@ $(document).ready(function(){
                         $(value);
                     });
                 // message of disgrace for disrespect
-                }else if (!response_json["parameter_status"]["politeness"]["decency"]){
+                }else if (!response_json["parameter_status"]["decency"]){
 
                     $.each(display_politeness(), function(value){
                         $(value);
@@ -137,7 +157,7 @@ $(document).ready(function(){
                 };
         // quota overrun for API requests
         }else{
-                if (!response_json["parameter_status"]["politeness"]["decency"]){
+                if (!response_json["parameter_status"]["decency"]){
 
                     $.each(display_politeness(), function(value){
                         $(value);
@@ -146,6 +166,12 @@ $(document).ready(function(){
                 }else if (!response_json["parameter_status"]["comprehension"]){
 
                     $.each(display_incomprehension(), function(value){
+                        $(value);
+                    });
+
+                }else if (response_json["parameter_status"]["quotas_api"]){
+
+                    $.each(display_quotas(), function(value){
                         $(value);
                     });
 
@@ -161,11 +187,11 @@ $(document).ready(function(){
     };
 
     /*
-      *========================
+      *===============
       * send question
-      *========================
+      *===============
     */
-    $("#submit2").submit(function(e){
+    $("#form_question").submit(function(e){
 
     /**
       * display and reflection time to the question
@@ -179,7 +205,7 @@ $(document).ready(function(){
             url: "/index/2/" + $("#question").val().toString(),
             type: "GET",
             dataType: "html",
-            success: answer_gp
+            success: answer
         });
         e.preventDefault();
     });

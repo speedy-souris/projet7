@@ -3,15 +3,21 @@
 
 import os
 
-class DefaultConf:
+class VarConf:
     """
-        Constants management:
+        API Private Key and Constants Management class:
+            local (development)
+                - KEY_API_MAP
+                - KEY_API_STATIC_MAP
+            external (production)
+                - HEROKU_KEY_API_MAP
+                - HEROKU_KEY_API_STATIC_MAP
             - USABLE_LST
                 - civility list
                 - list for indecency
                 - word list not necessary
     """
-    USABLE_LST = [
+    USABLE_LIST = [
         [ # CIVILITY LIST
             "bonjour grandpy","bonsoir grandpy","salut grandpy",
             "hello grandpy","bonjour grandPy comment vas tu",
@@ -117,17 +123,6 @@ class DefaultConf:
             ";",".","?","!"
         ]
     ]
-
-class VarConf:
-    """
-        API Private Key Management class:
-            local (development)
-                - KEY_API_MAP
-                - KEY_API_STATIC_MAP
-            external (production)
-                - HEROKU_KEY_API_MAP
-                - HEROKU_KEY_API_STATIC_MAP
-    """
     def __init__(self):
         self.map = "KEY_API_MAP"
         self.static_map = "KEY_API_STATIC_MAP"
@@ -150,38 +145,34 @@ class Parameter:
             - constant ==> call to constants
             - status_env ==> call of private keys (local / external)
     """
-    def __init__(self):
-        self.dataConfig = DefaultConf
-        self.varsConfig = VarConf()
+    DATACONFIG = VarConf
+    VARSCONFIG = VarConf()
 
-    @property
-    def constant(self):
+    @classmethod
+    def constant(cls):
         data = {
-            "lst_civility": self.dataConfig.USABLE_LST[0],
-            "lst_indecency": self.dataConfig.USABLE_LST[1],
-            "unnecessary": self.dataConfig.USABLE_LST[2]
+            "list_civility": cls.DATACONFIG.USABLE_LIST[0],
+            "list_indecency": cls.DATACONFIG.USABLE_LIST[1],
+            "list_unnecessary": cls.DATACONFIG.USABLE_LIST[2]
         }
         return data
 
-    @property
-    def status_env(self):
+    @classmethod
+    def status_env(cls):
         if os.environ.get("HEROKU_KEY_API_MAP") is None:
             default = {
-                "map": os.getenv(self.varsConfig.var_env["KEY_API_MAP"]),
-                "staticMap": os.getenv(self.varsConfig.var_env["KEY_API_STATIC_MAP"])
+                "map": os.getenv(cls.VARSCONFIG.var_env["KEY_API_MAP"]),
+                "staticMap": os.getenv(cls.VARSCONFIG.var_env["KEY_API_STATIC_MAP"]),
+                "status_prod": False
             }
             return default
         else:
             prod = {
-                "map": os.getenv(self.varsConfig.var_env["HEROKU_KEY_API_MAP"]),
-                "staticMap": os.getenv(self.varsConfig.var_env["HEROKU_KEY_API_STATIC_MAP"])
+                "map": os.getenv(cls.VARSCONFIG.var_env["HEROKU_KEY_API_MAP"]),
+                "staticMap": os.getenv(cls.VARSCONFIG.var_env["HEROKU_KEY_API_STATIC_MAP"]),
+                "status_prod": True
             }
             return prod
 
-conf = Parameter()
-
 if __name__ == "__main__":
-
-    print(conf.constant["lst_indecency"])
-
-
+   pass

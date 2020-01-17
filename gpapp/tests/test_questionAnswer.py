@@ -12,6 +12,7 @@ from ..question_answer import get_history
 
 class TestingConf:
     """
+        management of API parameters by default for tests
     """
     def __init__(self):
 
@@ -38,30 +39,31 @@ class TestingConf:
 
     @property
     def test_data(self):
-        return {
+        data = {
             "demand": self.demand,
             "parsed": self.parsed,
             "geoPlaceId": self.geoPlaceId,
             "address": self.address,
             "history": self.history
         }
+        return data
 
 class Parameter:
     """
+        API default settings for testing
     """
-    def __init__(self):
-        self.testingConfig = TestingConf()
+    TESTINGCONFIG = TestingConf()
 
-    @property
-    def testing(self):
-        return {
-            "demand": self.testingConfig.test_data["demand"],
-            "parsed": self.testingConfig.test_data["parsed"],
-            "geoPlaceId": self.testingConfig.test_data["geoPlaceId"],
-            "address": self.testingConfig.test_data["address"],
-            "history": self.testingConfig.test_data["history"]
+    @classmethod
+    def testing(cls):
+        test = {
+            "demand": cls.TESTINGCONFIG.test_data["demand"],
+            "parsed": cls.TESTINGCONFIG.test_data["parsed"],
+            "geoPlaceId": cls.TESTINGCONFIG.test_data["geoPlaceId"],
+            "address": cls.TESTINGCONFIG.test_data["address"],
+            "history": cls.TESTINGCONFIG.test_data["history"]
         }
-conf = Parameter()
+        return test
 
 # parser test on the question asked to grandPy
 def test_parser():
@@ -72,9 +74,9 @@ def test_parser():
         search (location history & geographic coordinates)
     """
     # question asked to grandPy
-    demand = conf.testing["demand"]
+    demand = Parameter.testing()["demand"]
 
-    assert parser(demand) == conf.testing["parsed"]
+    assert parser(demand) == Parameter.testing()["parsed"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -83,7 +85,7 @@ def test_geolocal_id(monkeypatch):
         Json containing the reference ID of the address asked
     """
 
-    resul_pid = conf.testing["geoPlaceId"]
+    resul_pid = Parameter.testing()["geoPlaceId"]
 
     def mockreturn(request):
         """
@@ -104,7 +106,7 @@ def test_geolocal_address(monkeypatch):
         Google Map A.P.I test function that returns a file
         Json containing the reference of the requested address
     """
-    resul_address = conf.testing["address"]
+    resul_address = Parameter.testing()["address"]
 
     def mockreturn(request):
         """
@@ -125,7 +127,7 @@ def test_search_wiki(monkeypatch):
         A.P.I wikipedia test function (wikimedia) that returns a file
         Json containing the history of the requested address
     """
-    resul_history = conf.testing["history"]
+    resul_history = Parameter.testing()["history"]
 
     def mockreturn(request):
         """
