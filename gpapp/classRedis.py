@@ -11,7 +11,6 @@ class RedisConnect:
     """
         Initialization of Redis connection parameters
     """
-
     if not config.status_env()["status_prod"]:
         CONNECT = redis.Redis(
             host="localhost",
@@ -24,6 +23,7 @@ class RedisConnect:
             port=6379,
             db=1
         )
+
     @classmethod
     def writing(cls, data):
         cls.CONNECT.set(data[0], data[1])

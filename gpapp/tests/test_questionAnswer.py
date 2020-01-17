@@ -14,37 +14,35 @@ class TestingConf:
     """
         management of API parameters by default for tests
     """
-    def __init__(self):
-
-        self.demand = "ou est situé le restaurant la_nappe_d_or de lyon"
-        self.parsed = ["restaurant","la_nappe_d_or","lyon"]
-        self.geoPlaceId = {
-            'candidates': [{
-                'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
-            }]
+    DEMAND = "ou est situé le restaurant la_nappe_d_or de lyon"
+    PARSED = ["restaurant","la_nappe_d_or","lyon"]
+    GEOPLACEID = {
+        'candidates': [{
+            'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
+        }]
+    }
+    ADDRESS = {
+        'result': {
+            'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
         }
-        self.address = {
-            'result': {
-                'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
-            }
-        }
-        self.history = [[
-            """
-                Riche d'un long passé artistique, ce secteur de Paris (France)
-                dominé par la Basilique du Sacré-Cœur a toujours été le symbole
-                d'un mode de vie bohème où, de Picasso à Modigliani, de nombreux artistes
-                trouvèrent refuge.
-            """
-        ]]
+    }
+    HISTORY = [
+        [
+            """Riche d'un long passé artistique, ce secteur de Paris (France)
+            dominé par la Basilique du Sacré-Cœur a toujours été le symbole
+            d'un mode de vie bohème où, de Picasso à Modigliani, de nombreux
+            artistes trouvèrent refuge."""
+        ]
+    ]
 
-    @property
-    def test_data(self):
+    @classmethod
+    def test_data(cls):
         data = {
-            "demand": self.demand,
-            "parsed": self.parsed,
-            "geoPlaceId": self.geoPlaceId,
-            "address": self.address,
-            "history": self.history
+            "demand": cls.DEMAND,
+            "parsed": cls.PARSED,
+            "geoPlaceId": cls.GEOPLACEID,
+            "address": cls.ADDRESS,
+            "history": cls.HISTORY
         }
         return data
 
@@ -57,11 +55,11 @@ class Parameter:
     @classmethod
     def testing(cls):
         test = {
-            "demand": cls.TESTINGCONFIG.test_data["demand"],
-            "parsed": cls.TESTINGCONFIG.test_data["parsed"],
-            "geoPlaceId": cls.TESTINGCONFIG.test_data["geoPlaceId"],
-            "address": cls.TESTINGCONFIG.test_data["address"],
-            "history": cls.TESTINGCONFIG.test_data["history"]
+            "demand": cls.TESTINGCONFIG.test_data()["demand"],
+            "parsed": cls.TESTINGCONFIG.test_data()["parsed"],
+            "geoPlaceId": cls.TESTINGCONFIG.test_data()["geoPlaceId"],
+            "address": cls.TESTINGCONFIG.test_data()["address"],
+            "history": cls.TESTINGCONFIG.test_data()["history"]
         }
         return test
 

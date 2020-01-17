@@ -123,19 +123,18 @@ class VarConf:
             ";",".","?","!"
         ]
     ]
-    def __init__(self):
-        self.map = "KEY_API_MAP"
-        self.static_map = "KEY_API_STATIC_MAP"
-        self.heroku_map = "HEROKU_KEY_API_MAP"
-        self.heroku_static_map = "HEROKU_KEY_API_STATIC_MAP"
+    MAP = "KEY_API_MAP"
+    STATIC_MAP = "KEY_API_STATIC_MAP"
+    HEROKU_MAP = "HEROKU_KEY_API_MAP"
+    HEROKU_STATIC_MAP = "HEROKU_KEY_API_STATIC_MAP"
 
-    @property
-    def var_env(self):
+    @classmethod
+    def var_env(cls):
         data = {
-            "KEY_API_MAP": self.map,
-            "KEY_API_STATIC_MAP": self.static_map,
-            "HEROKU_KEY_API_MAP": self.heroku_map,
-            "HEROKU_KEY_API_STATIC_MAP": self.heroku_static_map
+            "KEY_API_MAP": cls.MAP,
+            "KEY_API_STATIC_MAP": cls.STATIC_MAP,
+            "HEROKU_KEY_API_MAP": cls.HEROKU_MAP,
+            "HEROKU_KEY_API_STATIC_MAP": cls.HEROKU_STATIC_MAP
         }
         return data
 
@@ -161,15 +160,15 @@ class Parameter:
     def status_env(cls):
         if os.environ.get("HEROKU_KEY_API_MAP") is None:
             default = {
-                "map": os.getenv(cls.VARSCONFIG.var_env["KEY_API_MAP"]),
-                "staticMap": os.getenv(cls.VARSCONFIG.var_env["KEY_API_STATIC_MAP"]),
+                "map": os.getenv(cls.VARSCONFIG.var_env()["KEY_API_MAP"]),
+                "staticMap": os.getenv(cls.VARSCONFIG.var_env()["KEY_API_STATIC_MAP"]),
                 "status_prod": False
             }
             return default
         else:
             prod = {
-                "map": os.getenv(cls.VARSCONFIG.var_env["HEROKU_KEY_API_MAP"]),
-                "staticMap": os.getenv(cls.VARSCONFIG.var_env["HEROKU_KEY_API_STATIC_MAP"]),
+                "map": os.getenv(cls.VARSCONFIG.var_env()["HEROKU_KEY_API_MAP"]),
+                "staticMap": os.getenv(cls.VARSCONFIG.var_env()["HEROKU_KEY_API_STATIC_MAP"]),
                 "status_prod": True
             }
             return prod

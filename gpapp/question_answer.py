@@ -10,20 +10,18 @@ class DataAnswer:
     """
         management of API parameters by default for tests
     """
-    def __init__(self):
+    PLACEID = "ChIJTei4rhlu5kcRPivTUjAg1RU"
+    QUESTION = "ou se trouve la poste de marseille"
+    ADDRESSPLACE = "paris poste"
+    SEARCH = "montmartre"
 
-        self.placeId = "ChIJTei4rhlu5kcRPivTUjAg1RU"
-        self.question = "ou se trouve la poste de marseille"
-        self.addressPlace = "paris poste"
-        self.search = "montmartre"
-
-    @property
-    def data(self):
+    @classmethod
+    def data(cls):
         data = {
-            "placeId": self.placeId,
-            "question": self.question,
-            "addressPlace": self.addressPlace,
-            "search": self.search
+            "placeId": cls.PLACEID,
+            "question": cls.QUESTION,
+            "addressPlace": cls.ADDRESSPLACE,
+            "search": cls.SEARCH
         }
         return data
 
@@ -36,10 +34,10 @@ class Parameter:
     @classmethod
     def data_test(cls):
         data = {
-            "placeId": cls.DATAANSWER.data["placeId"],
-            "question": cls.DATAANSWER.data["question"],
-            "addressPlace": cls.DATAANSWER.data["addressPlace"],
-            "search": cls.DATAANSWER.data["search"]
+            "placeId": cls.DATAANSWER.data()["placeId"],
+            "question": cls.DATAANSWER.data()["question"],
+            "addressPlace": cls.DATAANSWER.data()["addressPlace"],
+            "search": cls.DATAANSWER.data()["search"]
         }
         return data
 
