@@ -17,7 +17,7 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    if setting.readQuotas() == True:
+    if setting.readQuotas():
         fDev.initial_status()
     return render_template("index.html")
 
@@ -39,7 +39,7 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    if setting.readQuotas() == True:
+    if setting.readQuotas():
         fDev.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
@@ -57,9 +57,9 @@ def answer_gp(reflection, question):
         data["map_status"] = fDev.map_coordinates(data)
         # control of the display of map coordinates
         coordonate_map = fDev.map_display(data)
-    except (TypeError, IndexError, UnboundLocalError):
+    except (TypeError, IndexError):
         setting.writeComprehension(False)
-        coordonate_map = None
+        return setting.readComprehension()
     # courtesy check to continue
     if setting.readCivility():
         setting.incrementCounter()
@@ -68,7 +68,13 @@ def answer_gp(reflection, question):
         setting.expiryCounter()
     # sending parameters
     data_send = {
-        "parameter_status": fDev.params_status(),
-        "map_status": coordonate_map
+        "parameter_status": {
+            "nb_request": setting.readCounter(),
+            "civility": setting.readCivility(),
+            "decency": setting.readDecency(),
+            "comprehension": setting.readComprehension()
+        },
+        "map_status": data["map_status"]["address"]["result"],
+        "wiki_status": data["map_status"]["history"]
     }
     return data_send

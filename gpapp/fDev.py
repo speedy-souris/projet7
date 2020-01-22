@@ -21,22 +21,6 @@ def initial_status():
     setting.writeComprehension(True)
     setting.writeCounter()
 
-#==========================
-# read status parameters
-#==========================
-def params_status():
-    """
-        read the REDIS parameters
-    """
-    parameter_status = {
-        "quotas_api": setting.readQuotas(),
-        "civility": setting.readCivility(),
-        "decency": setting.readDecency(),
-        "comprehension": setting.readComprehension(),
-        "nb_request": setting.readCounter()
-    }
-    return parameter_status
-
 #============================
 # Initialization Map Status
 #============================
@@ -46,15 +30,8 @@ def map_status():
         for displaying the map (grandpy response)
     """
     map_status = {
-        "answer": {
-            "address": "",
-            "history": ""
-        },
-        "data_map": {
-            "address": "",
-            "location": ""
-        },
-        "display_map": ""
+        "address": "",
+        "history": ""
     }
     return map_status
 
@@ -69,8 +46,9 @@ def wickedness(question):
      """
     # ~ parameter_status = data["parameter_status"]
 
-    if question.lower() in config.constant["list_indecency"]:
+    if question.lower() in config.constant()["list_indecency"]:
         setting.writeDecency(False)
+    return setting.readDecency()
 
 #=========================
 # Initialization Civility
@@ -81,8 +59,9 @@ def incivility(question):
         initialization of incivility
             - civility
     """
-    if question.lower() in config.constant["list_civility"]:
+    if question.lower() in config.constant()["list_civility"]:
         setting.writeCivility(True)
+    return setting.readCivility()
 
 #================================
 # address coordinate calculation
@@ -104,23 +83,24 @@ def map_coordinates(data):
     # creation of api google map coordinate address display setting
     # and wikipedia address history display setting
 
-    map_status["answer"]["address"] = get_address(place_id = place_id)
+    map_status["address"] = get_address(place_id = place_id)
 
 
 
-    map_status["answer"]["history"] = get_history(
+    map_status["history"] = get_history(
         search_history = " ".join(parse_answer)
     )
-    map_status["data_map"]["address"] = map_status[
-        "answer"]["address"]["result"]["formatted_address"]
-    map_status["data_map"]["location"] = map_status[
-        "answer"]["address"]["result"]["geometry"]["location"]
+    # ~ map_status["data_map"]["address"] =\
+        # ~ map_status["address"]["result"]["formatted_address"]
+    # ~ map_status["data_map"]["location"] =\
+        # ~ map_status["address"]["result"]["geometry"]["location"]
 
     # Display of the map according to the requested coordinates
     try:
-        map_status["data_map"]
+        map_status["address"]
     except KeyError:
         setting.writeQuotas(True)
+        return setting.readQuotas()
 
     return map_status
 
@@ -134,6 +114,7 @@ def map_display(data):
             - display_map
     """
     map_status = data["map_status"]
+    print(map_status)
     # display parameter map of requested coordinates
     display_map = get_map_static(map_status["data_map"])
     map_status["display_map"] = display_map

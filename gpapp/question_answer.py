@@ -6,7 +6,7 @@ import urllib.request, urllib.parse
 from .initial import Parameter as config
 from .classRedis import DataSetting as setting
 
-class DataAnswer:
+class ParamsDefault:
     """
         management of API parameters by default for tests
     """
@@ -25,26 +25,26 @@ class DataAnswer:
         }
         return data
 
-class Parameter:
+class Params:
     """
         API default settings for testing
     """
-    DATAANSWER = DataAnswer()
+    DATA = ParamsDefault()
 
     @classmethod
     def data_test(cls):
         data = {
-            "placeId": cls.DATAANSWER.data()["placeId"],
-            "question": cls.DATAANSWER.data()["question"],
-            "addressPlace": cls.DATAANSWER.data()["addressPlace"],
-            "search": cls.DATAANSWER.data()["search"]
+            "placeId": cls.DATA.data()["placeId"],
+            "question": cls.DATA.data()["question"],
+            "addressPlace": cls.DATA.data()["addressPlace"],
+            "search": cls.DATA.data()["search"]
         }
         return data
 
 #========
 # parser
 #========
-def parser(question=Parameter.data_test()["question"]):
+def parser(question=Params.data_test()["question"]):
     """
         function that cuts the string of characters (question asked to GrandPy)
         into a word list then delete all unnecessary words to keep only
@@ -64,7 +64,7 @@ def parser(question=Parameter.data_test()["question"]):
 #===================================
 # place_id search on Google Map API
 #===================================
-def get_place_id_list(address = Parameter.data_test()["addressPlace"]):
+def get_place_id_list(address = Params.data_test()["addressPlace"]):
     """
         Google map API place_id search function
     """
@@ -85,7 +85,7 @@ def get_place_id_list(address = Parameter.data_test()["addressPlace"]):
 #===========================
 # address on Google Map API
 #===========================
-def get_address(place_id=Parameter.data_test()["placeId"]):
+def get_address(place_id=Params.data_test()["placeId"]):
     """
         Google map API address search with place_id function
     """
@@ -102,7 +102,7 @@ def get_address(place_id=Parameter.data_test()["placeId"]):
 #=================================
 # history search on wikimedia API
 #=================================
-def get_history(search_history=Parameter.data_test()["search"]):
+def get_history(search_history=Params.data_test()["search"]):
     """
         wikipedia API (Wikimedia) history search
     """
@@ -140,7 +140,6 @@ def get_map_static(location_map):
         +str(localization['lat'])+","+str(localization['lng'])+f"&key={key}"
 
     return display_map
-
 
 if __name__ == "__main__":
     pass

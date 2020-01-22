@@ -46,7 +46,7 @@ class TestingConf:
         }
         return data
 
-class Parameter:
+class ParamsTest:
     """
         API default settings for testing
     """
@@ -72,9 +72,9 @@ def test_parser():
         search (location history & geographic coordinates)
     """
     # question asked to grandPy
-    demand = Parameter.testing()["demand"]
+    demand = ParamsTest.testing()["demand"]
 
-    assert parser(demand) == Parameter.testing()["parsed"]
+    assert parser(demand) == ParamsTest.testing()["parsed"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -83,7 +83,7 @@ def test_geolocal_id(monkeypatch):
         Json containing the reference ID of the address asked
     """
 
-    resul_pid = Parameter.testing()["geoPlaceId"]
+    resul_pid = ParamsTest.testing()["geoPlaceId"]
 
     def mockreturn(request):
         """
@@ -104,7 +104,7 @@ def test_geolocal_address(monkeypatch):
         Google Map A.P.I test function that returns a file
         Json containing the reference of the requested address
     """
-    resul_address = Parameter.testing()["address"]
+    resul_address = ParamsTest.testing()["address"]
 
     def mockreturn(request):
         """
@@ -125,7 +125,7 @@ def test_search_wiki(monkeypatch):
         A.P.I wikipedia test function (wikimedia) that returns a file
         Json containing the history of the requested address
     """
-    resul_history = Parameter.testing()["history"]
+    resul_history = ParamsTest.testing()["history"]
 
     def mockreturn(request):
         """
