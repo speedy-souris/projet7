@@ -18,13 +18,13 @@ class VarConf:
                 - word list not necessary
     """
     USABLE_LIST = [
-        [ # CIVILITY LIST
+        { # CIVILITY LIST
             "bonjour grandpy","bonsoir grandpy","salut grandpy",
             "hello grandpy","bonjour grandPy comment vas tu",
-            "comment allez vous grandpy","salut grandpy comment ca va"
+            "comment allez vous grandpy","salut grandpy comment ca va",
             "bonjour", "bonsoir","salut","hello"
-        ],
-        [ # INDECENCY LIST
+        },
+        { # INDECENCY LIST
             "salut vieux","salut vieux con","salut vieux poussierieux",
             "salut ancetre demode","salut vieillard senille","salut dinosaure decrepit",
             "salut arriere rococo","salut centenaire senille","salut vieillot archaique",
@@ -44,8 +44,8 @@ class VarConf:
             "ancetre demode","vieillard senille","dinosaure decrepit","arriere rococo",
             "centenaire senille","vieillot archaique","vieux gateux","vieux croulant",
             "antiquite","vieille baderne","vieux fossile"
-        ],
-        [ # UNNECESSARY LIST
+        },
+        { # UNNECESSARY LIST
             "a","abord","absolument","afin","ah","ai","aie","ailleurs","ainsi","ait",
             "allaient","allo","allons","allô","alors","ancetre","ancetre demode",
             "anterieur","anterieure","anterieures","antiquite","apres","après",
@@ -121,7 +121,7 @@ class VarConf:
             "vos","votre","vous","vous-mêmes","vu","vé","vôtre","vôtres","w","x","y","z",
             "zut","à","â","ça","ès","étaient","étais","était","étant","été","être","ô",",",
             ";",".","?","!"
-        ]
+        }
     ]
     MAP = "KEY_API_MAP"
     STATIC_MAP = "KEY_API_STATIC_MAP"
