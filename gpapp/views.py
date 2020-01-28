@@ -4,7 +4,7 @@
 import time
 from flask import Flask, render_template
 from . import fDev
-from .classRedis import DataSetting as setting
+from .classSetting import DataSetting as setting
 
 app = Flask(__name__)
 
@@ -49,14 +49,10 @@ def answer_gp(reflection, question):
     if not setting.readCivility():
         fDev.incivility(question)
     # coordinate calculation
-    data = {
-        "question": question,
-        "map_status": fDev.map_status()
-    }
     try:
-        data["map_status"] = fDev.map_coordinates(data)
+        map_status = fDev.map_coordinates(question)
         # control of the display of map coordinates
-        coordonate_map = fDev.map_display(data)
+        coordonate_map = fDev.map_display()
     except (TypeError, IndexError):
         setting.writeComprehension(False)
         return setting.readComprehension()
@@ -74,7 +70,8 @@ def answer_gp(reflection, question):
             "decency": setting.readDecency(),
             "comprehension": setting.readComprehension()
         },
-        "map_status": data["map_status"]["address"]["result"],
-        "wiki_status": data["map_status"]["history"]
+        "map_status": setting.readResponse["address"]["result"],
+        "wiki_status": setting.readResponse["history"]
     }
+
     return data_send

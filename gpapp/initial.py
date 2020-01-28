@@ -128,15 +128,6 @@ class VarConf:
     HEROKU_MAP = "HEROKU_KEY_API_MAP"
     HEROKU_STATIC_MAP = "HEROKU_KEY_API_STATIC_MAP"
 
-    @classmethod
-    def var_env(cls):
-        data = {
-            "KEY_API_MAP": cls.MAP,
-            "KEY_API_STATIC_MAP": cls.STATIC_MAP,
-            "HEROKU_KEY_API_MAP": cls.HEROKU_MAP,
-            "HEROKU_KEY_API_STATIC_MAP": cls.HEROKU_STATIC_MAP
-        }
-        return data
 
 class Parameter:
     """
@@ -144,15 +135,12 @@ class Parameter:
             - constant ==> call to constants
             - status_env ==> call of private keys (local / external)
     """
-    DATACONFIG = VarConf
-    VARSCONFIG = VarConf()
-
     @classmethod
     def constant(cls):
         data = {
-            "list_civility": cls.DATACONFIG.USABLE_LIST[0],
-            "list_indecency": cls.DATACONFIG.USABLE_LIST[1],
-            "list_unnecessary": cls.DATACONFIG.USABLE_LIST[2]
+            "list_civility": VarConf.USABLE_LIST[0],
+            "list_indecency": VarConf.USABLE_LIST[1],
+            "list_unnecessary": VarConf.USABLE_LIST[2]
         }
         return data
 
@@ -160,15 +148,15 @@ class Parameter:
     def status_env(cls):
         if os.environ.get("HEROKU_KEY_API_MAP") is None:
             default = {
-                "map": os.getenv(cls.VARSCONFIG.var_env()["KEY_API_MAP"]),
-                "staticMap": os.getenv(cls.VARSCONFIG.var_env()["KEY_API_STATIC_MAP"]),
+                "map": os.getenv(VarConf.MAP),
+                "staticMap": os.getenv(VarConf.STATIC_MAP),
                 "status_prod": False
             }
             return default
         else:
             prod = {
-                "map": os.getenv(cls.VARSCONFIG.var_env()["HEROKU_KEY_API_MAP"]),
-                "staticMap": os.getenv(cls.VARSCONFIG.var_env()["HEROKU_KEY_API_STATIC_MAP"]),
+                "map": os.getenv(VarConf.HEROKU_MAP),
+                "staticMap": os.getenv(VarConf.HEROKU_STATIC_MAP),
                 "status_prod": True
             }
             return prod

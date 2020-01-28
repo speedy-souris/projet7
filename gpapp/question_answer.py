@@ -4,7 +4,7 @@
 import json
 import urllib.request, urllib.parse
 from .initial import Parameter as config
-from .classRedis import DataSetting as setting
+from .classSetting import DataSetting as setting
 
 class ParamsDefault:
     """

@@ -3,12 +3,8 @@
 
 import json
 from io import BytesIO
-
 import urllib.request
-
-from ..question_answer import parser
-from ..question_answer import get_place_id_list, get_address
-from ..question_answer import get_history
+from .. import question_answer
 
 class TestingConf:
     """
@@ -74,7 +70,7 @@ def test_parser():
     # question asked to grandPy
     demand = ParamsTest.testing()["demand"]
 
-    assert parser(demand) == ParamsTest.testing()["parsed"]
+    assert question_answer.parser(demand) == ParamsTest.testing()["parsed"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -96,7 +92,7 @@ def test_geolocal_id(monkeypatch):
         urllib.request, 'urlopen',mockreturn
     )
 
-    assert get_place_id_list() == resul_pid
+    assert question_answer.get_place_id_list() == resul_pid
 
 # google map API test on address location
 def test_geolocal_address(monkeypatch):
@@ -117,7 +113,7 @@ def test_geolocal_address(monkeypatch):
         urllib.request, 'urlopen',mockreturn
     )
 
-    assert get_address() == resul_address
+    assert question_answer.get_address() == resul_address
 
 # WikiMedia APi test on search
 def test_search_wiki(monkeypatch):
@@ -138,4 +134,4 @@ def test_search_wiki(monkeypatch):
         urllib.request, 'urlopen',mockreturn
     )
 
-    assert get_history() == resul_history
+    assert question_answer.get_history() == resul_history

@@ -40,6 +40,17 @@ class RedisConnect:
     def reading(cls, data):
         return cls.CONNECT.get(data)
 
+#============================
+# Initialization Map Status
+#============================
+class InitMap:
+    """
+        initialization of the default settings
+        for displaying the map (grandpy response)
+    """
+    def __init__(self):
+        self.map_status = {}
+
                         #=================
                         # Data of setting
                         #=================
@@ -213,6 +224,7 @@ class DataSetting:
     DECENCY = DecencySetting()
     COMPREHENSION = ComprehensionSetting()
     COUNTER = CounterSetting()
+    STATUS = InitMap()
 
                         #======================
                         # Reading data setting
@@ -268,6 +280,31 @@ class DataSetting:
     @classmethod
     def incrementCounter(cls):
         cls.COUNTER.increment_counter
+
+                        #==================
+                        # reading data map
+                        #==================
+    @classmethod
+    def readResponse(cls):
+        return cls.STATUS.map_status
+                        #==================
+                        # writing data map
+                        #==================
+    @classmethod
+    def response(cls, data):
+        cls.STATUS.map_status["address"] = data[0]
+        cls.STATUS.map_status["history"] = data[1]
+        return cls.STATUS.map_status
+
+    @classmethod
+    def address_map(cls, address):
+        cls.STATUS.map_status["address"] = address
+        return cls.STATUS.map_status
+
+    @classmethod
+    def history_map(cls, history):
+        cls.STATUS.map_status["history"] = history
+        return cls.STATUS.map_status
 
 if __name__ == "__main__":
     pass
