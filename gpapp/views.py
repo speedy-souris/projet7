@@ -5,6 +5,7 @@ import time
 from flask import Flask, render_template
 from . import fDev
 from .classSetting import DataSetting as setting
+from . import question_answer
 
 app = Flask(__name__)
 
@@ -44,21 +45,14 @@ def answer_gp(reflection, question):
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # politeness check
-    fDev.wickedness(question)
+    question_answer.wickedness(question)
     # courtesy check
     if not setting.readCivility():
-        fDev.incivility(question)
+        question_answer.civility(question)
     # coordinate calculation
-    try:
-        map_status = fDev.map_coordinates(question)
-        # control of the display of map coordinates
-        coordonate_map = fDev.map_display()
-    except (TypeError, IndexError):
-        setting.writeComprehension(False)
-        return setting.readComprehension()
-    # courtesy check to continue
-    if setting.readCivility():
+    if question_answer.comprehension(question):
         setting.incrementCounter()
+    # control of the display of map coordinates
     if setting.readCounter() >= 10:
         setting.writeQuotas(True)
         setting.expiryCounter()
@@ -70,8 +64,7 @@ def answer_gp(reflection, question):
             "decency": setting.readDecency(),
             "comprehension": setting.readComprehension()
         },
-        "map_status": setting.readResponse["address"]["result"],
-        "wiki_status": setting.readResponse["history"]
+        "map_status": setting.readResponse()["address"],
+        "wiki_status": setting.readResponse()["history"]
     }
-
     return data_send

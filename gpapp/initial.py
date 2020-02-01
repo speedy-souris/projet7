@@ -140,7 +140,8 @@ class Parameter:
         data = {
             "list_civility": VarConf.USABLE_LIST[0],
             "list_indecency": VarConf.USABLE_LIST[1],
-            "list_unnecessary": VarConf.USABLE_LIST[2]
+            "list_unnecessary": VarConf.USABLE_LIST[2],
+            "list": VarConf.USABLE_LIST
         }
         return data
 

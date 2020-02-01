@@ -89,8 +89,8 @@ $(document).ready(function(){
 
         instruction.push($("#map")[0].src = response_json["map_status"]["display_map"]);
 
-        if (wiki_answer[3][1]){
-            var texte = $("#history").text(JSON.stringify(wiki_answer[3][1]));
+        if (wiki_answer[0][2]){
+            var texte = $("#history").text(JSON.stringify(wiki_answer[0][2]));
         }else{
             var texte = $("#history").text("Aie aie aie, le \'WIKI\' est vide... !");
         };
