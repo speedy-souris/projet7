@@ -41,7 +41,7 @@ def answer_gp(reflection, question):
             - location
     """
     if setting.readQuotas():
-        fDev.initial_status()
+        question_answer.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # politeness check
@@ -59,6 +59,7 @@ def answer_gp(reflection, question):
     # sending parameters
     data_send = {
         "parameter_status": {
+            "quotas_api": setting.readQuotas(),
             "nb_request": setting.readCounter(),
             "civility": setting.readCivility(),
             "decency": setting.readDecency(),

@@ -290,11 +290,11 @@ class DataSetting:
                         #==================
                         # writing data map
                         #==================
-    @classmethod
-    def response(cls, data):
-        cls.STATUS.map_status["address"] = data[0]
-        cls.STATUS.map_status["history"] = data[1]
-        return cls.STATUS.map_status
+    # ~ @classmethod
+    # ~ def response(cls, data):
+        # ~ cls.STATUS.map_status["address"] = data[0]
+        # ~ cls.STATUS.map_status["history"] = data[1]
+        # ~ return cls.STATUS.map_status
 
     @classmethod
     def address_map(cls, address):

@@ -18,19 +18,32 @@ class Params:
     """
         API default settings for testing
     """
-    DATA = ParamsDefault()
+    DEFAULT = ParamsDefault()
 
     @classmethod
     def data_test(cls):
         """
             Initialization of API parameters by default for tests
         """
-        cls.DATA.data["placeId"] = "ChIJTei4rhlu5kcRPivTUjAg1RU"
-        cls.DATA.data["question"] = "ou se trouve la poste de marseille"
-        cls.DATA.data["addressPlace"] = "paris poste"
-        cls.DATA.data["search"] = "montmartre"
+        cls.DEFAULT.data["placeId"] = "ChIJTei4rhlu5kcRPivTUjAg1RU"
+        cls.DEFAULT.data["question"] = "ou se trouve la poste de marseille"
+        cls.DEFAULT.data["addressPlace"] = "paris poste"
+        cls.DEFAULT.data["search"] = "montmartre"
 
-        return cls.DATA.data
+        return cls.DEFAULT.data
+
+#==================================
+# Initialization status parameters
+#==================================
+def initial_status():
+    """
+        creation and initialization of parameters for REDIS
+    """
+    setting.writeQuotas(False)
+    setting.writeCivility(False)
+    setting.writeDecency(True)
+    setting.writeComprehension(True)
+    setting.writeCounter()
 
 #================================
 # address coordinate calculation
@@ -204,6 +217,39 @@ def comprehension(question):
 
     return setting.readComprehension()
 
+#===================================
+# Initialization session by counter
+#===================================
+def counter_session(question, counter):
+    """
+        Session management function
+        initialization of session
+            - nb_request
+            - quotas_api
+    """
+    if counter >= 10:
+        setting.writeQuotas(True)
+
+    return setting.readQuotas()
+
+#==========================================
+# Initialization session by API parameters
+#==========================================
+def api_session(question, apiParams=False):
+    """
+        Session management function
+        initialization of session
+            - quotas_api
+    """
+    if apiParams:
+        setting.writeQuotas(True)
+
+    try:
+        map_coordinates(question)
+    except (TypeError,KeyError):
+        setting.writeQuotas(True)
+
+    return setting.readQuotas()
 
 if __name__ == "__main__":
     pass

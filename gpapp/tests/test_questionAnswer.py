@@ -23,7 +23,7 @@ class ParamsTest:
     TESTING = TestingConf()
 
     @classmethod
-    def test_testing(cls):
+    def testing(cls):
         """
             Initialization of API parameters by default for tests
         """
@@ -62,9 +62,9 @@ def test_parser():
         search (location history & geographic coordinates)
     """
     # question asked to grandPy
-    demand = ParamsTest.test_testing()["demand"]
+    demand = ParamsTest.testing()["demand"]
 
-    assert script.parser(demand) == ParamsTest.test_testing()["parsed"]
+    assert script.parser(demand) == ParamsTest.testing()["parsed"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -73,7 +73,7 @@ def test_geolocal_id(monkeypatch):
         Json containing the reference ID of the address asked
     """
 
-    resul_pid = ParamsTest.test_testing()["geoPlaceId"]
+    resul_pid = ParamsTest.testing()["geoPlaceId"]
 
     def mockreturn(request):
         """
@@ -94,7 +94,7 @@ def test_geolocal_address(monkeypatch):
         Google Map A.P.I test function that returns a file
         Json containing the reference of the requested address
     """
-    resul_address = ParamsTest.test_testing()["address"]
+    resul_address = ParamsTest.testing()["address"]
 
     def mockreturn(request):
         """
@@ -115,7 +115,7 @@ def test_search_wiki(monkeypatch):
         A.P.I wikipedia test function (wikimedia) that returns a file
         Json containing the history of the requested address
     """
-    resul_history = ParamsTest.test_testing()["history"]
+    resul_history = ParamsTest.testing()["history"]
 
     def mockreturn(request):
         """
@@ -145,7 +145,7 @@ def test_civility():
 # decency test
 def test_decency():
     """
-        dencency function test
+        decency function test
     """
     assert script.wickedness("vieux fossile") == False
 
@@ -156,6 +156,19 @@ def test_comprehension():
     """
     assert script.comprehension("bonjopur") == False
 
+# end of counterSession test
+def test_counterSession():
+    """
+        end of session function test by request counter
+    """
+    assert script.counter_session("mont saint-michel", 10) == True
+
+# end of apiSession test
+def test_apiSession():
+    """
+        end of session function test by API parameters
+    """
+    assert script.api_session("arene arles", apiParams=True) == True
 
 
 

@@ -1,34 +1,11 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-
+from . import question_answer
 from .classSetting import DataSetting as setting
 from .initial import Parameter as config
 
-#==========================
-# Initialization status parameters
-#==========================
-def initial_status():
-    """
-        creation and initialization of parameters for REDIS
-    """
-    setting.writeQuotas(False)
-    setting.writeCivility(False)
-    setting.writeDecency(True)
-    setting.writeComprehension(True)
-    setting.writeCounter()
 
-
-
-    # ~ address = setting.address_map(question_answer.get_address(place_id = place_id))
-    # ~ address = address["address"]["result"]
-    # ~ history = setting.history_map(question_answer.get_history(
-        # ~ search_history = " ".join(parse_answer))
-
-    # Display of the map according to the requested coordinates
-    # ~ return question_answer.get_history(
-        # ~ search_history = " ".join(parse_answer)
-    # ~ )
 
 #========================
 # map coordinate display
