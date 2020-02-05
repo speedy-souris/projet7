@@ -4,54 +4,12 @@
 import json
 from io import BytesIO
 import urllib.request
+from ..classSetting.dataTesting import ParamsTest as params
 from .. import question_answer as script
 
                         #=====================
                         # parser and API test
                         #=====================
-class TestingConf:
-    """
-        management of API parameters
-    """
-    def __init__(self):
-        self.data = {}
-
-class ParamsTest:
-    """
-        API default settings for testing
-    """
-    TESTING = TestingConf()
-
-    @classmethod
-    def testing(cls):
-        """
-            Initialization of API parameters by default for tests
-        """
-        cls.TESTING.data["demand"] =\
-            "ou est situé le restaurant la_nappe_d_or de lyon"
-        cls.TESTING.data["parsed"] = [
-            "restaurant","la_nappe_d_or","lyon"
-        ]
-        cls.TESTING.data["geoPlaceId"] = {
-            'candidates': [{
-                'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
-            }]
-        }
-        cls.TESTING.data["address"] = {
-            'result': {
-                'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
-            }
-        }
-        cls.TESTING.data["history"] = [
-            [
-                """Riche d'un long passé artistique, ce secteur de Paris (France)
-                dominé par la Basilique du Sacré-Cœur a toujours été le symbole
-                d'un mode de vie bohème où, de Picasso à Modigliani, de nombreux
-                artistes trouvèrent refuge."""
-            ]
-        ]
-
-        return cls.TESTING.data
 
 # parser test on the question asked to grandPy
 def test_parser():
@@ -62,9 +20,9 @@ def test_parser():
         search (location history & geographic coordinates)
     """
     # question asked to grandPy
-    demand = ParamsTest.testing()["demand"]
+    demand = params.testing()["demand"]
 
-    assert script.parser(demand) == ParamsTest.testing()["parsed"]
+    assert script.parser(demand) == params.testing()["parsed"]
 
 # google map API test on place id location
 def test_geolocal_id(monkeypatch):
@@ -73,7 +31,7 @@ def test_geolocal_id(monkeypatch):
         Json containing the reference ID of the address asked
     """
 
-    resul_pid = ParamsTest.testing()["geoPlaceId"]
+    resul_pid = params.testing()["geoPlaceId"]
 
     def mockreturn(request):
         """
@@ -94,7 +52,7 @@ def test_geolocal_address(monkeypatch):
         Google Map A.P.I test function that returns a file
         Json containing the reference of the requested address
     """
-    resul_address = ParamsTest.testing()["address"]
+    resul_address = params.testing()["address"]
 
     def mockreturn(request):
         """
@@ -115,7 +73,7 @@ def test_search_wiki(monkeypatch):
         A.P.I wikipedia test function (wikimedia) that returns a file
         Json containing the history of the requested address
     """
-    resul_history = ParamsTest.testing()["history"]
+    resul_history = params.testing()["history"]
 
     def mockreturn(request):
         """

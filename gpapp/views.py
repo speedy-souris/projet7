@@ -3,9 +3,10 @@
 
 import time
 from flask import Flask, render_template
-from . import fDev
-from .classSetting import DataSetting as setting
-from . import question_answer
+from .classSetting.dataRedis import DataRedis  as setting
+from .classSetting.dataMap import DataMap as data
+from .funcDev import fDev as func
+from . import question_answer as script
 
 app = Flask(__name__)
 
@@ -19,7 +20,7 @@ def index():
         single home page
     """
     if setting.readQuotas():
-        fDev.initial_status()
+        func.initial_status()
     return render_template("index.html")
 
 # Initialization of general parameters
@@ -41,16 +42,16 @@ def answer_gp(reflection, question):
             - location
     """
     if setting.readQuotas():
-        question_answer.initial_status()
+        func.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # politeness check
-    question_answer.wickedness(question)
+    script.wickedness(question)
     # courtesy check
     if not setting.readCivility():
-        question_answer.civility(question)
+        script.civility(question)
     # coordinate calculation
-    if question_answer.comprehension(question):
+    if script.comprehension(question):
         setting.incrementCounter()
     # control of the display of map coordinates
     if setting.readCounter() >= 10:
@@ -65,7 +66,7 @@ def answer_gp(reflection, question):
             "decency": setting.readDecency(),
             "comprehension": setting.readComprehension()
         },
-        "map_status": setting.readResponse()["address"],
-        "wiki_status": setting.readResponse()["history"]
+        "map_status": data.readResponse()["address"],
+        "wiki_status": data.readResponse()["history"]
     }
     return data_send

@@ -6,16 +6,14 @@ import os
 class VarConf:
     """
         API Private Key and Constants Management class:
-            local (development)
-                - KEY_API_MAP
-                - KEY_API_STATIC_MAP
-            external (production)
-                - HEROKU_KEY_API_MAP
-                - HEROKU_KEY_API_STATIC_MAP
-            - USABLE_LST
-                - civility list
-                - list for indecency
-                - word list not necessary
+            local (development) / external (production)
+                - map ==> KEY_API_MAP / HEROKU_KEY_API_MAP
+                - static_map ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
+        - status_prod (True / False)
+        Constants for dealing with the issue at Grandpy
+            - CIVILITY_LIST ==> list_civility.......
+            - INDECENCY_LIST ==> list_indecency..... ==> set()
+            - UNNECESSARY_LIST ==> list_unnecessary.
     """
     CIVILITY_LIST = set(
         (
@@ -128,6 +126,9 @@ class VarConf:
         )
     )
     def __init__(self):
+        """
+            constructor for initializing API keys
+        """
         self.data = {}
         self.map = "KEY_API_MAP"
         self.static_map = "KEY_API_STATIC_MAP"
@@ -175,11 +176,11 @@ class Parameter:
 
             return cls.CONST.data
         else:
-             cls.CONST.data["map"] = os.getenv(cls.CONST.heroku_map)
+            cls.CONST.data["map"] = os.getenv(cls.CONST.heroku_map)
             cls.CONST.data["staticMap"] = os.getenv(cls.CONST.heroku_static_map)
             cls.CONST.data["status_prod"] = True
 
             return cls.CONST.data
 
 if __name__ == "__main__":
-   pass
+    pass

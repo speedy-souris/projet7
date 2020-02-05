@@ -3,83 +3,15 @@
 
 import json
 import urllib.request, urllib.parse
-from .initial import Parameter as config
-from .classSetting import DataSetting as setting
-from . import question_answer
-
-class ParamsDefault:
-    """
-        management of API parameters
-    """
-    def __init__(self):
-        self.data = {}
-
-class Params:
-    """
-        API default settings for testing
-    """
-    DEFAULT = ParamsDefault()
-
-    @classmethod
-    def data_test(cls):
-        """
-            Initialization of API parameters by default for tests
-        """
-        cls.DEFAULT.data["placeId"] = "ChIJTei4rhlu5kcRPivTUjAg1RU"
-        cls.DEFAULT.data["question"] = "ou se trouve la poste de marseille"
-        cls.DEFAULT.data["addressPlace"] = "paris poste"
-        cls.DEFAULT.data["search"] = "montmartre"
-
-        return cls.DEFAULT.data
-
-#==================================
-# Initialization status parameters
-#==================================
-def initial_status():
-    """
-        creation and initialization of parameters for REDIS
-    """
-    setting.writeQuotas(False)
-    setting.writeCivility(False)
-    setting.writeDecency(True)
-    setting.writeComprehension(True)
-    setting.writeCounter()
-
-#================================
-# address coordinate calculation
-#================================
-def map_coordinates(question):
-    """
-        calculating the coordinates of the question asked to granbpy
-        Vars :
-            - parser_answer
-            - place_id_dict
-            - map_status
-    """
-    # keyword isolation for question
-    parse_answer = question_answer.parser(question = question)
-    place_id_dict = question_answer.get_place_id_list(
-        address = " ".join(parse_answer)
-    )
-    # creation and test public key api google map
-    place_id = place_id_dict["candidates"][0]["place_id"]
-    # creation of api google map coordinate address display setting
-    # and wikipedia address history display setting
-    setting.address_map(
-        question_answer.get_address(
-            place_id = place_id
-        )
-    )
-    setting.history_map(
-        question_answer.get_history(
-            search_history = " ".join(parse_answer)
-        )
-    )
+from .classSetting.dataInitial import Parameter as config
+from .classSetting.dataRedis import DataRedis as setting
+from .classSetting.dataDefault import Params as default
+from .funcDev import fDev as func
 
 #========
 # parser
 #========
-def parser(question=Params.data_test()["question"]):
+def parser(question=default.data_test()["question"]):
     """
         function that cuts the string of characters (question asked to GrandPy)
         into a word list then delete all unnecessary words to keep only
@@ -99,7 +31,7 @@ def parser(question=Params.data_test()["question"]):
 #===================================
 # place_id search on Google Map API
 #===================================
-def get_place_id_list(address = Params.data_test()["addressPlace"]):
+def get_place_id_list(address=default.data_test()["addressPlace"]):
     """
         Google map API place_id search function
     """
@@ -120,7 +52,7 @@ def get_place_id_list(address = Params.data_test()["addressPlace"]):
 #===========================
 # address on Google Map API
 #===========================
-def get_address(place_id=Params.data_test()["placeId"]):
+def get_address(place_id=default.data_test()["placeId"]):
     """
         Google map API address search with place_id function
     """
@@ -137,7 +69,7 @@ def get_address(place_id=Params.data_test()["placeId"]):
 #=================================
 # history search on wikimedia API
 #=================================
-def get_history(search_history=Params.data_test()["search"]):
+def get_history(search_history=default.data_test()["search"]):
     """
         wikipedia API (Wikimedia) history search
     """
@@ -211,7 +143,7 @@ def comprehension(question):
             - comprehension
     """
     try:
-        map_coordinates(question)
+        func.map_coordinates(question)
     except IndexError:
         setting.writeComprehension(False)
 
@@ -245,7 +177,7 @@ def api_session(question, apiParams=False):
         setting.writeQuotas(True)
 
     try:
-        map_coordinates(question)
+        func.map_coordinates(question)
     except (TypeError,KeyError):
         setting.writeQuotas(True)
 

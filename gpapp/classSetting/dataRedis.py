@@ -1,7 +1,7 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-from .initial import Parameter as config
+from .dataInitial import Parameter as config
 import redis
 
 #==============
@@ -26,30 +26,34 @@ class RedisConnect:
 
     @classmethod
     def writing(cls, data):
+        """
+            writing data to Redis
+        """
         cls.CONNECT.set(data[0], data[1])
 
     @classmethod
     def incrementing(cls, counter):
+        """
+            incrementing the request counter in Redis
+        """
         cls.CONNECT.incr(counter)
 
     @classmethod
     def expiry(cls, counter):
+        """
+            expiration
+            of the counter variable in Redis
+            (after 24 hours)
+        """
         cls.CONNECT.expire(counter[0],counter[1])
 
     @classmethod
     def reading(cls, data):
+        """
+            reading data in Redis
+        """
         return cls.CONNECT.get(data)
 
-#============================
-# Initialization Map Status
-#============================
-class InitMap:
-    """
-        initialization of the default settings
-        for displaying the map (grandpy response)
-    """
-    def __init__(self):
-        self.map_status = {}
 
                         #=================
                         # Data of setting
@@ -63,6 +67,10 @@ class QuotasSetting:
             - quotas_api
     """
     def __init__(self):
+        """
+            constructor
+            for initializing the quota_api variable in Redis
+        """
         self.quotas = 0
         data_redis = ("quotas_api", self.quotas)
         RedisConnect.writing(data_redis)
@@ -91,6 +99,10 @@ class CivilitySetting:
             - civility
     """
     def __init__(self):
+        """
+            constructor
+            for initializing the civility variable in Redis
+        """
         self.civility = 0
         data_redis = ("civility", self.civility)
         RedisConnect.writing(data_redis)
@@ -119,6 +131,10 @@ class DecencySetting:
             - decency
     """
     def __init__(self):
+        """
+            constructor
+            for initializing the decency variable in Redis
+        """
         self.decency = 1
         data_redis = ("decency", self.decency)
         RedisConnect.writing(data_redis)
@@ -147,6 +163,10 @@ class ComprehensionSetting:
             - comprehension
     """
     def __init__(self):
+        """
+            constructor
+            for initializing the comprehension variable in Redis
+        """
         self.comprehension = 1
         data_redis = ("comprehension", self.comprehension)
         RedisConnect.writing(data_redis)
@@ -175,6 +195,10 @@ class CounterSetting:
             - nb_request
     """
     def __init__(self):
+        """
+            constructor
+            for initializing the nb_request variable in Redis
+        """
         self.nb_request = 0
         RedisConnect.writing(("nb_request", self.nb_request))
 
@@ -200,6 +224,10 @@ class CounterSetting:
         return RedisConnect.reading("nb_request")
 
     def write_counter(self, counter):
+        """
+            modification of the value
+            of the request counter in Redis
+        """
         try:
             RedisConnect.writing((counter[0], counter[1]))
         except TypeError:
@@ -210,7 +238,7 @@ class CounterSetting:
                         # Data of setting
                         #=================
 
-class DataSetting:
+class DataRedis:
     """
         Management class for initializing configuration data
             - qotas
@@ -224,29 +252,43 @@ class DataSetting:
     DECENCY = DecencySetting()
     COMPREHENSION = ComprehensionSetting()
     COUNTER = CounterSetting()
-    STATUS = InitMap()
 
                         #======================
                         # Reading data setting
                         #======================
     @classmethod
     def readQuotas(cls):
+        """
+            reading the variable in Redis
+        """
         return bool(int(cls.QUOTAS.read_quotas))
 
     @classmethod
     def readCivility(cls):
+        """
+            reading the variable in Redis
+        """
         return bool(int(cls.CIVILITY.read_civility))
 
     @classmethod
     def readDecency(cls):
+        """
+            reading the variable in Redis
+        """
         return bool(int(cls.DECENCY.read_decency))
 
     @classmethod
     def readComprehension(cls):
+        """
+            reading the variable in Redis
+        """
         return bool(int(cls.COMPREHENSION.read_comprehension))
 
     @classmethod
     def readCounter(cls):
+        """
+            reading the variable in Redis
+        """
         return int(cls.COUNTER.read_counter)
 
                         #======================
@@ -254,6 +296,9 @@ class DataSetting:
                         #======================
     @classmethod
     def writeQuotas(cls, quotas):
+        """
+            writing the variable in Redis
+        """
         cls.QUOTAS.write_quotas(int(quotas))
 
     @classmethod
@@ -262,49 +307,37 @@ class DataSetting:
 
     @classmethod
     def writeDecency(cls, decency):
+        """
+            writing the variable in Redis
+        """
         cls.DECENCY.write_decency(int(decency))
 
     @classmethod
     def writeComprehension(cls, comprehension):
+        """
+            writing the variable in Redis
+        """
         cls.COMPREHENSION.write_comprehension(int(comprehension))
 
     @classmethod
     def writeCounter(cls):
+        """
+            writing the variable in Redis
+        """
         cls.COUNTER.write_counter(("nb_request", 0))
 
 
     @classmethod
     def expiryCounter(cls):
+        """
+            writing the variable in Redis
+        """
         cls.COUNTER.expiry_counter
 
     @classmethod
     def incrementCounter(cls):
+        """
+            writing the variable in Redis
+        """
         cls.COUNTER.increment_counter
 
-                        #==================
-                        # reading data map
-                        #==================
-    @classmethod
-    def readResponse(cls):
-        return cls.STATUS.map_status
-                        #==================
-                        # writing data map
-                        #==================
-    # ~ @classmethod
-    # ~ def response(cls, data):
-        # ~ cls.STATUS.map_status["address"] = data[0]
-        # ~ cls.STATUS.map_status["history"] = data[1]
-        # ~ return cls.STATUS.map_status
-
-    @classmethod
-    def address_map(cls, address):
-        cls.STATUS.map_status["address"] = address
-        return cls.STATUS.map_status
-
-    @classmethod
-    def history_map(cls, history):
-        cls.STATUS.map_status["history"] = history
-        return cls.STATUS.map_status
-
-if __name__ == "__main__":
-    pass
