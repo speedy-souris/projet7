@@ -3,7 +3,7 @@
 
 import time
 from flask import Flask, render_template
-from .classSetting.dataRedis import DataRedis  as setting
+from .classSetting.dataRedis import DataRedis as setting
 from .classSetting.dataMap import DataMap as data
 from .funcDev import fDev as func
 from . import question_answer as script

@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 import redis
-from . import dataInitial  as config
+from .dataInitial import Parameter as config
 
 #==============
 # Server Redis
@@ -13,7 +13,7 @@ class RedisConnect:
             - CONNECT
     """
 
-    if not config.Parameter.status_env()["status_prod"]:
+    if not config.status_env()["status_prod"]:
         CONNECT = redis.Redis(
             host="localhost",
             port=6379,
