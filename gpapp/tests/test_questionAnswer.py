@@ -10,124 +10,156 @@ from .. import question_answer as script
                         #=====================
                         # parser and API test
                         #=====================
-
-# parser test on the question asked to grandPy
-def test_parser():
+class TestApi:
     """
-        Test function on the separation of the character string (question asked
-        a papyRobot alias grandPy) in several words,
-        removing unnecessary words in order to keep the keywords for the
-        search (location history & geographic coordinates)
+        management of test APi parameters
     """
-    # question asked to grandPy
-    demand = params.testing()["demand"]
-
-    assert script.parser(demand) == params.testing()["parsed"]
-
-# google map API test on place id location
-def test_geolocal_id(monkeypatch):
-    """
-        Google Map A.P.I test function that returns a file
-        Json containing the reference ID of the address asked
-    """
-
-    resul_pid = params.testing()["geoPlaceId"]
-
-    def mockreturn(request):
+    DATA = params.testing()
+    # parser test on the question asked to grandPy
+    @classmethod
+    def test_parser(cls):
         """
-            Mock function on place_id object
+            Test function on the separation of the character string (question asked
+            a papyRobot alias grandPy) in several words,
+            removing unnecessary words in order to keep the keywords for the
+            search (location history & geographic coordinates)
         """
+        # question asked to grandPy
+        demand = cls.TestApi.DATA["demand"]
 
-        return BytesIO(json.dumps(resul_pid).encode())
+        assert script.ApiParams.parser(demand) == cls.TestApi.DATA["parsed"]
 
-    monkeypatch.setattr(
-        urllib.request, 'urlopen',mockreturn
-    )
-
-    assert script.get_place_id_list() == resul_pid
-
-# google map API test on address location
-def test_geolocal_address(monkeypatch):
-    """
-        Google Map A.P.I test function that returns a file
-        Json containing the reference of the requested address
-    """
-    resul_address = params.testing()["address"]
-
-    def mockreturn(request):
+    # google map API test on place id location
+    @classmethod
+    def test_geolocal_id(cls, monkeypatch):
         """
-            Mock function on place_id object
+            Google Map A.P.I test function that returns a file
+            Json containing the reference ID of the address asked
         """
 
-        return BytesIO(json.dumps(resul_address).encode())
+        resul_pid = cls.TestApi.DATA["geoPlaceId"]
 
-    monkeypatch.setattr(
-        urllib.request, 'urlopen',mockreturn
-    )
+        def mockreturn(request):
+            """
+                Mock function on place_id object
+            """
 
-    assert script.get_address() == resul_address
+            return BytesIO(json.dumps(resul_pid).encode())
 
-# WikiMedia APi test on search
-def test_search_wiki(monkeypatch):
-    """
-        A.P.I wikipedia test function (wikimedia) that returns a file
-        Json containing the history of the requested address
-    """
-    resul_history = params.testing()["history"]
+        monkeypatch.setattr(
+            urllib.request, 'urlopen',mockreturn
+        )
 
-    def mockreturn(request):
+        assert script.ApiParams.get_place_id_list() == resul_pid
+
+    # google map API test on address location
+    @classmethod
+    def test_geolocal_address(cls, monkeypatch):
         """
-            Mock function on history search
+            Google Map A.P.I test function that returns a file
+            Json containing the reference of the requested address
         """
+        resul_address = cls.TestApi.DATA["address"]
 
-        return BytesIO(json.dumps(resul_history).encode())
+        def mockreturn(request):
+            """
+                Mock function on place_id object
+            """
 
-    monkeypatch.setattr(
-        urllib.request, 'urlopen',mockreturn
-    )
+            return BytesIO(json.dumps(resul_address).encode())
 
-    assert script.get_history() == resul_history
+        monkeypatch.setattr(
+            urllib.request, 'urlopen',mockreturn
+        )
 
-                        #=======================================
-                        # politeness, comprehension,
-                        # comprehension and end of session test
-                        #=======================================
+        assert script.ApiParams.get_address() == resul_address
 
-# Civility test
-def test_civility():
+    # WikiMedia APi test on search
+    @classmethod
+    def test_search_wiki(cls, monkeypatch):
+        """
+            A.P.I wikipedia test function (wikimedia) that returns a file
+            Json containing the history of the requested address
+        """
+        resul_history = cls.TestApi.DATA["history"]
+
+        def mockreturn(request):
+            """
+                Mock function on history search
+            """
+
+            return BytesIO(json.dumps(resul_history).encode())
+
+        monkeypatch.setattr(
+            urllib.request, 'urlopen',mockreturn
+        )
+
+        assert script.ApiParams.get_history() == resul_history
+
+class TestBehaviour:
     """
-        civility function test
-    """
-    assert script.civility("montmartre") == False
 
-# decency test
-def test_decency():
     """
-        decency function test
-    """
-    assert script.wickedness("vieux fossile") == False
+                            #=======================================
+                            # politeness, comprehension,
+                            # comprehension and end of session test
+                            #=======================================
 
-# comprehension test
-def test_comprehension():
-    """
-        comprehension function test
-    """
-    assert script.comprehension("bonjopur") == False
+    # Civility test
+    def test_incivility(self):
+        """
+            civility function test
+        """
+        assert script.Behaviour.civility("montmartre") == False
 
-# end of counterSession test
-def test_counterSession():
-    """
-        end of session function test by request counter
-    """
-    assert script.counter_session("mont saint-michel", 10) == True
+    def test_civility(self):
+        """
+            civility function test
+        """
+        assert script.Behaviour.civility("bonjour") == True
 
-# end of apiSession test
-def test_apiSession():
-    """
-        end of session function test by API parameters
-    """
-    assert script.api_session("arene arles", apiParams=True) == True
+    # decency test
+    def test_indecency(self):
+        """
+            decency function test
+        """
+        assert script.Behaviour.wickedness("vieux fossile") == False
 
+    def test_decency(self):
+        """
+            decency function test
+        """
+        assert script.Behaviour.wickedness("bonjour grandpy") == True
 
+    # comprehension test
+    def test_incomprehension(self):
+        """
+            comprehension function test
+        """
+        assert script.Behaviour.comprehension("bonjopur") == False
 
+    def test_comprehension(self):
+        """
+            comprehension function test
+        """
+        assert script.Behaviour.comprehension("bonjour grandpy") == True
+
+    # end of counterSession test
+    def test_counterSession(self):
+        """
+            end of session function test by request counter
+        """
+        assert script.Behaviour.counter_session("mont saint-michel", 10) == True
+
+# civility and decency test
+# if civility == True
+#     assert decency == True / assert decency == False
+# if civility == False
+# assert decency == True / assert decency == False
+#    ------------------------------------
+# civility and comprehension test
+# if civility == True
+#     assert comprehension == True / assert comprehension == False
+# if civility == False
+# assert comprehension == True / assert comprehension == False
 

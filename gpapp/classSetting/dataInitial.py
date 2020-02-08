@@ -3,12 +3,12 @@
 
 import os
 
-class VarConf:
+class Parameter:
     """
         API Private Key and Constants Management class:
             local (development) / external (production)
-                - map ==> KEY_API_MAP / HEROKU_KEY_API_MAP
-                - static_map ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
+                - MAP ==> KEY_API_MAP / HEROKU_KEY_API_MAP
+                - STATIC_MAP ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
         - status_prod (True / False)
         Constants for dealing with the issue at Grandpy
             - CIVILITY_LIST ==> list_civility.......
@@ -125,41 +125,32 @@ class VarConf:
         ";",".","?","!"
         )
     )
+    MAP = "KEY_API_MAP"
+    STATIC_MAP = "KEY_API_STATIC_MAP"
+    HEROKU_MAP = "HEROKU_KEY_API_MAP"
+    HEROKU_STATIC_MAP = "HEROKU_KEY_API_STATIC_MAP"
+
     def __init__(self):
         """
-            constructor for initializing API keys
+            constructor to initialize default variables
         """
+        self.constant = {}
         self.data = {}
-        self.map = "KEY_API_MAP"
-        self.static_map = "KEY_API_STATIC_MAP"
-        self.heroku_map = "HEROKU_KEY_API_MAP"
-        self.heroku_static_map = "HEROKU_KEY_API_STATIC_MAP"
 
-
-class Parameter:
-    """
-        Parameter Call Management Class:
-            - constant ==> call to constants
-            - status_env ==> call of private keys (local / external)
-    """
-    CONST = VarConf()
-
-    @classmethod
-    def constant(cls):
+    def constant(self):
         """
             initialization of constants
                 - list_civility
                 - list_indecency
                 - list_unnecessary
         """
-        cls.CONST.data["list_civility"] = cls.CONST.CIVILITY_LIST
-        cls.CONST.data["list_indecency"] = cls.CONST.INDECENCY_LIST
-        cls.CONST.data["list_unnecessary"] = cls.CONST.UNNECESSARY_LIST
+        self.constant["list_civility"] = Parameter.CIVILITY_LIST
+        self.constant["list_indecency"] = Parameter.INDECENCY_LIST
+        self.constant["list_unnecessary"] = Parameter.UNNECESSARY_LIST
 
-        return cls.CONST.data
+        return self.constant
 
-    @classmethod
-    def status_env(cls):
+    def status_env(self):
         """
             management of environment variables
             local and online
@@ -168,19 +159,18 @@ class Parameter:
                 - heroku_map
                 - heroku_static_map
         """
-        if os.environ.get(cls.CONST.heroku_map) is None:
+        if os.environ.get(Parameter.HEROKU_MAP) is None:
 
-            cls.CONST.data["map"] = os.getenv(cls.CONST.map)
-            cls.CONST.data["staticMap"] = os.getenv(cls.CONST.static_map)
-            cls.CONST.data["status_prod"] = False
+            self.data["map"] = os.getenv(Parameter.MAP)
+            self.data["staticMap"] = os.getenv(Parameter.STATIC_MAP)
+            self.data["status_prod"] = False
 
-            return cls.CONST.data
         else:
-            cls.CONST.data["map"] = os.getenv(cls.CONST.heroku_map)
-            cls.CONST.data["staticMap"] = os.getenv(cls.CONST.heroku_static_map)
-            cls.CONST.data["status_prod"] = True
+            self.data["map"] = os.getenv(Parameter.HEROKU_MAP)
+            self.data["staticMap"] = os.getenv(Parameter.HEROKU_STATIC_MAP)
+            self.data["status_prod"] = True
 
-            return cls.CONST.data
+        return self.data
 
 if __name__ == "__main__":
     pass

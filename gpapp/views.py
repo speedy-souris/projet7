@@ -19,7 +19,7 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    if setting.readQuotas():
+    if setting.readQuotas() and setting.readCounter == 0:
         func.initial_status()
     return render_template("index.html")
 
@@ -45,18 +45,8 @@ def answer_gp(reflection, question):
         func.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
-    # politeness check
-    script.wickedness(question)
-    # courtesy check
-    if not setting.readCivility():
-        script.civility(question)
-    # coordinate calculation
-    if script.comprehension(question):
-        setting.incrementCounter()
-    # control of the display of map coordinates
-    if setting.readCounter() >= 10:
-        setting.writeQuotas(True)
-        setting.expiryCounter()
+    # exchange between the user and grandpy
+    func.user_exchange(question)
     # sending parameters
     data_send = {
         "parameter_status": {
@@ -66,7 +56,7 @@ def answer_gp(reflection, question):
             "decency": setting.readDecency(),
             "comprehension": setting.readComprehension()
         },
-        "map_status": data.readResponse()["address"],
-        "wiki_status": data.readResponse()["history"]
+        "map_status": data.readResponse().get("address", ""),
+        "wiki_status": data.readResponse().get("history", "")
     }
     return data_send

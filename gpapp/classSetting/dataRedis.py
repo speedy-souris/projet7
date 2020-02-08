@@ -1,8 +1,8 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-from .dataInitial import Parameter as config
 import redis
+from . import dataInitial  as config
 
 #==============
 # Server Redis
@@ -10,8 +10,10 @@ import redis
 class RedisConnect:
     """
         Initialization of Redis connection parameters
+            - CONNECT
     """
-    if not config.status_env()["status_prod"]:
+
+    if not config.Parameter.status_env()["status_prod"]:
         CONNECT = redis.Redis(
             host="localhost",
             port=6379,
@@ -25,27 +27,27 @@ class RedisConnect:
         )
 
     @classmethod
-    def writing(cls, data):
+    def writing(cls, data, value):
         """
             writing data to Redis
         """
-        cls.CONNECT.set(data[0], data[1])
+        cls.CONNECT.set(data, value)
 
     @classmethod
-    def incrementing(cls, counter):
+    def incrementing(cls, data):
         """
             incrementing the request counter in Redis
         """
-        cls.CONNECT.incr(counter)
+        cls.CONNECT.incr(data)
 
     @classmethod
-    def expiry(cls, counter):
+    def expiry(cls, data, value):
         """
             expiration
             of the counter variable in Redis
             (after 24 hours)
         """
-        cls.CONNECT.expire(counter[0],counter[1])
+        cls.CONNECT.expire(data, value)
 
     @classmethod
     def reading(cls, data):
@@ -72,16 +74,14 @@ class QuotasSetting:
             for initializing the quota_api variable in Redis
         """
         self.quotas = 0
-        data_redis = ("quotas_api", self.quotas)
-        RedisConnect.writing(data_redis)
+        RedisConnect.writing("quotas_api", self.quotas)
 
     def write_quotas(self, quotas):
         """
             saving of quotas configuration
         """
         self.quotas = quotas
-        data_quotas = ("quotas_api", self.quotas)
-        RedisConnect.writing(data_quotas)
+        RedisConnect.writing("quotas_api", self.quotas)
 
     @property
     def read_quotas(self):
@@ -104,16 +104,14 @@ class CivilitySetting:
             for initializing the civility variable in Redis
         """
         self.civility = 0
-        data_redis = ("civility", self.civility)
-        RedisConnect.writing(data_redis)
+        RedisConnect.writing("civility", self.civility)
 
     def write_civility(self, civility):
         """
             saving of civility configuration
         """
         self.civility = civility
-        data_civility = ("civility", self.civility)
-        RedisConnect.writing(data_civility)
+        RedisConnect.writing("civility", self.civility)
 
     @property
     def read_civility(self):
@@ -136,16 +134,14 @@ class DecencySetting:
             for initializing the decency variable in Redis
         """
         self.decency = 1
-        data_redis = ("decency", self.decency)
-        RedisConnect.writing(data_redis)
+        RedisConnect.writing("decency", self.decency)
 
     def write_decency(self, decency):
         """
             saving of decency configuration
         """
         self.decency = decency
-        data_decency = ("decency", self.decency)
-        RedisConnect.writing(data_decency)
+        RedisConnect.writing("decency", self.decency)
 
     @property
     def read_decency(self):
@@ -168,16 +164,14 @@ class ComprehensionSetting:
             for initializing the comprehension variable in Redis
         """
         self.comprehension = 1
-        data_redis = ("comprehension", self.comprehension)
-        RedisConnect.writing(data_redis)
+        RedisConnect.writing("comprehension", self.comprehension)
 
     def write_comprehension(self, comprehension):
         """
             saving of comprehension configuration
         """
         self.comprehension = comprehension
-        data_comprehension = ("comprehension", self.comprehension)
-        RedisConnect.writing(data_comprehension)
+        RedisConnect.writing("comprehension", self.comprehension)
 
     @property
     def read_comprehension(self):
@@ -200,7 +194,7 @@ class CounterSetting:
             for initializing the nb_request variable in Redis
         """
         self.nb_request = 0
-        RedisConnect.writing(("nb_request", self.nb_request))
+        RedisConnect.writing("nb_request", self.nb_request)
 
     @property
     def increment_counter(self):
@@ -214,7 +208,7 @@ class CounterSetting:
         """
             Expiration of the key nb_request (counter)
         """
-        RedisConnect.expiry(("nb_request", 86400))
+        RedisConnect.expiry("nb_request", 86400)
 
     @property
     def read_counter(self):
@@ -223,15 +217,15 @@ class CounterSetting:
         """
         return RedisConnect.reading("nb_request")
 
-    def write_counter(self, counter):
+    def write_counter(self, data, value):
         """
             modification of the value
             of the request counter in Redis
         """
         try:
-            RedisConnect.writing((counter[0], counter[1]))
+            RedisConnect.writing(data, value)
         except TypeError:
-            RedisConnect.writing(("nb_request", 0))
+            RedisConnect.writing("nb_request", 0)
 
                         #=================
                         # Initialization
@@ -324,7 +318,7 @@ class DataRedis:
         """
             writing the variable in Redis
         """
-        cls.COUNTER.write_counter(("nb_request", 0))
+        cls.COUNTER.write_counter("nb_request", 0)
 
 
     @classmethod
