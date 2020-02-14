@@ -3,7 +3,7 @@
 
 import os
 
-class Parameter:
+class InitData:
     """
         API Private Key and Constants Management class:
             local (development) / external (production)
@@ -11,20 +11,20 @@ class Parameter:
                 - STATIC_MAP ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
         - status_prod (True / False)
         Constants for dealing with the issue at Grandpy
-            - CIVILITY_LIST ==> list_civility.......
-            - INDECENCY_LIST ==> list_indecency..... ==> set()
-            - UNNECESSARY_LIST ==> list_unnecessary.
+            - CIVILITY_LIST....               .list_civility....
+            - INDECENCY_LIST... ==> set() ==> .list_indecency... ==> dict()
+            - UNNECESSARY_LIST.               .list_unnecessary.
     """
     CIVILITY_LIST = set(
-        (
+        [
         "bonjour grandpy","bonsoir grandpy","salut grandpy",
         "hello grandpy","bonjour grandPy comment vas tu",
         "comment allez vous grandpy","salut grandpy comment ca va",
         "bonjour", "bonsoir","salut","hello"
-        )
+        ]
     )
     INDECENCY_LIST = set(
-        (
+        [
         "salut vieux","salut vieux con","salut vieux poussierieux",
         "salut ancetre demode","salut vieillard senille","salut dinosaure decrepit",
         "salut arriere rococo","salut centenaire senille","salut vieillot archaique",
@@ -44,10 +44,10 @@ class Parameter:
         "ancetre demode","vieillard senille","dinosaure decrepit","arriere rococo",
         "centenaire senille","vieillot archaique","vieux gateux","vieux croulant",
         "antiquite","vieille baderne","vieux fossile"
-        )
+        ]
     )
     UNNECESSARY_LIST = set(
-        (
+        [
         "a","abord","absolument","afin","ah","ai","aie","ailleurs","ainsi","ait",
         "allaient","allo","allons","allô","alors","ancetre","ancetre demode",
         "anterieur","anterieure","anterieures","antiquite","apres","après",
@@ -123,33 +123,30 @@ class Parameter:
         "vos","votre","vous","vous-mêmes","vu","vé","vôtre","vôtres","w","x","y","z",
         "zut","à","â","ça","ès","étaient","étais","était","étant","été","être","ô",",",
         ";",".","?","!"
-        )
+        ]
     )
-    MAP = "KEY_API_MAP"
-    STATIC_MAP = "KEY_API_STATIC_MAP"
-    HEROKU_MAP = "HEROKU_KEY_API_MAP"
-    HEROKU_STATIC_MAP = "HEROKU_KEY_API_STATIC_MAP"
-
     def __init__(self):
         """
-            constructor to initialize default variables
+            constructor to initialize default variable
         """
+        self.key_data = {}
         self.constant = {}
-        self.data = {}
 
-    def constant(self):
+    @property
+    def constants(self):
         """
             initialization of constants
                 - list_civility
                 - list_indecency
                 - list_unnecessary
         """
-        self.constant["list_civility"] = Parameter.CIVILITY_LIST
-        self.constant["list_indecency"] = Parameter.INDECENCY_LIST
-        self.constant["list_unnecessary"] = Parameter.UNNECESSARY_LIST
+        self.constant["list_civility"] = InitData.CIVILITY_LIST
+        self.constant["list_indecency"] = InitData.INDECENCY_LIST
+        self.constant["list_unnecessary"] = InitData.UNNECESSARY_LIST
 
         return self.constant
 
+    @property
     def status_env(self):
         """
             management of environment variables
@@ -159,18 +156,17 @@ class Parameter:
                 - heroku_map
                 - heroku_static_map
         """
-        if os.environ.get(Parameter.HEROKU_MAP) is None:
+        if os.environ.get("HEROKU_KEY_API_MAP") is None:
 
-            self.data["map"] = os.getenv(Parameter.MAP)
-            self.data["staticMap"] = os.getenv(Parameter.STATIC_MAP)
-            self.data["status_prod"] = False
-
+            self.key_data["map"] = os.getenv("KEY_API_MAP")
+            self.key_data["staticMap"] = os.getenv("KEY_API_STATIC_MAP")
+            self.key_data["status_prod"] = False
         else:
-            self.data["map"] = os.getenv(Parameter.HEROKU_MAP)
-            self.data["staticMap"] = os.getenv(Parameter.HEROKU_STATIC_MAP)
-            self.data["status_prod"] = True
+            self.key_data["map"] = os.getenv("HEROKU_KEY_API_MAP")
+            self.key_data["staticMap"] = os.getenv("HEROKU_KEY_API_STATIC_MAP")
+            self.key_data["status_prod"] = True
 
-        return self.data
+        return self.key_data
 
 if __name__ == "__main__":
     pass

@@ -1,13 +1,19 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-import time
-from .. import question_answer as script
-from .. import views as reset
-from ..classSetting.dataRedis import DataRedis as setting
-from ..classSetting.dataMap import DataMap as data
+# ~ from .. import question_answer
+from dataRedis import DataRedis
+from dataMap import DataMap
 
-
+def instance():
+    """
+        creation of instances for imported classes
+    """
+    self.inst = {
+        "setting": DataRedis(),
+        "script": question_answer(),
+        "data": DataMap()
+    }
 #==================================
 # Initialization status parameters
 #==================================
@@ -15,11 +21,11 @@ def initial_status():
     """
         creation and initialization of parameters for REDIS
     """
-    setting.writeQuotas(False)
-    setting.writeCivility(False)
-    setting.writeDecency(True)
-    setting.writeComprehension(True)
-    setting.writeCounter()
+    instance()["setting"].writeQuotas(False)
+    instance()["setting"].writeCivility(False)
+    instance()["setting"].writeDecency(True)
+    instance()["setting"].writeComprehension(True)
+    instance()["setting"].writeCounter()
 
 #================================
 # address coordinate calculation
@@ -32,23 +38,24 @@ def map_coordinates(question):
             - place_id_dict
             - map_status
     """
+
     # keyword isolation for question
-    parse_answer = script.parser(question = question)
-    place_id_dict = script.get_place_id_list(
-        address = " ".join(parse_answer)
+    parse_answer = instance()["script"].ApiParams().parser(question=question)
+    place_id_dict = instance()["script"].ApiParams().get_place_id_list(
+        address=" ".join(parse_answer)
     )
     # creation and test public key api google map
     place_id = place_id_dict["candidates"][0]["place_id"]
     # creation of api google map coordinate address display setting
     # and wikipedia address history display setting
-    data.address_map(
-        script.get_address(
-            place_id = place_id
+    instance()["data"].DATAMAP.address_map(
+        script.ApiParams().get_address(
+            place_id=place_id
         )
     )
-    data.history_map(
-        script.get_history(
-            search_history = " ".join(parse_answer)
+    data.DATAMAP.history_map(
+        script.ApiParams().get_history(
+            search_history=" ".join(parse_answer)
         )
     )
 
@@ -57,17 +64,17 @@ def user_exchange(question):
         user / grandpy display initialization
     """
     # politeness check
-    script.wickedness(question)
+    script.Behaviour().wickedness(question)
     # courtesy check
-    script.civility(question)
+    script.Behaviour().civility(question)
     # comprehension check
-    script.comprehension(question)
+    script.Behaviour().comprehension(question)
     # end of session check
-    if setting.readCounter() >= 10:
-        setting.writeQuotas(True)
-        setting.expiryCounter()
-    script.counter_session(question, setting.readCounter)
-    script.apiSession(question)
+    if setting.DataRedis().readCounter() >= 10:
+        setting.DataRedis().writeQuotas(True)
+        setting.DataRedis().expiryCounter()
+    script.Behaviour().counter_session(question, setting.DataRedis().readCounter())
+    script.Behaviour().apiSession(question)
 
 #========================
 # map coordinate display
@@ -86,5 +93,5 @@ def user_exchange(question):
         # ~ data.address_map["result"]["geometry"]["location"]()
     # ~ )
 if __name__ == "__main__":
-    pass
+    print(setting.DataRedis().readCounter())
 

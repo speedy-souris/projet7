@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 import redis
-from .dataInitial import Parameter as config
+from .dataInitial import InitData as initial
 
 #==============
 # Server Redis
@@ -12,8 +12,7 @@ class RedisConnect:
         Initialization of Redis connection parameters
             - CONNECT
     """
-
-    if not config.status_env()["status_prod"]:
+    if not initial().status_env["status_prod"]:
         CONNECT = redis.Redis(
             host="localhost",
             port=6379,
@@ -235,11 +234,11 @@ class CounterSetting:
 class DataRedis:
     """
         Management class for initializing configuration data
-            - qotas
-            - civility
-            - decency
-            - comprehension
-            - counter
+            - QUOTAS........
+            - CIVILITY......
+            - DECENCY....... ==> class instance
+            - COMPREHENSION.
+            - COUNTER.......
     """
     QUOTAS = QuotasSetting()
     CIVILITY = CivilitySetting()
@@ -250,88 +249,86 @@ class DataRedis:
                         #======================
                         # Reading data setting
                         #======================
-    @classmethod
-    def readQuotas(cls):
+    @property
+    def read_quotas(self):
         """
             reading the variable in Redis
         """
-        return bool(int(cls.QUOTAS.read_quotas))
+        return bool(int(self.QUOTAS.read_quotas))
 
-    @classmethod
-    def readCivility(cls):
+    @property
+    def read_civility(self):
         """
             reading the variable in Redis
         """
-        return bool(int(cls.CIVILITY.read_civility))
+        return bool(int(self.CIVILITY.read_civility))
 
-    @classmethod
-    def readDecency(cls):
+    @property
+    def read_decency(self):
         """
             reading the variable in Redis
         """
-        return bool(int(cls.DECENCY.read_decency))
+        return bool(int(self.DECENCY.read_decency))
 
-    @classmethod
-    def readComprehension(cls):
+    @property
+    def read_comprehension(self):
         """
             reading the variable in Redis
         """
-        return bool(int(cls.COMPREHENSION.read_comprehension))
+        return bool(int(self.COMPREHENSION.read_comprehension))
 
-    @classmethod
-    def readCounter(cls):
+    @property
+    def read_counter(self):
         """
             reading the variable in Redis
         """
-        return int(cls.COUNTER.read_counter)
+        return int(self.COUNTER.read_counter)
 
                         #======================
                         # writing data setting
                         #======================
-    @classmethod
-    def writeQuotas(cls, quotas):
+    def write_quotas(self, quotas):
         """
             writing the variable in Redis
         """
-        cls.QUOTAS.write_quotas(int(quotas))
+        self.QUOTAS.write_quotas(int(quotas))
 
-    @classmethod
-    def writeCivility(cls, civility):
-        cls.CIVILITY.write_civility(int(civility))
+    def write_civility(self, civility):
+        self.CIVILITY.write_civility(int(civility))
 
-    @classmethod
-    def writeDecency(cls, decency):
+    def write_decency(self, decency):
         """
             writing the variable in Redis
         """
-        cls.DECENCY.write_decency(int(decency))
+        self.DECENCY.write_decency(int(decency))
 
-    @classmethod
-    def writeComprehension(cls, comprehension):
+    def write_comprehension(self, comprehension):
         """
             writing the variable in Redis
         """
-        cls.COMPREHENSION.write_comprehension(int(comprehension))
+        self.COMPREHENSION.write_comprehension(int(comprehension))
 
-    @classmethod
-    def writeCounter(cls):
+    @property
+    def write_counter(self):
         """
             writing the variable in Redis
         """
-        cls.COUNTER.write_counter("nb_request", 0)
+        self.COUNTER.write_counter("nb_request", 0)
 
 
-    @classmethod
-    def expiryCounter(cls):
+    @property
+    def expiry_counter(self):
         """
             writing the variable in Redis
         """
-        cls.COUNTER.expiry_counter
+        self.COUNTER.expiry_counter
 
-    @classmethod
-    def incrementCounter(cls):
+    @property
+    def increment_counter(self):
         """
             writing the variable in Redis
         """
-        cls.COUNTER.increment_counter
+        self.COUNTER.increment_counter
 
+if __name__ == "__main__":
+    pass

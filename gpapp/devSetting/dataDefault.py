@@ -1,13 +1,13 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-class Parameter:
+class DefaultData:
     """
         management of default API parameters
-            - PLACEID
-            - QUESTION
-            - ADDRESSPLACE
-            - SEARCH
+            - PLACEID......
+            - QUESTION.....
+            - ADDRESSPLACE. ==> dict()
+            - SEARCH.......
     """
     PLACEID = "ChIJTei4rhlu5kcRPivTUjAg1RU"
     QUESTION = "ou se trouve la poste de marseille"
@@ -17,17 +17,21 @@ class Parameter:
     def __init__(self):
         """
             constructor to initialize default variable
-                - data
         """
         self.data = {}
 
+    @property
     def data_test(self):
         """
             Initialization of API parameters by default for tests
         """
-        self.data["placeId"] = Parameter.PLACEID
-        self.data["question"] = Parameter.QUESTION
-        self.data["addressPlace"] = Parameter.ADDRESSPLACE
-        self.data["search"] = Parameter.SEARCH
+        self.data["placeId"] = DefaultData.PLACEID
+        self.data["question"] = DefaultData.QUESTION
+        self.data["addressPlace"] = DefaultData.ADDRESSPLACE
+        self.data["search"] = DefaultData.SEARCH
 
         return self.data
+
+
+if __name__ == "__main__":
+    pass

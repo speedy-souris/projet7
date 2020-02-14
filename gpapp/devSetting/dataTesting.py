@@ -33,6 +33,7 @@ class ParamsTest:
         """
         self.data = {}
 
+    @property
     def testing(self):
         """
             Initialization of API parameters by default for tests
@@ -45,3 +46,6 @@ class ParamsTest:
         self.data["history"] = ParamsTest.HISTORY
 
         return self.data
+
+if __name__ == "__main__":
+    pass

@@ -1,10 +1,12 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+
+
+
 #============================
 # Initialization Map Status
 #============================
-
 class DataMap:
     """
         management class for geographic coordinates of the map and
@@ -18,30 +20,20 @@ class DataMap:
             constructeur of initialization data map
         """
         self.map_status = {}
-                        #==================
-                        # reading data map
-                        #==================
-    @property
-    def readResponse(self):
-        """
-            reading card data
-        """
-        return self.map_status
 
                         #==================
                         # writing data map
                         #==================
-    def address_map(self, address):
+    def data_map(self, address, history):
         """
-            write map address data
+            write map address data / history data
         """
         self.map_status["address"] = address
-
-    def history_map(self, history):
-        """
-            write map history data
-        """
         self.map_status["history"] = history
+
+        return self.map_status
+
 
 if __name__ == "__main__":
     pass
+

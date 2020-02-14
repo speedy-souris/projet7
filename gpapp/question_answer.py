@@ -4,9 +4,9 @@
 import time
 import json
 import urllib.request, urllib.parse
-from .classSetting.dataInitial import Parameter as config
-from .classSetting.dataRedis import DataRedis as setting
-from .classSetting.dataDefault import Parameter as default
+from .classSetting import dataInitial as config
+from .classSetting import dataRedis as setting
+from .classSetting import dataDefault as default
 from .funcDev import fDev as func
 
 
@@ -14,14 +14,10 @@ class ApiParams:
     """
         management of APi parameters
     """
-    DATA = default.data_test()
-    CONSTANT = config.constant()
-    STATUS = config.status_env()
     #========
     # parser
     #========
-    @classmethod
-    def parser(cls, question=DATA["question"]):
+    def parser(self, question):
         """
             function that cuts the string of characters (question asked to GrandPy)
             into a word list then delete all unnecessary words to keep only
@@ -31,7 +27,7 @@ class ApiParams:
         # list of words to remove in questions
         list_question = question.split()
         result = [
-            w for w in list_question if w.lower() not in cls.ApiParams.CONSTANT[
+            w for w in list_question if w.lower() not in config.InitData().constant[
                 "list_unnecessary"
             ]
         ]
@@ -41,12 +37,11 @@ class ApiParams:
     #===================================
     # place_id search on Google Map API
     #===================================
-    @classmethod
-    def get_place_id_list(cls, address=DATA["addressPlace"]):
+    def get_place_id_list(self, address):
         """
             Google map API place_id search function
         """
-        key = cls.ApiParams.STATUS["map"] # environment variable
+        key = config.InitData().status_env["map"] # environment variable
         # replacing space by "% 20" in the string of characters
         address_encode = urllib.parse.quote(address)
 
@@ -62,12 +57,11 @@ class ApiParams:
     #===========================
     # address on Google Map API
     #===========================
-    @classmethod
-    def get_address(cls, place_id=DATA["placeId"]):
+    def get_address(self, place_id):
         """
             Google map API address search with place_id function
         """
-        key = cls.ApiParams.STATUS["map"] # environment variable
+        key = config.InitData().status_env["map"] # environment variable
         address_found= urllib.request.urlopen(
             "https://maps.googleapis.com/maps/api/place/details/"\
             f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
@@ -80,7 +74,7 @@ class ApiParams:
     #=================================
     # history search on wikimedia API
     #=================================
-    def get_history(self, search_history=DATA["search"]):
+    def get_history(self, search_history):
         """
             wikipedia API (Wikimedia) history search
         """
@@ -99,13 +93,12 @@ class ApiParams:
     #=========================================
     # map display in the Google Map Satic API
     #=========================================
-    @classmethod
-    def get_map_static(cls, location_map):
+    def get_map_static(self, location_map):
         """
             function of displaying the geolocation of the address
             asked to grandpy on the map of the Google Map Static API
         """
-        key = cls.ApiParams.STATUS["staticMap"]  # environment variable
+        key = config.InitData().status_env["staticMap"]  # environment variable
 
         # replacing space by "% 20" in the string of characters
         formatting_address = urllib.parse.quote(location_map["address"])
@@ -129,52 +122,56 @@ class Behaviour:
     """
     @property
     def t_decency(self):
-        return setting.writeDecency(True)
+        return setting.DataRedis().writeDecency(True)
 
     @property
     def f_decency(self):
-        return setting.writeDecency(False)
+        return setting.DataRedis().writeDecency(False)
 
     @property
     def r_decency(self):
-        return setting.readDecency()
+        return setting.DataRedis().readDecency()
 
     @property
     def t_civility(self):
-        return setting.writeCivility(True)
+        return setting.DataRedis().writeCivility(True)
 
     @property
     def f_civility(self):
-        return setting.writeCivility(False)
+        return setting.DataRedis().writeCivility(False)
 
     @property
     def r_civility(self):
-        return setting.readCivility()
+        return setting.DataRedis().readCivility()
 
     @property
     def t_comprehension(self):
-        return setting.writeComprehension(True)
+        return setting.DataRedis().writeComprehension(True)
 
     @property
     def f_comprehension(self):
-        return setting.writeComprehension(False)
+        return setting.DataRedis().writeComprehension(False)
 
     @property
     def r_comprehension(self):
-        return setting.readComprehension()
+        return setting.DataRedis().readComprehension()
 
     @property
     def t_quotas(self):
-        return setting.writeQuotas(True)
+        return setting.DataRedis().writeQuotas(True)
 
     @property
     def f_quotas(self):
-        return setting.writeQuotas(False)
+        return setting.DataRedis().writeQuotas(False)
 
     @property
     def r_quotas(self):
-        return setting.readQuotas()
+        return setting.DataRedis().readQuotas()
 
+class Politeness:
+    """
+
+    """
     #===========================
     # Initialization wickedness
     #===========================
@@ -184,10 +181,10 @@ class Behaviour:
             initialization of wickedness
                 - decency
          """
-        self.Behaviour.t_decency
-        if question.lower() in self.ApiParams.CONSTANT["list_indecency"]:
-            self.Behaviour.f_decency
-        return self.Behaviour.r_decency
+        Behaviour().t_decency
+        if question.lower() in config.InitData().constant["list_indecency"]:
+            Behaviour().f_decency
+        return Behaviour().r_decency
     #=========================
     # Initialization Civility
     #=========================
@@ -197,11 +194,11 @@ class Behaviour:
             initialization of incivility
                 - civility
         """
-        self.Behaviour.t_decency
+        Behaviour().t_decency
         # ~ setting.writeComprehension(True)
-        if question.lower() in self.ApiParams.CONSTANT["list_civility"]:
-            self.Behaviour.t_civility
-        return self.Behaviour.r_civility
+        if question.lower() in config.InitData().constant["list_civility"]:
+            Behaviour().t_civility
+        return Behaviour().r_civility
 
     #==============================
     # Initialization comprehension
@@ -215,11 +212,15 @@ class Behaviour:
         try:
             func.map_coordinates(question)
         except IndexError:
-            self.Behaviour.f_comprehension
-            return self.Behaviour.COMPREHENSION
-        self.Behaviour.t_comprehension
-        return self.Behaviour.r_comprehension
+            Behaviour().f_comprehension
+            return setting.DataRedis().COMPREHENSION
+        Behaviour().t_comprehension
+        return Behaviour().r_comprehension
 
+class Session:
+    """
+        management of session parameters
+    """
     #===================================
     # Initialization session by counter
     #===================================
@@ -231,10 +232,10 @@ class Behaviour:
                 - quotas_api
         """
         if counter >= 10:
-            self.Behaviour.t_quotas
-        setting.incrementCounter()
+            Behaviour().t_quotas
+        setting.DataRedis().incrementCounter()
 
-        return self.Behaviour.r_quotas
+        return Behaviour().r_quotas
 
     #==========================================
     # Initialization session by API parameters
@@ -246,14 +247,74 @@ class Behaviour:
                 - quotas_api
         """
         if apiParams:
-            self.Behaviour.t_quotas
+            Behaviour.t_quotas
 
         try:
             func.map_coordinates(question)
         except (TypeError,KeyError):
-            self.Behaviour.t_quotas
+            Behaviour().t_quotas
 
-        return self.Behaviour.r_quotas
+        return Behaviour().r_quotas
+
+class Response:
+    """
+        Management class
+        for initializing configuration response Grandpy
+    """
+    API = ApiParams()
+    BEHAVIOUR = Behaviour()
+    POLITENESS = Politeness()
+    SESSION = Session()
+
+    @property
+    def parsing(self):
+        """
+            parse the question to grandpy
+        """
+        return Response.API.parser(
+            question=default.DefaultData().data_test["question"]
+        )
+
+    @property
+    def id_list(self):
+        """
+            determine the internal API identifier
+            for each address requested
+        """
+        return Response.API.get_place_id_list(
+            address=default.DefaultData().data_test["addressPlace"]
+        )
+
+    @property
+    def address(self):
+        """
+            show address coordinates
+        """
+        return Response.API.get_address(
+            place_id=default.DefaultData().data_test["placeId"]
+        )
+
+    @property
+    def history(self):
+        """
+            view wikipedia history
+        """
+        return Response.API.get_history(
+            search_history=default.DefaultData().data_test["search"]
+        )
+
+
+    def map_static(self):
+        """
+            show the coordinates on the map
+        """
+        self.location = map["address"]
+        return Response.API.get_get_map_static(self, self.location)
+    # ~ def behave(self):
+        # ~ """
+            # ~ behavior of user
+        # ~ """
+        # ~ return self.BEHAVIOUR.
 
 if __name__ == "__main__":
     pass

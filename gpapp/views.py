@@ -3,10 +3,10 @@
 
 import time
 from flask import Flask, render_template
-from .classSetting.dataRedis import DataRedis as setting
-from .classSetting.dataMap import DataMap as data
-from .funcDev import fDev as func
-from . import question_answer as script
+from .classSetting import dataRedis as setting
+from .classSetting import dataMap as data
+from .funcDev import fDev
+# ~ import question_answer as script
 
 app = Flask(__name__)
 
@@ -19,11 +19,11 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    if setting.readQuotas() and setting.readCounter == 0:
-        func.initial_status()
+    if setting.DataRedis().readQuotas() and setting.DataRedis().readCounter == 0:
+        fDev().initial_status()
     return render_template("index.html")
 
-# Initialization of general parameters
+# ~ # Initialization of general parameters
 @app.route("/index/<reflection>/<question>")
 def answer_gp(reflection, question):
     """
@@ -41,22 +41,25 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    if setting.readQuotas():
-        func.initial_status()
+    if setting.DataRedis().readQuotas():
+        fDev().initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
-    func.user_exchange(question)
+    fDev().user_exchange(question)
     # sending parameters
     data_send = {
         "parameter_status": {
-            "quotas_api": setting.readQuotas(),
-            "nb_request": setting.readCounter(),
-            "civility": setting.readCivility(),
-            "decency": setting.readDecency(),
-            "comprehension": setting.readComprehension()
+            "quotas_api": setting.DataRedis().readQuotas(),
+            "nb_request": setting.DataRedis().readCounter(),
+            "civility": setting.DataRedis().readCivility(),
+            "decency": setting.DataRedis().readDecency(),
+            "comprehension": setting.DataRedis().readComprehension()
         },
-        "map_status": data.readResponse().get("address", ""),
-        "wiki_status": data.readResponse().get("history", "")
+        "map_status": data.dataMap().readResponse().get("address", ""),
+        "wiki_status": data.dataMap().readResponse().get("history", "")
     }
     return data_send
+
+if __name__ == "__main__":
+    pass
