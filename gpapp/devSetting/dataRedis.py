@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 
 import redis
-from .dataInitial import InitData as initial
+from .dataInitial import InitData as data
 
 #==============
 # Server Redis
@@ -12,7 +12,7 @@ class RedisConnect:
         Initialization of Redis connection parameters
             - CONNECT
     """
-    if not initial().status_env["status_prod"]:
+    if not data().status_env["status_prod"]:
         CONNECT = redis.Redis(
             host="localhost",
             port=6379,
@@ -54,7 +54,6 @@ class RedisConnect:
             reading data in Redis
         """
         return cls.CONNECT.get(data)
-
 
                         #=================
                         # Data of setting
@@ -329,6 +328,7 @@ class DataRedis:
             writing the variable in Redis
         """
         self.COUNTER.increment_counter
+
 
 if __name__ == "__main__":
     pass

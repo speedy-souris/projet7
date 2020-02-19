@@ -2,18 +2,9 @@
 #!/usr/bin/env python
 
 # ~ from .. import question_answer
-from dataRedis import DataRedis
-from dataMap import DataMap
+from . import dataRedis as setting
+from . import dataMap as map
 
-def instance():
-    """
-        creation of instances for imported classes
-    """
-    self.inst = {
-        "setting": DataRedis(),
-        "script": question_answer(),
-        "data": DataMap()
-    }
 #==================================
 # Initialization status parameters
 #==================================
@@ -76,6 +67,15 @@ def user_exchange(question):
     script.Behaviour().counter_session(question, setting.DataRedis().readCounter())
     script.Behaviour().apiSession(question)
 
+def debug():
+    """
+        debugging function for value and import verification
+    """
+    dbg_import = {
+        "name_redis": setting.DataRedis.__name__,
+        "name_map": map.DataMap.__name__,
+    }
+    return dbg_import
 #========================
 # map coordinate display
 #========================
@@ -93,5 +93,6 @@ def user_exchange(question):
         # ~ data.address_map["result"]["geometry"]["location"]()
     # ~ )
 if __name__ == "__main__":
-    print(setting.DataRedis().readCounter())
+    pass
+
 

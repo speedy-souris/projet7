@@ -3,10 +3,10 @@
 
 import time
 from flask import Flask, render_template
-from .classSetting import dataRedis as setting
-from .classSetting import dataMap as data
-from .funcDev import fDev
-# ~ import question_answer as script
+from .devSetting import dataRedis as setting
+from .devSetting import dataMap as data
+from .devSetting import fDev
+from . import question_answer as script
 
 app = Flask(__name__)
 
@@ -60,6 +60,7 @@ def answer_gp(reflection, question):
         "wiki_status": data.dataMap().readResponse().get("history", "")
     }
     return data_send
+
 
 if __name__ == "__main__":
     pass

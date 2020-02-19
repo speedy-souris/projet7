@@ -4,10 +4,10 @@
 import time
 import json
 import urllib.request, urllib.parse
-from .classSetting import dataInitial as config
-from .classSetting import dataRedis as setting
-from .classSetting import dataDefault as default
-from .funcDev import fDev as func
+from .devSetting import dataInitial as config
+from .devSetting import dataRedis as setting
+from .devSetting import dataDefault as default
+from .devSetting import fDev as func
 
 
 class ApiParams:
@@ -17,7 +17,7 @@ class ApiParams:
     #========
     # parser
     #========
-    def parser(self, question):
+    def parser(self, question=default.DefaultData().data_test["question"]):
         """
             function that cuts the string of characters (question asked to GrandPy)
             into a word list then delete all unnecessary words to keep only
@@ -41,7 +41,7 @@ class ApiParams:
         """
             Google map API place_id search function
         """
-        key = config.InitData().status_env["map"] # environment variable
+        key = ApiParams.DATA.status_env["map"] # environment variable
         # replacing space by "% 20" in the string of characters
         address_encode = urllib.parse.quote(address)
 
@@ -61,7 +61,7 @@ class ApiParams:
         """
             Google map API address search with place_id function
         """
-        key = config.InitData().status_env["map"] # environment variable
+        key = ApiParams.DATA.status_env["map"] # environment variable
         address_found= urllib.request.urlopen(
             "https://maps.googleapis.com/maps/api/place/details/"\
             f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
@@ -98,7 +98,7 @@ class ApiParams:
             function of displaying the geolocation of the address
             asked to grandpy on the map of the Google Map Static API
         """
-        key = config.InitData().status_env["staticMap"]  # environment variable
+        key = ApiParams.DATA.status_env["staticMap"]  # environment variable
 
         # replacing space by "% 20" in the string of characters
         formatting_address = urllib.parse.quote(location_map["address"])
@@ -266,14 +266,11 @@ class Response:
     POLITENESS = Politeness()
     SESSION = Session()
 
-    @property
-    def parsing(self):
+    def parsing(self,question=default.DefaultData().data_test["question"]):
         """
             parse the question to grandpy
         """
-        return Response.API.parser(
-            question=default.DefaultData().data_test["question"]
-        )
+        return Response.API.parser(qestion=default.DefaultData().data_test["question"])
 
     @property
     def id_list(self):
@@ -303,18 +300,12 @@ class Response:
             search_history=default.DefaultData().data_test["search"]
         )
 
-
     def map_static(self):
         """
             show the coordinates on the map
         """
         self.location = map["address"]
         return Response.API.get_get_map_static(self, self.location)
-    # ~ def behave(self):
-        # ~ """
-            # ~ behavior of user
-        # ~ """
-        # ~ return self.BEHAVIOUR.
 
 if __name__ == "__main__":
     pass

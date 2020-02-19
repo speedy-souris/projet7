@@ -4,8 +4,9 @@
 import json
 from io import BytesIO
 import urllib.request
-from . import classSeting as params
-from . import question_answer as script
+# ~ from gpapp import devSetting
+from gpapp.devSetting import dataTesting as params
+import gpapp.question_answer as script
 
                         #=====================
                         # parser and API test
@@ -14,7 +15,7 @@ class TestApi:
     """
         management of test APi parameters
     """
-    DATA = params.ParamsTest().testing()
+    DATA = params.ParamsTest().testing
     # parser test on the question asked to grandPy
     @classmethod
     def test_parser(cls):
@@ -110,13 +111,13 @@ class TestBehaviour:
         """
             civility function test
         """
-        assert script.Behaviour.civility("montmartre") == False
+        assert script.Politeness().civility("montmartre") == False
 
     def test_civility(self):
         """
             civility function test
         """
-        assert script.Behaviour.civility("bonjour") == True
+        assert script.Politeness().civility("bonjour") == True
 
     # decency test
     def test_indecency(self):
