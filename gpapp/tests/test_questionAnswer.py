@@ -4,9 +4,8 @@
 import json
 from io import BytesIO
 import urllib.request
-# ~ from gpapp import devSetting
-from gpapp.devSetting import dataTesting as params
-import gpapp.question_answer as script
+from ..devSetting import dataTesting as params
+from .. import question_answer as script
 
                         #=====================
                         # parser and API test
@@ -111,7 +110,7 @@ class TestBehaviour:
         """
             civility function test
         """
-        assert script.Politeness().civility("montmartre") == False
+        assert script.Response().POLITENESS.civility("montmartre") == False
 
     def test_civility(self):
         """

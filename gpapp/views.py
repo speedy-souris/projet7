@@ -3,10 +3,13 @@
 
 import time
 from flask import Flask, render_template
+# ~ import devSetting
+# ~ import gpapp
 from .devSetting import dataRedis as setting
+
 from .devSetting import dataMap as data
 from .devSetting import fDev
-from . import question_answer as script
+# ~ import question_answer as script
 
 app = Flask(__name__)
 
