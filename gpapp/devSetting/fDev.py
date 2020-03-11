@@ -1,9 +1,12 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-# ~ from .. import question_answer
-from . import dataRedis as setting
-from . import dataMap as map
+import json
+import urllib.request, urllib.parse
+# ~ from .. import question_answer as script
+from .dataRedis import Conversation
+# ~ from . import dataMap as map
+from .dataInitial import InitData
 
 #==================================
 # Initialization status parameters
@@ -12,11 +15,13 @@ def initial_status():
     """
         creation and initialization of parameters for REDIS
     """
-    instance()["setting"].writeQuotas(False)
-    instance()["setting"].writeCivility(False)
-    instance()["setting"].writeDecency(True)
-    instance()["setting"].writeComprehension(True)
-    instance()["setting"].writeCounter()
+    setting = Conversation()
+
+    setting.writeQuotas(False)
+    setting.writeCivility(False)
+    setting.writeDecency(True)
+    setting.writeComprehension(True)
+    setting.writeCounter()
 
 #================================
 # address coordinate calculation
@@ -31,8 +36,9 @@ def map_coordinates(question):
     """
 
     # keyword isolation for question
-    parse_answer = instance()["script"].ApiParams().parser(question=question)
-    place_id_dict = instance()["script"].ApiParams().get_place_id_list(
+    parse_answer = script.ApiParams().parser(question=question)
+
+    place_id_dict = script.ApiParams().get_place_id_list(
         address=" ".join(parse_answer)
     )
     # creation and test public key api google map
@@ -67,15 +73,73 @@ def user_exchange(question):
     script.Behaviour().counter_session(question, setting.DataRedis().readCounter())
     script.Behaviour().apiSession(question)
 
-def debug():
+# ~ def debug():
+    # ~ """
+        # ~ debugging function for value and import verification
+    # ~ """
+    # ~ dbg_import = {
+        # ~ "name_redis": setting.DataRedis.__name__,
+        # ~ "name_map": map.DataMap.__name__,
+    # ~ }
+    # ~ return dbg_import
+
+#===================================
+# place_id search on Google Map API
+#===================================
+def get_place_id_list(address):
     """
-        debugging function for value and import verification
+        Google map API place_id search function
     """
-    dbg_import = {
-        "name_redis": setting.DataRedis.__name__,
-        "name_map": map.DataMap.__name__,
-    }
-    return dbg_import
+    key = InitData().status_env["map"] # environment variable
+    # replacing space by "% 20" in the string of characters
+    address_encode = urllib.parse.quote(address)
+
+    place_id = urllib.request.urlopen(
+        "https://maps.googleapis.com/maps/api/place/findplacefromtext/"\
+        +f"json?input={address_encode}&inputtype=textquery&key={key}"
+    )
+
+    result = json.loads(place_id.read().decode("utf8"))
+
+    return result
+
+#===========================
+# address on Google Map API
+#===========================
+def get_address(place_id):
+    """
+        Google map API address search with place_id function
+    """
+    key = InitData().status_env["map"] # environment variable
+    address_found= urllib.request.urlopen(
+        "https://maps.googleapis.com/maps/api/place/details/"\
+        f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
+    )
+
+    result = json.loads(address_found.read().decode("utf8"))
+
+    return result
+
+#=================================
+# history search on wikimedia API
+#=================================
+def get_history(search_history):
+    """
+        wikipedia API (Wikimedia) history search
+    """
+
+    # replacing space by "% 20" in the string of characters
+    history_encode = urllib.parse.quote(search_history)
+
+    history_found = urllib.request.urlopen(
+        "https://fr.wikipedia.org/w/api.php?action=opensearch&search="\
+        f"{history_encode}&format=json"
+    )
+
+    result = json.loads(history_found.read().decode("utf8"))
+    return result
+
+
 #========================
 # map coordinate display
 #========================

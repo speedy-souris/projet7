@@ -55,7 +55,7 @@ class InitData:
         "aujourd'hui","aupres","auquel","aura","auraient","aurait","auront","aussi",
         "autre","autrefois","autrement","autres","autrui","aux","auxquelles",
         "auxquels","avaient","avais","avait","avant","avec","avoir","avons","ayant",
-        "b","bah","bas","basee","bat","beau","beaucoup","bien","bigre","Bonjour",
+        "b","bah","bas","basee","bat","beau","beaucoup","bien","bigre","bonjour",
         "bonjour grandpy","bonjour grandPy\, comment vas tu","bonsoir grandpy","boum",
         "bravo","brrr","c","car","ce","ceci","cela","celle","celle-ci","celle-là",
         "celles","celles-ci","celles-là","celui","celui-ci","celui-là","cent",

@@ -4,20 +4,20 @@
 import json
 from io import BytesIO
 import urllib.request
-from ..devSetting import dataTesting as params
-from .. import question_answer as script
+from .. import devSetting
+from ..devSetting.dataRedis import Conversation
+from ..devSetting import fDev
+# ~ from .. import question_answer
 
                         #=====================
                         # parser and API test
                         #=====================
+
 class TestApi:
     """
         management of test APi parameters
     """
-    DATA = params.ParamsTest().testing
-    # parser test on the question asked to grandPy
-    @classmethod
-    def test_parser(cls):
+    def test_parser(self):
         """
             Test function on the separation of the character string (question asked
             a papyRobot alias grandPy) in several words,
@@ -25,20 +25,27 @@ class TestApi:
             search (location history & geographic coordinates)
         """
         # question asked to grandPy
-        demand = cls.TestApi.DATA["demand"]
+        demand = Conversation("ou est situé le restaurant la_nappe_d_or de lyon")
 
-        assert script.ApiParams.parser(demand) == cls.TestApi.DATA["parsed"]
+        assert demand.parser() == ["restaurant","la_nappe_d_or","lyon"]
 
     # google map API test on place id location
-    @classmethod
-    def test_geolocal_id(cls, monkeypatch):
+    def test_geolocal_id(self, monkeypatch):
         """
             Google Map A.P.I test function that returns a file
             Json containing the reference ID of the address asked
         """
 
-        resul_pid = cls.TestApi.DATA["geoPlaceId"]
-
+        resul_pid = {
+            'candidates': [{
+                'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
+            }]
+        }
+        address_result = {
+            'result': {
+                'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
+            }
+        }
         def mockreturn(request):
             """
                 Mock function on place_id object
@@ -50,16 +57,19 @@ class TestApi:
             urllib.request, 'urlopen',mockreturn
         )
 
-        assert script.ApiParams.get_place_id_list() == resul_pid
+        assert fDev.get_place_id_list(address_result) == resul_pid
 
-    # google map API test on address location
-    @classmethod
-    def test_geolocal_address(cls, monkeypatch):
+    # ~ # google map API test on address location
+    def test_geolocal_address(self, monkeypatch):
         """
             Google Map A.P.I test function that returns a file
             Json containing the reference of the requested address
         """
-        resul_address = cls.TestApi.DATA["address"]
+        resul_address = {
+            'result': {
+                'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
+            }
+        }
 
         def mockreturn(request):
             """
@@ -72,16 +82,22 @@ class TestApi:
             urllib.request, 'urlopen',mockreturn
         )
 
-        assert script.ApiParams.get_address() == resul_address
+        assert fDev.get_address("ChIJTei4rhlu5kcRPivTUjAg1RU") == resul_address
 
     # WikiMedia APi test on search
-    @classmethod
-    def test_search_wiki(cls, monkeypatch):
+    def test_search_wiki(self, monkeypatch):
         """
             A.P.I wikipedia test function (wikimedia) that returns a file
             Json containing the history of the requested address
         """
-        resul_history = cls.TestApi.DATA["history"]
+        resul_history = [
+            [
+                """Riche d'un long passé artistique, ce secteur de Paris (France)
+                dominé par la Basilique du Sacré-Cœur a toujours été le symbole
+                d'un mode de vie bohème où, de Picasso à Modigliani, de nombreux
+                artistes trouvèrent refuge."""
+            ]
+        ]
 
         def mockreturn(request):
             """
@@ -94,62 +110,62 @@ class TestApi:
             urllib.request, 'urlopen',mockreturn
         )
 
-        assert script.ApiParams.get_history() == resul_history
+        assert fDev.get_history("montmartre") == resul_history
 
-class TestBehaviour:
-    """
+# ~ class TestBehaviour:
+    # ~ """
 
-    """
-                            #=======================================
-                            # politeness, comprehension,
-                            # comprehension and end of session test
-                            #=======================================
+    # ~ """
+                            # ~ #=======================================
+                            # ~ # politeness, comprehension,
+                            # ~ # comprehension and end of session test
+                            # ~ #=======================================
 
-    # Civility test
-    def test_incivility(self):
-        """
-            civility function test
-        """
-        assert script.Response().POLITENESS.civility("montmartre") == False
+    # ~ # Civility test
+    # ~ def test_incivility(self):
+        # ~ """
+            # ~ civility function test
+        # ~ """
+        # ~ assert script.Response().POLITENESS.civility("montmartre") == False
 
-    def test_civility(self):
-        """
-            civility function test
-        """
-        assert script.Politeness().civility("bonjour") == True
+    # ~ def test_civility(self):
+        # ~ """
+            # ~ civility function test
+        # ~ """
+        # ~ assert script.Politeness().civility("bonjour") == True
 
-    # decency test
-    def test_indecency(self):
-        """
-            decency function test
-        """
-        assert script.Behaviour.wickedness("vieux fossile") == False
+    # ~ # decency test
+    # ~ def test_indecency(self):
+        # ~ """
+            # ~ decency function test
+        # ~ """
+        # ~ assert script.Behaviour.wickedness("vieux fossile") == False
 
-    def test_decency(self):
-        """
-            decency function test
-        """
-        assert script.Behaviour.wickedness("bonjour grandpy") == True
+    # ~ def test_decency(self):
+        # ~ """
+            # ~ decency function test
+        # ~ """
+        # ~ assert script.Behaviour.wickedness("bonjour grandpy") == True
 
-    # comprehension test
-    def test_incomprehension(self):
-        """
-            comprehension function test
-        """
-        assert script.Behaviour.comprehension("bonjopur") == False
+    # ~ # comprehension test
+    # ~ def test_incomprehension(self):
+        # ~ """
+            # ~ comprehension function test
+        # ~ """
+        # ~ assert script.Behaviour.comprehension("bonjopur") == False
 
-    def test_comprehension(self):
-        """
-            comprehension function test
-        """
-        assert script.Behaviour.comprehension("bonjour grandpy") == True
+    # ~ def test_comprehension(self):
+        # ~ """
+            # ~ comprehension function test
+        # ~ """
+        # ~ assert script.Behaviour.comprehension("bonjour grandpy") == True
 
-    # end of counterSession test
-    def test_counterSession(self):
-        """
-            end of session function test by request counter
-        """
-        assert script.Behaviour.counter_session("mont saint-michel", 10) == True
+    # ~ # end of counterSession test
+    # ~ def test_counterSession(self):
+        # ~ """
+            # ~ end of session function test by request counter
+        # ~ """
+        # ~ assert script.Behaviour.counter_session("mont saint-michel", 10) == True
 
 # civility and decency test
 # if civility == True

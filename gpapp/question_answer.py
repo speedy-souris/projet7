@@ -4,9 +4,10 @@
 import time
 import json
 import urllib.request, urllib.parse
-from .devSetting import dataInitial as config
-from .devSetting import dataRedis as setting
-from .devSetting import dataDefault as default
+from . import devSetting
+from .devSetting.dataInitial import InitData as config
+# ~ from .devSetting.dataRedis import RedisConnect as setting
+from .devSetting.dataDefault import DefaultData as default
 from .devSetting import fDev as func
 
 
@@ -17,59 +18,59 @@ class ApiParams:
     #========
     # parser
     #========
-    def parser(self, question=default.DefaultData().data_test["question"]):
-        """
-            function that cuts the string of characters (question asked to GrandPy)
-            into a word list then delete all unnecessary words to keep only
-            the keywords for the search
-        """
+    # ~ def parser(self, question=default().data_test["question"]):
+        # ~ """
+            # ~ function that cuts the string of characters (question asked to GrandPy)
+            # ~ into a word list then delete all unnecessary words to keep only
+            # ~ the keywords for the search
+        # ~ """
 
-        # list of words to remove in questions
-        list_question = question.split()
-        result = [
-            w for w in list_question if w.lower() not in config.InitData().constant[
-                "list_unnecessary"
-            ]
-        ]
+        # ~ # list of words to remove in questions
+        # ~ list_question = question.split()
+        # ~ result = [
+            # ~ w for w in list_question if w.lower() not in config().constant[
+                # ~ "list_unnecessary"
+            # ~ ]
+        # ~ ]
 
-        return result
+        # ~ return result
 
     #===================================
     # place_id search on Google Map API
     #===================================
-    def get_place_id_list(self, address):
-        """
-            Google map API place_id search function
-        """
-        key = ApiParams.DATA.status_env["map"] # environment variable
-        # replacing space by "% 20" in the string of characters
-        address_encode = urllib.parse.quote(address)
+    # ~ def get_place_id_list(self, address):
+        # ~ """
+            # ~ Google map API place_id search function
+        # ~ """
+        # ~ key = config().status_env["map"] # environment variable
+        # ~ # replacing space by "% 20" in the string of characters
+        # ~ address_encode = urllib.parse.quote(address)
 
-        place_id = urllib.request.urlopen(
-            "https://maps.googleapis.com/maps/api/place/findplacefromtext/"\
-            +f"json?input={address_encode}&inputtype=textquery&key={key}"
-        )
+        # ~ place_id = urllib.request.urlopen(
+            # ~ "https://maps.googleapis.com/maps/api/place/findplacefromtext/"\
+            # ~ +f"json?input={address_encode}&inputtype=textquery&key={key}"
+        # ~ )
 
-        result = json.loads(place_id.read().decode("utf8"))
+        # ~ result = json.loads(place_id.read().decode("utf8"))
 
-        return result
+        # ~ return result
 
     #===========================
     # address on Google Map API
     #===========================
-    def get_address(self, place_id):
-        """
-            Google map API address search with place_id function
-        """
-        key = ApiParams.DATA.status_env["map"] # environment variable
-        address_found= urllib.request.urlopen(
-            "https://maps.googleapis.com/maps/api/place/details/"\
-            f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
-        )
+    # ~ def get_address(self, place_id):
+        # ~ """
+            # ~ Google map API address search with place_id function
+        # ~ """
+        # ~ key = config().status_env["map"] # environment variable
+        # ~ address_found= urllib.request.urlopen(
+            # ~ "https://maps.googleapis.com/maps/api/place/details/"\
+            # ~ f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
+        # ~ )
 
-        result = json.loads(address_found.read().decode("utf8"))
+        # ~ result = json.loads(address_found.read().decode("utf8"))
 
-        return result
+        # ~ return result
 
     #=================================
     # history search on wikimedia API
@@ -98,7 +99,7 @@ class ApiParams:
             function of displaying the geolocation of the address
             asked to grandpy on the map of the Google Map Static API
         """
-        key = ApiParams.DATA.status_env["staticMap"]  # environment variable
+        key = config().status_env["staticMap"]  # environment variable
 
         # replacing space by "% 20" in the string of characters
         formatting_address = urllib.parse.quote(location_map["address"])
@@ -122,51 +123,51 @@ class Behaviour:
     """
     @property
     def t_decency(self):
-        return setting.DataRedis().writeDecency(True)
+        return setting().writeDecency(True)
 
     @property
     def f_decency(self):
-        return setting.DataRedis().writeDecency(False)
+        return setting().writeDecency(False)
 
     @property
     def r_decency(self):
-        return setting.DataRedis().readDecency()
+        return setting().readDecency()
 
     @property
     def t_civility(self):
-        return setting.DataRedis().writeCivility(True)
+        return setting().writeCivility(True)
 
     @property
     def f_civility(self):
-        return setting.DataRedis().writeCivility(False)
+        return setting().writeCivility(False)
 
     @property
     def r_civility(self):
-        return setting.DataRedis().readCivility()
+        return setting().readCivility()
 
     @property
     def t_comprehension(self):
-        return setting.DataRedis().writeComprehension(True)
+        return setting().writeComprehension(True)
 
     @property
     def f_comprehension(self):
-        return setting.DataRedis().writeComprehension(False)
+        return setting().writeComprehension(False)
 
     @property
     def r_comprehension(self):
-        return setting.DataRedis().readComprehension()
+        return setting().readComprehension()
 
     @property
     def t_quotas(self):
-        return setting.DataRedis().writeQuotas(True)
+        return setting().writeQuotas(True)
 
     @property
     def f_quotas(self):
-        return setting.DataRedis().writeQuotas(False)
+        return setting().writeQuotas(False)
 
     @property
     def r_quotas(self):
-        return setting.DataRedis().readQuotas()
+        return setting().readQuotas()
 
 class Politeness:
     """
@@ -182,7 +183,7 @@ class Politeness:
                 - decency
          """
         Behaviour().t_decency
-        if question.lower() in config.InitData().constant["list_indecency"]:
+        if question.lower() in config().constant["list_indecency"]:
             Behaviour().f_decency
         return Behaviour().r_decency
     #=========================
@@ -195,8 +196,8 @@ class Politeness:
                 - civility
         """
         Behaviour().t_decency
-        # ~ setting.writeComprehension(True)
-        if question.lower() in config.InitData().constant["list_civility"]:
+        setting.writeComprehension(True)
+        if question.lower() in config().constant["list_civility"]:
             Behaviour().t_civility
         return Behaviour().r_civility
 
@@ -213,7 +214,7 @@ class Politeness:
             func.map_coordinates(question)
         except IndexError:
             Behaviour().f_comprehension
-            return setting.DataRedis().COMPREHENSION
+            return setting().COMPREHENSION
         Behaviour().t_comprehension
         return Behaviour().r_comprehension
 
@@ -233,7 +234,7 @@ class Session:
         """
         if counter >= 10:
             Behaviour().t_quotas
-        setting.DataRedis().incrementCounter()
+        setting().incrementCounter()
 
         return Behaviour().r_quotas
 
@@ -247,7 +248,7 @@ class Session:
                 - quotas_api
         """
         if apiParams:
-            Behaviour.t_quotas
+            Behaviour().t_quotas
 
         try:
             func.map_coordinates(question)
@@ -266,11 +267,11 @@ class Response:
     POLITENESS = Politeness()
     SESSION = Session()
 
-    def parsing(self,question=default.DefaultData().data_test["question"]):
+    def parsing(self,question=default().data_test["question"]):
         """
             parse the question to grandpy
         """
-        return Response.API.parser(qestion=default.DefaultData().data_test["question"])
+        return Response.API.parser(qestion=default().data_test["question"])
 
     @property
     def id_list(self):
@@ -279,7 +280,7 @@ class Response:
             for each address requested
         """
         return Response.API.get_place_id_list(
-            address=default.DefaultData().data_test["addressPlace"]
+            address=default().data_test["addressPlace"]
         )
 
     @property
@@ -288,7 +289,7 @@ class Response:
             show address coordinates
         """
         return Response.API.get_address(
-            place_id=default.DefaultData().data_test["placeId"]
+            place_id=default().data_test["placeId"]
         )
 
     @property
@@ -297,7 +298,7 @@ class Response:
             view wikipedia history
         """
         return Response.API.get_history(
-            search_history=default.DefaultData().data_test["search"]
+            search_history=default().data_test["search"]
         )
 
     def map_static(self):

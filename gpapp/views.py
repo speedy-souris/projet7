@@ -8,7 +8,7 @@ from flask import Flask, render_template
 from .devSetting import dataRedis as setting
 
 from .devSetting import dataMap as data
-from .devSetting import fDev
+from .devSetting import fDev as func
 # ~ import question_answer as script
 
 app = Flask(__name__)
@@ -22,8 +22,8 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    if setting.DataRedis().readQuotas() and setting.DataRedis().readCounter == 0:
-        fDev().initial_status()
+    if setting.DataRedis().read_quotas and setting.DataRedis().read_counter == 0:
+        func.initial_status()
     return render_template("index.html")
 
 # ~ # Initialization of general parameters
@@ -44,23 +44,23 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    if setting.DataRedis().readQuotas():
-        fDev().initial_status()
+    if setting.DataRedis().read_quotas:
+        func.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
-    fDev().user_exchange(question)
+    func.user_exchange(question)
     # sending parameters
     data_send = {
         "parameter_status": {
-            "quotas_api": setting.DataRedis().readQuotas(),
-            "nb_request": setting.DataRedis().readCounter(),
-            "civility": setting.DataRedis().readCivility(),
-            "decency": setting.DataRedis().readDecency(),
-            "comprehension": setting.DataRedis().readComprehension()
+            "quotas_api": setting.DataRedis().read_quotas,
+            "nb_request": setting.DataRedis().read_counter,
+            "civility": setting.DataRedis().read_civility,
+            "decency": setting.DataRedis().read_decency,
+            "comprehension": setting.DataRedis().read_comprehension
         },
-        "map_status": data.dataMap().readResponse().get("address", ""),
-        "wiki_status": data.dataMap().readResponse().get("history", "")
+        "map_status": data.DataMap().data_map().get("address", ""),
+        "wiki_status": data.dataMap().data_map().get("history", "")
     }
     return data_send
 
