@@ -111,6 +111,7 @@ def get_address(place_id):
         Google map API address search with place_id function
     """
     key = InitData().status_env["map"] # environment variable
+
     address_found= urllib.request.urlopen(
         "https://maps.googleapis.com/maps/api/place/details/"\
         f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
@@ -138,6 +139,29 @@ def get_history(search_history):
 
     result = json.loads(history_found.read().decode("utf8"))
     return result
+
+#=========================================
+# map display in the Google Map Satic API
+#=========================================
+def get_map_static(location_map):
+    """
+        function of displaying the geolocation of the address
+        asked to grandpy on the map of the Google Map Static API
+    """
+    key = InitData().status_env["staticMap"]  # environment variable
+
+    # replacing space by "% 20" in the string of characters
+    formatting_address = urllib.parse.quote(location_map["address"])
+    # longitude and latitude display
+    localization = location_map["location"]
+    # display map
+    display_map = "https://maps.googleapis.com/maps/api/staticmap?center="\
+        +formatting_address+\
+        "&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C"\
+        +str(localization['lat'])+","+str(localization['lng'])+f"&key={key}"
+
+    return display_map
+
 
 
 #========================
