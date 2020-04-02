@@ -4,7 +4,8 @@
 import json
 import urllib.request, urllib.parse
 # ~ from .. import question_answer as script
-from .dataRedis import Conversation
+from . import dataRedis
+
 # ~ from . import dataMap as map
 from .dataInitial import InitData
 
@@ -15,7 +16,7 @@ def initial_status():
     """
         creation and initialization of parameters for REDIS
     """
-    setting = Conversation()
+    setting = dataRedis.Conversation()
 
     setting.writeQuotas(False)
     setting.writeCivility(False)
@@ -72,16 +73,6 @@ def user_exchange(question):
         setting.DataRedis().expiryCounter()
     script.Behaviour().counter_session(question, setting.DataRedis().readCounter())
     script.Behaviour().apiSession(question)
-
-# ~ def debug():
-    # ~ """
-        # ~ debugging function for value and import verification
-    # ~ """
-    # ~ dbg_import = {
-        # ~ "name_redis": setting.DataRedis.__name__,
-        # ~ "name_map": map.DataMap.__name__,
-    # ~ }
-    # ~ return dbg_import
 
 #===================================
 # place_id search on Google Map API
@@ -162,24 +153,21 @@ def get_map_static(location_map):
 
     return display_map
 
+#====================
+# boolean conversion
+#====================
+def bool_convers(value):
+    """
+        conversion from boolean to int
+    """
+    return int(value)
 
+def int_convers(value):
+    """
+        conversion from int to boolean
+    """
+    return bool(value)
 
-#========================
-# map coordinate display
-#========================
-# ~ def map_display():
-    # ~ """
-        # ~ display calculated coordinates for the map
-        # ~ Vars:
-            # ~ - display_map
-    # ~ """
-    # ~ # display parameter map of requested coordinates
-
-
-    # ~ # response parameter to send
-    # ~ return script.get_map_static(
-        # ~ data.address_map["result"]["geometry"]["location"]()
-    # ~ )
 if __name__ == "__main__":
     pass
 

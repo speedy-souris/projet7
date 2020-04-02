@@ -3,10 +3,10 @@
 
 import json
 from io import BytesIO
-import urllib.request
+import urllib.request, urllib.parse
 from .. import devSetting
 from ..devSetting.dataRedis import Conversation
-from ..devSetting import fDev
+from ..devSetting import fDev as func
 # ~ from .. import question_answer
 
                         #=====================
@@ -56,8 +56,7 @@ class TestApi:
         monkeypatch.setattr(
             urllib.request, 'urlopen',mockreturn
         )
-
-        assert fDev.get_place_id_list(address_result) == resul_pid
+        assert urllib.parse.quote(func.get_place_id_list(address_result)) == resul_pid
 
     # ~ # google map API test on address location
     def test_geolocal_address(self, monkeypatch):
@@ -82,7 +81,7 @@ class TestApi:
             urllib.request, 'urlopen',mockreturn
         )
 
-        assert fDev.get_address("ChIJTei4rhlu5kcRPivTUjAg1RU") == resul_address
+        assert func.get_address("ChIJTei4rhlu5kcRPivTUjAg1RU") == resul_address
 
     # WikiMedia APi test on search
     def test_search_wiki(self, monkeypatch):
@@ -110,49 +109,40 @@ class TestApi:
             urllib.request, 'urlopen',mockreturn
         )
 
-        assert fDev.get_history("montmartre") == resul_history
+        assert func.get_history("montmartre") == resul_history
 
-# ~ class TestBehaviour:
-    # ~ """
+class TestBehaviour:
+    """
+        user behavior management
+            - Politeness
+            - Comprehension
+    """
 
-    # ~ """
-                            # ~ #=======================================
-                            # ~ # politeness, comprehension,
-                            # ~ # comprehension and end of session test
-                            # ~ #=======================================
+    # Civility test
+    def test_civility(self):
+        """
+            civility function test
+        """
+        demand = Conversation("montmartre")
 
-    # ~ # Civility test
-    # ~ def test_incivility(self):
-        # ~ """
-            # ~ civility function test
-        # ~ """
-        # ~ assert script.Response().POLITENESS.civility("montmartre") == False
+        assert False == demand.read_civility
 
-    # ~ def test_civility(self):
-        # ~ """
-            # ~ civility function test
-        # ~ """
-        # ~ assert script.Politeness().civility("bonjour") == True
 
-    # ~ # decency test
-    # ~ def test_indecency(self):
-        # ~ """
-            # ~ decency function test
-        # ~ """
-        # ~ assert script.Behaviour.wickedness("vieux fossile") == False
+    # decency test
+    def test_indecency(self):
+        """
+            decency function test
+        """
+        demand = Conversation("vieux")
+        assert demand.decency() == Conversation.read_decency
 
-    # ~ def test_decency(self):
-        # ~ """
-            # ~ decency function test
-        # ~ """
-        # ~ assert script.Behaviour.wickedness("bonjour grandpy") == True
-
-    # ~ # comprehension test
-    # ~ def test_incomprehension(self):
-        # ~ """
-            # ~ comprehension function test
-        # ~ """
-        # ~ assert script.Behaviour.comprehension("bonjopur") == False
+    # comprehension test
+    def test_incomprehension(self):
+        """
+            comprehension function test
+        """
+        demand = Conversation("bonjopur")
+        assert demand.comprehension() != Conversation.read_comprehension
 
     # ~ def test_comprehension(self):
         # ~ """

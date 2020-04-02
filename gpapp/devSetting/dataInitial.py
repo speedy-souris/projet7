@@ -17,33 +17,15 @@ class InitData:
     """
     CIVILITY_LIST = set(
         [
-        "bonjour grandpy","bonsoir grandpy","salut grandpy",
-        "hello grandpy","bonjour grandPy comment vas tu",
-        "comment allez vous grandpy","salut grandpy comment ca va",
-        "bonjour", "bonsoir","salut","hello"
+        "bonjour", "bonsoir","salut","hello","hi"
         ]
     )
     INDECENCY_LIST = set(
         [
-        "salut vieux","salut vieux con","salut vieux poussierieux",
-        "salut ancetre demode","salut vieillard senille","salut dinosaure decrepit",
-        "salut arriere rococo","salut centenaire senille","salut vieillot archaique",
-        "salut vieux","salut vieux gateux","salut vieux croulant","salut antiquite",
-        "salut vieille baderne","salut vieux fossile","bonjour vieux",
-        "bonjour vieux con","bonjour vieux poussierieux","bonjour ancetre demode",
-        "bonjour vieillard senille","bonjour dinosaure decrepit",
-        "bonjour arriere rococo","bonjour centenaire senille",
-        "bonjour vieillot archaique","bonjour vieux","bonjour vieux gateux",
-        "bonjour vieux croulant","bonjour antiquite","bonjour vieille baderne",
-        "bonjour vieux fossile","bonsoir vieux poussierieux","bonsoir ancetre demode",
-        "bonsoir vieillard senille","bonsoir dinosaure decrepit",
-        "bonsoir arriere rococo","bonsoir centenaire senille",
-        "bonsoir vieillot archaique","bonsoir vieux","bonsoir vieux gateux",
-        "bonsoir vieux croulant","bonsoir antiquite","bonsoir vieille baderne",
-        "bonsoir vieux fossile","sale vieux","vieux con","vieux poussierieux",
-        "ancetre demode","vieillard senille","dinosaure decrepit","arriere rococo",
-        "centenaire senille","vieillot archaique","vieux gateux","vieux croulant",
-        "antiquite","vieille baderne","vieux fossile"
+        "vieux","con","poussierieux","ancetre","demoder","vieillard","senille",
+        "dinosaure","decrepit","arrierer ","rococo","centenaire","senille",
+        "vieillot","archaique","gateux","croulant","antiquite","baderne","fossile",
+        "bjr","bsr","slt"
         ]
     )
     UNNECESSARY_LIST = set(
@@ -131,20 +113,6 @@ class InitData:
         """
         self.key_data = {}
         self.constant = {}
-
-    @property
-    def constants(self):
-        """
-            initialization of constants
-                - list_civility
-                - list_indecency
-                - list_unnecessary
-        """
-        self.constant["list_civility"] = InitData.CIVILITY_LIST
-        self.constant["list_indecency"] = InitData.INDECENCY_LIST
-        self.constant["list_unnecessary"] = InitData.UNNECESSARY_LIST
-
-        return self.constant
 
     @property
     def status_env(self):

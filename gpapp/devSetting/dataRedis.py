@@ -3,6 +3,7 @@
 
 import redis
 from .dataInitial import InitData
+from . import fDev as func
 # ~ from ..tests import test_questionAnswer
 #==============
 # Server Redis
@@ -39,40 +40,18 @@ class Conversation:
             constructor
             for initializing the API variables in Redis
         """
-        self.quotas = 0
-        self.civility = 0
-        self.decency = 1
-        self.comprehension = 1
-        self.nb_request = 0
+        # ~ self.quotas = False
+        # ~ self.civility = False
+        # ~ self.decency = True
+        # ~ self.comprehension = True
+        # ~ self.nb_request = 0
         self.question = question
 
-        Conversation.writing("quotas_api", self.quotas)
-        Conversation.writing("civility", self.civility)
-        Conversation.writing("decency", self.decency)
-        Conversation.writing("comprehension", self.comprehension)
-        Conversation.writing("nb_request", self.nb_request)
-
-    #========
-    # parser
-    #========
-    def parser(self):
-        """
-            function that cuts the string of characters (question asked to GrandPy)
-            into a word list then delete all unnecessary words to keep only
-            the keywords for the search
-        """
-
-        # list of words to remove in questions
-        list_question = self.question.split()
-        result = [
-            w for w in list_question if w.lower() not in Conversation.INITDATA.constants[
-                "list_unnecessary"
-            ]
-        ]
-
-        return result
-
-
+        Conversation.writing("quotas_api", func.bool_convers(False))
+        Conversation.writing("civility", func.bool_convers(False))
+        Conversation.writing("decency", func.bool_convers(True))
+        Conversation.writing("comprehension", func.bool_convers(True))
+        Conversation.writing("nb_request", 0)
 
     @classmethod
     def writing(cls, data, value):
@@ -108,97 +87,97 @@ class Conversation:
                         # Initialization
                         # Data of setting
                         #=================
-#============
-# Quotas_api
-#============
+    #============
+    # Quotas_api
+    #============
     def write_quotas(self, quotas):
         """
             saving of quotas configuration
         """
         self.quotas = quotas
-        Script.writing("quotas_api", self.quotas)
+        Conversation.writing("quotas_api", func.bool_convers(self.quotas))
 
     @property
     def read_quotas(self):
         """
             reading of quotas configuration
         """
-        return Script.reading("quotas_api")
+        return func.int_convers(Conversation.reading("quotas_api"))
 
-#==========
-# Civility
-#==========
+    #==========
+    # Civility
+    #==========
     def write_civility(self, civility):
         """
             saving of civility configuration
         """
-        self.civility = civility
-        Script.writing("civility", self.civility)
+        # ~ self.civility = civility
+        Conversation.writing("civility", func.bool_convers(civility))
 
     @property
     def read_civility(self):
         """
             reading of civility configuration
         """
-        return Script.reading("civility")
+        return func.int_convers(Conversation.reading("civility"))
 
-#=========
-# Decency
-#=========
+    #=========
+    # Decency
+    #=========
     def write_decency(self, decency):
         """
             saving of decency configuration
         """
         self.decency = decency
-        Script.writing("decency", self.decency)
+        Conversation.writing("decency", func.bool_convers(self.decency))
 
     @property
     def read_decency(self):
         """
             reading of decency configuration
         """
-        return Script.reading("decency")
+        return func.int_convers(Conversation.reading("decency"))
 
-#===============
-# comprehension
-#===============
+    #===============
+    # comprehension
+    #===============
     def write_comprehension(self, comprehension):
         """
             saving of comprehension configuration
         """
         self.comprehension = comprehension
-        Script.writing("comprehension", self.comprehension)
+        Conversation.writing("comprehension", func.bool_convers(self.comprehension))
 
     @property
     def read_comprehension(self):
         """
             reading of comprehension configuration
         """
-        return Script.reading("comprehension")
+        return func.int_convers(Conversation.reading("comprehension"))
 
-#=================
-# Counter Request
-#=================
+    #=================
+    # Counter Request
+    #=================
     @property
     def increment_counter(self):
         """
             Counter increment
         """
-        self.nb_request = Script.incrementing("nb_request")
+        self.nb_request = Conversation.incrementing("nb_request")
 
     @property
     def expiry_counter(self):
         """
             Expiration of the key nb_request (counter)
         """
-        Script.expiry("nb_request", 86400)
+        Conversation.expiry("nb_request", 86400)
 
     @property
     def read_counter(self):
         """
             reading of counter configuration
         """
-        return Script.reading("nb_request")
+        return Conversation.reading("nb_request")
 
     def write_counter(self, data, value):
         """
@@ -206,10 +185,111 @@ class Conversation:
             of the request counter in Redis
         """
         try:
-            Script.writing(data, value)
+            Conversation.writing(data, value)
         except TypeError:
-            Script.writing("nb_request", 0)
+            Conversation.writing("nb_request", 0)
+    #========
+    # parser
+    #========
+    def parser(self):
+        """
+            function that cuts the string of characters (question asked to GrandPy)
+            into a word list then delete all unnecessary words to keep only
+            the keywords for the search
+        """
 
+        # list of words to remove in questions
+        list_question = self.question.split()
+        result = [
+            w for w in list_question if w.lower() not in InitData.UNNECESSARY_LIST
+        ]
+
+        return result
+
+    #============
+    # attendance
+    # word_list
+    #============
+    # ~ def attendance(self):
+        # ~ """
+            # ~ presence of list item
+        # ~ """
+        # ~ # list of words to find in questions
+        # ~ list_question = self.question.split()
+        # ~ # search civility
+        # ~ result1 = bool(
+            # ~ [
+            # ~ w for w in list_question if w.lower() in InitData.CIVILITY_LIST
+            # ~ ]
+        # ~ )
+        # ~ # search decency
+        # ~ result2 = bool(
+            # ~ [
+            # ~ w for w in list_question if w.lower() in InitData.INDECENCY_LIST
+            # ~ ]
+        # ~ )
+        # ~ # search comprehension
+        # ~ result3 = bool(
+            # ~ [
+            # ~ w for w in list_question if w.lower()\
+                # ~ in InitData.CIVILITY_LIST and w.lower() in InitData.INDECENCY_LIST
+            # ~ ]
+        # ~ )
+
+        # ~ return (result1, result2, result3)
+
+    def civility(self):
+        """
+            modification of attributes civility
+        """
+        # list of words to find in questions
+        list_question = self.question.split()
+        # search civility
+        result1 = bool(
+            [
+            w for w in list_question if w.lower() in InitData.CIVILITY_LIST
+            ]
+        )
+        print(self.question)
+        print(result1)
+        self.write_civility(
+            func.bool_convers(result1)
+        )
+
+    def decency(self):
+        """
+            modification of attributes decency
+        """
+        # list of words to find in questions
+        list_question = self.question.split()
+        # search decency
+        result2 = bool(
+            [
+            w for w in list_question if w.lower() in InitData.INDECENCY_LIST
+            ]
+        )
+
+        self.write_decency(
+            func.bool_convers(result2)
+        )
+
+    def comprehension(self):
+        """
+            modification of attributes decency
+        """
+        # list of words to find in questions
+        list_question = self.question.split()
+        # search comprehension
+        result3 = bool(
+            [
+            w for w in list_question if w.lower()\
+                in InitData.CIVILITY_LIST and w.lower() in InitData.INDECENCY_LIST
+            ]
+        )
+
+        self.write_comprehension(
+            func.bool_convers(result3)
+        )
 
 if __name__ == "__main__":
     pass
