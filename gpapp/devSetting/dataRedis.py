@@ -3,11 +3,8 @@
 
 import redis
 from .dataInitial import InitData
-from . import fDev as func
-# ~ from ..tests import test_questionAnswer
-#==============
-# Server Redis
-#==============
+
+# Redis server organization
 class Conversation:
     """
         Initialization of Redis connection parameters
@@ -19,8 +16,10 @@ class Conversation:
             - comprehension
             - nb_request
     """
+                    #==============
+                    # Server Redis
+                    #==============
     INITDATA = InitData()
-    # ~ PARAMS = test_questionAnswer.TestAPi().PARAMS
 
     if not INITDATA.status_env["status_prod"]:
         CONNECT = redis.Redis(
@@ -40,18 +39,14 @@ class Conversation:
             constructor
             for initializing the API variables in Redis
         """
-        # ~ self.quotas = False
-        # ~ self.civility = False
-        # ~ self.decency = True
-        # ~ self.comprehension = True
-        # ~ self.nb_request = 0
         self.question = question
 
-        Conversation.writing("quotas_api", func.bool_convers(False))
-        Conversation.writing("civility", func.bool_convers(False))
-        Conversation.writing("decency", func.bool_convers(True))
-        Conversation.writing("comprehension", func.bool_convers(True))
-        Conversation.writing("nb_request", 0)
+        # ~ self.writing("quotas_api", CONVERSION.bool_convers(False))
+        # ~ self.writing("civility", CONVERSION.bool_convers(False))
+        # ~ self.writing("decency", CONVERSION.bool_convers(True))
+        # ~ self.writing("comprehension", CONVERSION.bool_convers(True))
+        # ~ self.writing("nb_request", 0)
+        self.initial_status()
 
     @classmethod
     def writing(cls, data, value):
@@ -87,6 +82,20 @@ class Conversation:
                         # Initialization
                         # Data of setting
                         #=================
+
+    #==================================
+    # Initialization status parameters
+    #==================================
+    def initial_status(self):
+        """
+            creation and initialization of parameters for REDIS
+        """
+        self.write_quotas(False)
+        self.write_civility(False)
+        self.write_decency(True)
+        self.write_comprehension(True)
+        self.write_counter("0")
+
     #============
     # Quotas_api
     #============
@@ -95,14 +104,14 @@ class Conversation:
             saving of quotas configuration
         """
         self.quotas = quotas
-        Conversation.writing("quotas_api", func.bool_convers(self.quotas))
+        self.writing("quotas_api", bool_convers(self.quotas))
 
     @property
     def read_quotas(self):
         """
             reading of quotas configuration
         """
-        return func.int_convers(Conversation.reading("quotas_api"))
+        return str_convers(self.reading("quotas_api"))
 
     #==========
     # Civility
@@ -112,14 +121,14 @@ class Conversation:
             saving of civility configuration
         """
         # ~ self.civility = civility
-        Conversation.writing("civility", func.bool_convers(civility))
+        self.writing("civility", bool_convers(civility))
 
     @property
     def read_civility(self):
         """
             reading of civility configuration
         """
-        return func.int_convers(Conversation.reading("civility"))
+        return str_convers(self.reading("civility"))
 
     #=========
     # Decency
@@ -128,15 +137,14 @@ class Conversation:
         """
             saving of decency configuration
         """
-        self.decency = decency
-        Conversation.writing("decency", func.bool_convers(self.decency))
+        self.writing("decency", bool_convers(decency))
 
     @property
     def read_decency(self):
         """
             reading of decency configuration
         """
-        return func.int_convers(Conversation.reading("decency"))
+        return str_convers(self.reading("decency"))
 
     #===============
     # comprehension
@@ -146,14 +154,17 @@ class Conversation:
             saving of comprehension configuration
         """
         self.comprehension = comprehension
-        Conversation.writing("comprehension", func.bool_convers(self.comprehension))
+        self.writing(
+            "comprehension",
+            bool_convers(self.comprehension)
+        )
 
     @property
     def read_comprehension(self):
         """
             reading of comprehension configuration
         """
-        return func.int_convers(Conversation.reading("comprehension"))
+        return str_convers(Conversation.reading("comprehension"))
 
     #=================
     # Counter Request
@@ -163,31 +174,32 @@ class Conversation:
         """
             Counter increment
         """
-        self.nb_request = Conversation.incrementing("nb_request")
+        self.nb_request = self.incrementing("nb_request")
 
     @property
     def expiry_counter(self):
         """
             Expiration of the key nb_request (counter)
         """
-        Conversation.expiry("nb_request", 86400)
+        self.expiry("nb_request", 86400)
 
     @property
     def read_counter(self):
         """
             reading of counter configuration
         """
-        return Conversation.reading("nb_request")
+        return self.reading("nb_request")
 
-    def write_counter(self, data, value):
+    def write_counter(self, value):
         """
             modification of the value
             of the request counter in Redis
         """
-        try:
-            Conversation.writing(data, value)
-        except TypeError:
-            Conversation.writing("nb_request", 0)
+        self.writing("nb_request", value)
+        # ~ try:
+            # ~ self.writing("nb_request", value)
+        # ~ except TypeError:
+            # ~ self.writing("nb_request", 0)
     #========
     # parser
     #========
@@ -206,38 +218,9 @@ class Conversation:
 
         return result
 
-    #============
-    # attendance
-    # word_list
-    #============
-    # ~ def attendance(self):
-        # ~ """
-            # ~ presence of list item
-        # ~ """
-        # ~ # list of words to find in questions
-        # ~ list_question = self.question.split()
-        # ~ # search civility
-        # ~ result1 = bool(
-            # ~ [
-            # ~ w for w in list_question if w.lower() in InitData.CIVILITY_LIST
-            # ~ ]
-        # ~ )
-        # ~ # search decency
-        # ~ result2 = bool(
-            # ~ [
-            # ~ w for w in list_question if w.lower() in InitData.INDECENCY_LIST
-            # ~ ]
-        # ~ )
-        # ~ # search comprehension
-        # ~ result3 = bool(
-            # ~ [
-            # ~ w for w in list_question if w.lower()\
-                # ~ in InitData.CIVILITY_LIST and w.lower() in InitData.INDECENCY_LIST
-            # ~ ]
-        # ~ )
-
-        # ~ return (result1, result2, result3)
-
+    #==========
+    # civility
+    #==========
     def civility(self):
         """
             modification of attributes civility
@@ -250,12 +233,11 @@ class Conversation:
             w for w in list_question if w.lower() in InitData.CIVILITY_LIST
             ]
         )
-        print(self.question)
-        print(result1)
-        self.write_civility(
-            func.bool_convers(result1)
-        )
+        self.write_civility(result1)
 
+    #=========
+    # decency
+    #=========
     def decency(self):
         """
             modification of attributes decency
@@ -265,13 +247,11 @@ class Conversation:
         # search decency
         result2 = bool(
             [
-            w for w in list_question if w.lower() in InitData.INDECENCY_LIST
+            w for w in list_question if w.lower() not in InitData.INDECENCY_LIST
             ]
         )
 
-        self.write_decency(
-            func.bool_convers(result2)
-        )
+        self.write_decency(result2)
 
     def comprehension(self):
         """
@@ -287,9 +267,35 @@ class Conversation:
             ]
         )
 
-        self.write_comprehension(
-            func.bool_convers(result3)
-        )
+        self.write_comprehension(result3)
+
+                    #==================================
+                    # converting data values for Redis
+                    #==================================
+# boolean ==> string
+def bool_convers(value):
+    """
+        conversion from boolean to string
+    """
+    if value :
+        return "1"
+    else:
+        return "0"
+
+ # string ==> boolean
+def str_convers(value):
+    """
+        conversion from string to boolean
+    """
+    value = value.decode("utf8")
+    if value == "0":
+        return False
+    elif value == "":
+        return False
+    else:
+        return True
+
 
 if __name__ == "__main__":
     pass
+

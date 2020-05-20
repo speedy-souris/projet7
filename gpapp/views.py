@@ -22,7 +22,8 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    if setting.DataRedis().read_quotas and setting.DataRedis().read_counter == 0:
+    conversation = setting.Conversation("")
+    if conversation.read_quotas and conversation.read_counter == 0:
         func.initial_status()
     return render_template("index.html")
 
@@ -44,7 +45,8 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    if setting.DataRedis().read_quotas:
+    conversation = setting.Conversation(question)
+    if conversation.read_quotas:
         func.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
@@ -53,11 +55,11 @@ def answer_gp(reflection, question):
     # sending parameters
     data_send = {
         "parameter_status": {
-            "quotas_api": setting.DataRedis().read_quotas,
-            "nb_request": setting.DataRedis().read_counter,
-            "civility": setting.DataRedis().read_civility,
-            "decency": setting.DataRedis().read_decency,
-            "comprehension": setting.DataRedis().read_comprehension
+            "quotas_api": conversation.read_quotas,
+            "nb_request": conversation.read_counter,
+            "civility": conversation.read_civility,
+            "decency": conversation.read_decency,
+            "comprehension": conversation.read_comprehension
         },
         "map_status": data.DataMap().data_map().get("address", ""),
         "wiki_status": data.dataMap().data_map().get("history", "")

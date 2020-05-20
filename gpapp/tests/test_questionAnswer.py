@@ -3,11 +3,10 @@
 
 import json
 from io import BytesIO
-import urllib.request, urllib.parse
-from .. import devSetting
+import urllib.request
+from ..devSetting.dataRedis import str_convers, bool_convers
 from ..devSetting.dataRedis import Conversation
-from ..devSetting import fDev as func
-# ~ from .. import question_answer
+from .. import question_answer as script
 
                         #=====================
                         # parser and API test
@@ -17,6 +16,7 @@ class TestApi:
     """
         management of test APi parameters
     """
+    # user question parser test
     def test_parser(self):
         """
             Test function on the separation of the character string (question asked
@@ -56,7 +56,7 @@ class TestApi:
         monkeypatch.setattr(
             urllib.request, 'urlopen',mockreturn
         )
-        assert urllib.parse.quote(func.get_place_id_list(address_result)) == resul_pid
+        assert func.get_place_id_list(address_result) == resul_pid
 
     # ~ # google map API test on address location
     def test_geolocal_address(self, monkeypatch):
@@ -123,31 +123,48 @@ class TestBehaviour:
         """
             civility function test
         """
+        # only one value on redis for civility : do not mix conversation object
         demand = Conversation("montmartre")
-
+        Conversation("montmartre").civility()
         assert False == demand.read_civility
-
+        other_demand = Conversation("bonjour")
+        Conversation("bonjour").civility()
+        assert True == other_demand.read_civility
 
     # decency test
-    def test_indecency(self):
+    def test_decency(self):
         """
             decency function test
         """
-        demand = Conversation("vieux")
-        assert demand.decency() == Conversation.read_decency
+        # only one value on redis for decency : do not mix conversation object
+        demand = Conversation("montmartre")
+        Conversation("montmartre").decency()
+        assert True == demand.read_decency
+        other_demand = Conversation("fossile")
+        Conversation("fossile").decency()
+        assert False == other_demand.read_decency
 
-    # comprehension test
-    def test_incomprehension(self):
+    # Convertion of boolean Test
+    def test_bool_to_string(self):
+        """
+            convert a boolean to string
+        """
+        assert bool_convers(False) == "0"
+        assert bool_convers(True) == "1"
+
+    def test_string_to_boolean(self):
+        """
+            convert a string to boolean
+        """
+        assert str_convers(b"0") == False
+        assert str_convers(b"1") == True
+        assert str_convers(b"") == False
+
+    def test_comprehension(self):
         """
             comprehension function test
         """
-        demand = Conversation("bonjopur")
-        assert demand.comprehension() != Conversation.read_comprehension
-
-    # ~ def test_comprehension(self):
-        # ~ """
-            # ~ comprehension function test
-        # ~ """
+        pass
         # ~ assert script.Behaviour.comprehension("bonjour grandpy") == True
 
     # ~ # end of counterSession test
@@ -157,17 +174,7 @@ class TestBehaviour:
         # ~ """
         # ~ assert script.Behaviour.counter_session("mont saint-michel", 10) == True
 
-# civility and decency test
-# if civility == True
-#     assert decency == True / assert decency == False
-# if civility == False
-# assert decency == True / assert decency == False
-#    ------------------------------------
-# civility and comprehension test
-# if civility == True
-#     assert comprehension == True / assert comprehension == False
-# if civility == False
-# assert comprehension == True / assert comprehension == False
+
 
 if __name__ == "__main__":
     pass

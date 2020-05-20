@@ -3,26 +3,10 @@
 
 import json
 import urllib.request, urllib.parse
-# ~ from .. import question_answer as script
-from . import dataRedis
-
+from .. import question_answer as script
+import devSetting.dataRedis
 # ~ from . import dataMap as map
 from .dataInitial import InitData
-
-#==================================
-# Initialization status parameters
-#==================================
-def initial_status():
-    """
-        creation and initialization of parameters for REDIS
-    """
-    setting = dataRedis.Conversation()
-
-    setting.writeQuotas(False)
-    setting.writeCivility(False)
-    setting.writeDecency(True)
-    setting.writeComprehension(True)
-    setting.writeCounter()
 
 #================================
 # address coordinate calculation
@@ -74,99 +58,7 @@ def user_exchange(question):
     script.Behaviour().counter_session(question, setting.DataRedis().readCounter())
     script.Behaviour().apiSession(question)
 
-#===================================
-# place_id search on Google Map API
-#===================================
-def get_place_id_list(address):
-    """
-        Google map API place_id search function
-    """
-    key = InitData().status_env["map"] # environment variable
-    # replacing space by "% 20" in the string of characters
-    address_encode = urllib.parse.quote(address)
 
-    place_id = urllib.request.urlopen(
-        "https://maps.googleapis.com/maps/api/place/findplacefromtext/"\
-        +f"json?input={address_encode}&inputtype=textquery&key={key}"
-    )
-
-    result = json.loads(place_id.read().decode("utf8"))
-
-    return result
-
-#===========================
-# address on Google Map API
-#===========================
-def get_address(place_id):
-    """
-        Google map API address search with place_id function
-    """
-    key = InitData().status_env["map"] # environment variable
-
-    address_found= urllib.request.urlopen(
-        "https://maps.googleapis.com/maps/api/place/details/"\
-        f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
-    )
-
-    result = json.loads(address_found.read().decode("utf8"))
-
-    return result
-
-#=================================
-# history search on wikimedia API
-#=================================
-def get_history(search_history):
-    """
-        wikipedia API (Wikimedia) history search
-    """
-
-    # replacing space by "% 20" in the string of characters
-    history_encode = urllib.parse.quote(search_history)
-
-    history_found = urllib.request.urlopen(
-        "https://fr.wikipedia.org/w/api.php?action=opensearch&search="\
-        f"{history_encode}&format=json"
-    )
-
-    result = json.loads(history_found.read().decode("utf8"))
-    return result
-
-#=========================================
-# map display in the Google Map Satic API
-#=========================================
-def get_map_static(location_map):
-    """
-        function of displaying the geolocation of the address
-        asked to grandpy on the map of the Google Map Static API
-    """
-    key = InitData().status_env["staticMap"]  # environment variable
-
-    # replacing space by "% 20" in the string of characters
-    formatting_address = urllib.parse.quote(location_map["address"])
-    # longitude and latitude display
-    localization = location_map["location"]
-    # display map
-    display_map = "https://maps.googleapis.com/maps/api/staticmap?center="\
-        +formatting_address+\
-        "&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C"\
-        +str(localization['lat'])+","+str(localization['lng'])+f"&key={key}"
-
-    return display_map
-
-#====================
-# boolean conversion
-#====================
-def bool_convers(value):
-    """
-        conversion from boolean to int
-    """
-    return int(value)
-
-def int_convers(value):
-    """
-        conversion from int to boolean
-    """
-    return bool(value)
 
 if __name__ == "__main__":
     pass

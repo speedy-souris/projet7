@@ -5,16 +5,98 @@ import time
 import json
 import urllib.request, urllib.parse
 from . import devSetting
+import gpapp.devSetting.dataRedis as data
 # ~ from .devSetting.dataInitial import InitData as config
-from .devSetting.dataRedis import Conversation
-# ~ from .devSetting.dataDefault import DefaultData as default
-from .devSetting import fDev as func
 
 
-# ~ class ApiParams:
-    # ~ """
-        # ~ management of APi parameters
-    # ~ """
+
+#==========
+# Data API
+#==========
+class ApiData:
+    """
+        data management requested by the user
+    """
+    #===================================
+    # place_id search on Google Map API
+    #===================================
+    def get_place_id_list(address):
+        """
+            Google map API place_id search function
+        """
+        key = InitData().status_env["map"] # environment variable
+        # replacing space by "% 20" in the string of characters
+        address_encode = urllib.parse.quote(str(address))
+
+        place_id = urllib.request.urlopen(
+            "https://maps.googleapis.com/maps/api/place/findplacefromtext/"\
+            +f"json?input={address_encode}&inputtype=textquery&key={key}"
+        )
+
+        result = json.loads(place_id.read().decode("utf8"))
+
+        return result
+
+    #===========================
+    # address on Google Map API
+    #===========================
+    def get_address(place_id):
+        """
+            Google map API address search with place_id function
+        """
+        key = InitData().status_env["map"] # environment variable
+
+        address_found= urllib.request.urlopen(
+            "https://maps.googleapis.com/maps/api/place/details/"\
+            f"json?placeid={place_id}&fields=formatted_address,geometry&key={key}"
+        )
+
+        result = json.loads(address_found.read().decode("utf8"))
+
+        return result
+
+    #=================================
+    # history search on wikimedia API
+    #=================================
+    def get_history(search_history):
+        """
+            wikipedia API (Wikimedia) history search
+        """
+
+        # replacing space by "% 20" in the string of characters
+        history_encode = urllib.parse.quote(search_history)
+
+        history_found = urllib.request.urlopen(
+            "https://fr.wikipedia.org/w/api.php?action=opensearch&search="\
+            f"{history_encode}&format=json"
+        )
+
+        result = json.loads(history_found.read().decode("utf8"))
+        return result
+
+    #=========================================
+    # map display in the Google Map Satic API
+    #=========================================
+    def get_map_static(location_map):
+        """
+            function of displaying the geolocation of the address
+            asked to grandpy on the map of the Google Map Static API
+        """
+        key = InitData().status_env["staticMap"]  # environment variable
+
+        # replacing space by "% 20" in the string of characters
+        formatting_address = urllib.parse.quote(location_map["address"])
+        # longitude and latitude display
+        localization = location_map["location"]
+        # display map
+        display_map = "https://maps.googleapis.com/maps/api/staticmap?center="\
+            +formatting_address+\
+            "&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C"\
+            +str(localization['lat'])+","+str(localization['lng'])+f"&key={key}"
+
+        return display_map
+
+
 
 class Behaviour:
     """
@@ -25,6 +107,7 @@ class Behaviour:
             - quotas ==> user session end setting
 
     """
+    DATA = data.Conversation("bonjour")
     def attribute_analysis(self):
         """
             attribute analysis
@@ -32,9 +115,9 @@ class Behaviour:
                 - decency
                 - comprehension
         """
-        self.civlity = Conversation.read_civility
-        self.decency = Conversation.read_decency
-        self.comprehension = Conversation.read_comprehension
+        self.civlity = DATA.read_civility
+        self.decency = DATA.read_decency
+        self.comprehension = DATA.read_comprehension
 
     # ~ @property
     # ~ def t_decency(self):
@@ -177,16 +260,17 @@ class Response:
         Management class
         for initializing configuration response Grandpy
     """
-    API = ApiParams()
-    BEHAVIOUR = Behaviour()
-    POLITENESS = Politeness()
-    SESSION = Session()
+    API = data.Conversation("")
 
-    def parsing(self,question=default().data_test["question"]):
+    BEHAVIOUR = Behaviour()
+    # ~ POLITENESS = Politeness()
+    # ~ SESSION = Session()
+
+    def parsing(self,question="ou se trouve la poste de marseille"):
         """
             parse the question to grandpy
         """
-        return Response.API.parser(qestion=default().data_test["question"])
+        return API.parser(qestion="ou se trouve la poste de marseille")
 
     @property
     def id_list(self):
@@ -194,34 +278,32 @@ class Response:
             determine the internal API identifier
             for each address requested
         """
-        return Response.API.get_place_id_list(
-            address=default().data_test["addressPlace"]
-        )
+        return ApiData.get_place_id_list("paris poste")
 
     @property
     def address(self):
         """
             show address coordinates
         """
-        return Response.API.get_address(
-            place_id=default().data_test["placeId"]
-        )
+        return ApiData.get_address("ChIJTei4rhlu5kcRPivTUjAg1RU")
 
     @property
     def history(self):
         """
             view wikipedia history
         """
-        return Response.API.get_history(
-            search_history=default().data_test["search"]
-        )
+        return ApiData.get_history("montmartre")
 
+    @property
     def map_static(self):
         """
             show the coordinates on the map
         """
-        self.location = map["address"]
-        return Response.API.get_get_map_static(self, self.location)
+        location = {
+            "address": self.address,
+            "history": self.history
+        }
+        return ApiData.get_get_map_static(location)
 
 if __name__ == "__main__":
     pass
