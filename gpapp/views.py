@@ -5,9 +5,9 @@ import time
 from flask import Flask, render_template
 # ~ import devSetting
 # ~ import gpapp
-from .devSetting import dataRedis as setting
+from . import question_answer
 
-from .devSetting import dataMap as data
+# ~ from .devSetting import dataMap as data
 from .devSetting import fDev as func
 # ~ import question_answer as script
 
@@ -22,9 +22,9 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    conversation = setting.Conversation("")
+    conversation = question_answer.DataParameter("")
     if conversation.read_quotas and conversation.read_counter == 0:
-        func.initial_status()
+        conversation.initial_status()
     return render_template("index.html")
 
 # ~ # Initialization of general parameters
@@ -45,9 +45,9 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    conversation = setting.Conversation(question)
+    conversation = question_answer.DataParameter(question)
     if conversation.read_quotas:
-        func.initial_status()
+        conversation.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy

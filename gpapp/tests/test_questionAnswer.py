@@ -4,8 +4,6 @@
 import json
 from io import BytesIO
 import urllib.request
-from ..devSetting.dataRedis import str_convers, bool_convers
-from ..devSetting.dataRedis import Conversation
 from .. import question_answer as script
 
                         #=====================
@@ -25,7 +23,9 @@ class TestApi:
             search (location history & geographic coordinates)
         """
         # question asked to grandPy
-        demand = Conversation("ou est situé le restaurant la_nappe_d_or de lyon")
+        demand = script.DataParameter(
+            "ou est situé le restaurant la_nappe_d_or de lyon"
+        )
 
         assert demand.parser() == ["restaurant","la_nappe_d_or","lyon"]
 
@@ -35,7 +35,7 @@ class TestApi:
             Google Map A.P.I test function that returns a file
             Json containing the reference ID of the address asked
         """
-
+        demand = script.DataParameter("bonjour")
         resul_pid = {
             'candidates': [{
                 'place_id': "ChIJTei4rhlu5kcRPivTUjAg1RU"
@@ -56,7 +56,7 @@ class TestApi:
         monkeypatch.setattr(
             urllib.request, 'urlopen',mockreturn
         )
-        assert func.get_place_id_list(address_result) == resul_pid
+        assert demand.get_place_id_list(address_result) == resul_pid
 
     # ~ # google map API test on address location
     def test_geolocal_address(self, monkeypatch):
@@ -64,6 +64,7 @@ class TestApi:
             Google Map A.P.I test function that returns a file
             Json containing the reference of the requested address
         """
+        demand = script.DataParameter("bonjour")
         resul_address = {
             'result': {
                 'formatted_address': "16 Rue Étienne Marcel, 75002 Paris, France"
@@ -81,7 +82,9 @@ class TestApi:
             urllib.request, 'urlopen',mockreturn
         )
 
-        assert func.get_address("ChIJTei4rhlu5kcRPivTUjAg1RU") == resul_address
+        assert demand.get_address(
+            "ChIJTei4rhlu5kcRPivTUjAg1RU"
+        ) == resul_address
 
     # WikiMedia APi test on search
     def test_search_wiki(self, monkeypatch):
@@ -89,6 +92,7 @@ class TestApi:
             A.P.I wikipedia test function (wikimedia) that returns a file
             Json containing the history of the requested address
         """
+        demand = script.DataParameter("bonjour")
         resul_history = [
             [
                 """Riche d'un long passé artistique, ce secteur de Paris (France)
@@ -109,7 +113,7 @@ class TestApi:
             urllib.request, 'urlopen',mockreturn
         )
 
-        assert func.get_history("montmartre") == resul_history
+        assert demand.get_history("montmartre") == resul_history
 
 class TestBehaviour:
     """
@@ -124,11 +128,11 @@ class TestBehaviour:
             civility function test
         """
         # only one value on redis for civility : do not mix conversation object
-        demand = Conversation("montmartre")
-        Conversation("montmartre").civility()
+        demand = script.DataParameter("montmartre")
+        script.DataParameter("montmartre").civility()
         assert False == demand.read_civility
-        other_demand = Conversation("bonjour")
-        Conversation("bonjour").civility()
+        other_demand = script.DataParameter("bonjour")
+        script.DataParameter("bonjour").civility()
         assert True == other_demand.read_civility
 
     # decency test
@@ -137,11 +141,11 @@ class TestBehaviour:
             decency function test
         """
         # only one value on redis for decency : do not mix conversation object
-        demand = Conversation("montmartre")
-        Conversation("montmartre").decency()
+        demand = script.DataParameter("montmartre")
+        script.DataParameter("montmartre").decency()
         assert True == demand.read_decency
-        other_demand = Conversation("fossile")
-        Conversation("fossile").decency()
+        other_demand = script.DataParameter("fossile")
+        script.DataParameter("fossile").decency()
         assert False == other_demand.read_decency
 
     # Convertion of boolean Test
@@ -149,16 +153,16 @@ class TestBehaviour:
         """
             convert a boolean to string
         """
-        assert bool_convers(False) == "0"
-        assert bool_convers(True) == "1"
+        assert script.bool_convers(False) == "0"
+        assert script.bool_convers(True) == "1"
 
     def test_string_to_boolean(self):
         """
             convert a string to boolean
         """
-        assert str_convers(b"0") == False
-        assert str_convers(b"1") == True
-        assert str_convers(b"") == False
+        assert script.str_convers(b"0") == False
+        assert script.str_convers(b"1") == True
+        assert script.str_convers(b"") == False
 
     def test_comprehension(self):
         """
