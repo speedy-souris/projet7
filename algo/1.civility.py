@@ -41,12 +41,7 @@ def str_convers(value):
 # attribute initialization
 #==========================
 def initialization(accueil):
-    """
-        initialization of attributes according to the new value
-        of the user's request
-    """
-    talking.user_home = accueil
-    value_civility = talking.civility
+    pass
 
 
                            #==============
@@ -87,6 +82,7 @@ class DataParameter:
         self.user_home = user_home
         self.civility = False
         self.value_incivility = 0
+        self.nb_request = self.value_incivility
         self.redis_connect()
         self.initial_status()
 
@@ -212,8 +208,8 @@ class DataParameter:
             w for w in list_user_home if w.lower() in self.DONNEE_CIVILITY
             ]
         )
-        # ~ self.write_civility(result)
         self.civility = result
+        self.write_civility(self.civility)
 
 #==================
 # script execution
@@ -228,15 +224,13 @@ def main():
     request.user_civility
     value_civility = request.civility
     nb_incivility = request.value_incivility
-    # ~ increment = request.increment_counter
-    # ~ val_civility = request.read_civility
-    # ~ val_counter = int(request.read_counter)
+
 
     if not value_civility:
         while not value_civility and nb_incivility < 3:
             print("Tu es impoli ...")
             nb_incivility += 1
-            print(nb_incivility)
+            request.nb_request = nb_incivility
             accueil = input("Si tu es impoli, je ne peux rien pour toi ... : ")
             request.user_home = accueil
             request.user_civility
@@ -246,7 +240,7 @@ def main():
     if nb_incivility >= 3:
         print("cette impolitesse me FATIGUE ...")
         print("reviens me voir demain !")
-        # ~ request.expiry_counter
+        request.expiry_counter
     else:
         print("Que veux tu savoir ... ?")
 
