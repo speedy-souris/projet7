@@ -81,8 +81,7 @@ class DataParameter:
         """
         self.user_home = user_home
         self.civility = False
-        self.value_incivility = 0
-        self.nb_request = self.value_incivility
+        self.nb_request = 0
         self.redis_connect()
         self.initial_status()
 
@@ -223,14 +222,14 @@ def main():
     request = DataParameter(accueil)
     request.user_civility
     value_civility = request.civility
-    nb_incivility = request.value_incivility
-
+    nb_request = request.nb_request
+    nb_incivility = request.nb_request
 
     if not value_civility:
         while not value_civility and nb_incivility < 3:
             print("Tu es impoli ...")
-            nb_incivility += 1
-            request.nb_request = nb_incivility
+            nb_request += 1
+            nb_incivility = request.nb_request
             accueil = input("Si tu es impoli, je ne peux rien pour toi ... : ")
             request.user_home = accueil
             request.user_civility
