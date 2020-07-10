@@ -220,7 +220,6 @@ def main():
             print("Houla ma mémoire n'est plus ce qu'elle était ... ")
 
         print("Voici Ta Réponse !")
-        print(quotas)
         question = input("Que veux tu savoir ... ?")
 
     print("cette séance de recherche me FATIGUE ...")
