@@ -215,6 +215,7 @@ def main():
         value_quotas = nb_request
         if value_quotas >= 10:
             quotas = True
+            request.write_quotas(True)
         if value_quotas == 5:
             print("Houla ma mémoire n'est plus ce qu'elle était ... ")
 
@@ -224,7 +225,7 @@ def main():
 
     print("cette séance de recherche me FATIGUE ...")
     print("reviens me voir demain !")
-    # ~ request.expiry_counter
+    request.expiry_counter
 
 if __name__ == "__main__":
     main()
