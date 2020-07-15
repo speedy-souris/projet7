@@ -209,7 +209,6 @@ class DataParameter:
     #=================
     # user's decency
     #=================
-    @property
     def user_indecency(self):
         """
             modification of attributes indecency
@@ -241,7 +240,7 @@ def main():
     #--------------------------------------------
     question = input("Que veux tu savoir ... ?")
     request = DataParameter(question)
-    request.user_indecency
+    request.user_indecency()
     value_indecency = request.indecency
     nb_indecency = request.nb_request
     nb_request = request.nb_request
@@ -252,7 +251,7 @@ def main():
             nb_indecencency = request.nb_request
             accueil = input("Si tu es grossier, je ne peux rien pour toi ... : ")
             request.user_home = accueil
-            request.user_indecency
+            request.user_indecency()
             value_indecency = request.indecency
 
 
