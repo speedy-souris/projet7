@@ -246,13 +246,22 @@ def main():
     nb_indecency = request.nb_request
     nb_request = request.nb_request
 
-    while nb_indecency < 3:
-        pass
+    while value_indecency and nb_indecency < 3:
+            print("Tu es grossier ...")
+            nb_request += 1
+            nb_indecencency = request.nb_request
+            accueil = input("Si tu es grossier, je ne peux rien pour toi ... : ")
+            request.user_home = accueil
+            request.user_indecency
+            value_indecency = request.indecency
 
 
-    print("cette séance de recherche me FATIGUE ...")
-    print("reviens me voir demain !")
-
+    if nb_indecency >= 3:
+        print("cette grossierete me FATIGUE ...")
+        print("reviens me voir demain !")
+        request.expiry_counter
+    else:
+        print("Que veux tu savoir ... ?")
 
 if __name__ == "__main__":
     main()
