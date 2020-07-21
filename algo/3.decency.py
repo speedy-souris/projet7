@@ -48,7 +48,7 @@ def initialization(accueil):
                            # Script class
                            #==============
 # Redis server organization
-class DataParameter:
+class Talking:
     """
         Constants for processing keywords for Google Map APIs and grandpy's behavior
         according to the content of the user question
@@ -239,16 +239,14 @@ def main():
     # question = ... (quotas) ==> line 207 to 211
     #--------------------------------------------
     question = input("Que veux tu savoir ... ?")
-    request = DataParameter(question)
+    request = Talking(question)
     request.user_indecency()
     value_indecency = request.indecency
     nb_indecency = request.nb_request
-    nb_request = request.nb_request
 
     while value_indecency and nb_indecency < 3:
             print("Tu es grossier ...")
-            nb_request += 1
-            nb_indecencency = request.nb_request
+            nb_indecencency += 1
             accueil = input("Si tu es grossier, je ne peux rien pour toi ... : ")
             request.user_home = accueil
             request.user_indecency()
@@ -258,7 +256,6 @@ def main():
     if nb_indecency >= 3:
         print("cette grossierete me FATIGUE ...")
         print("reviens me voir demain !")
-        request.expiry_counter
     else:
         print("Que veux tu savoir ... ?")
 
