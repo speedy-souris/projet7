@@ -72,6 +72,7 @@ class Talking:
                 - user_home        ==> content of the question asked to grandpy
                                        by the user containing the keywords
                                        for the Google Map API
+                - quotas           ==> initialisation of quotas attribut
                 - redis_connect()  ==> initialization of the connection method
                                        to the Redis database
                 - initial_status() ==> initialization of data values
@@ -165,14 +166,12 @@ class Talking:
     #=================
     # Counter Request
     #=================
-    @property
     def increment_counter(self):
         """
             Counter increment in Redis database
         """
         self.nb_request = self.incrementing("nb_request")
 
-    @property
     def expiry_counter(self):
         """
             Expiration of the key nb_request (counter) in Redis database
@@ -193,33 +192,37 @@ class Talking:
         """
         self.writing("nb_request", value)
 
+#---------------------------------------------------
+# Civility test user's civility ==> line 195 to 208
+#---------------------------------------------------
+
 #==================
 # script execution
 #==================
 def main():
     """
-        request limitation to 10
-        from the user after politeness check
+        - request limitation to 10
+          from the user after politeness check
     """
-    #-----------------------------
-    # Else (civility) ==> line 244
-    #-----------------------------
+    #------------------------------------
+    # Else (civility) ==> line 244 a 238
+    #------------------------------------
+
     question = input("Que veux tu savoir ... ?")
     request = Talking(question)
-    quotas = request.quotas
-    value_quotas = request.nb_request
+    value_quotas = request.quotas
     nb_request = request.nb_request
 
-    while not quotas:
-        nb_request += 1
-        value_quotas = nb_request
-        if value_quotas >= 10:
-            quotas = True
-        if value_quotas == 5:
+
+    while not value_quotas:
+        if nb_request >= 10:
+            value_quotas = True
+        if nb_request == 5:
             print("Houla ma mémoire n'est plus ce qu'elle était ... ")
 
         print("Voici Ta Réponse !")
         question = input("Que veux tu savoir ... ?")
+        nb_request += 1
 
     print("cette séance de recherche me FATIGUE ...")
     print("reviens me voir demain !")
