@@ -47,8 +47,8 @@ def initialization(accueil):
                            #==============
                            # Script class
                            #==============
-# Redis server organization
-class DataParameter:
+# Redis server organization for the conversation with grandpy
+class Talking:
     """
         Constants for processing keywords for Google Map APIs and grandpy's behavior
         according to the content of the user question
@@ -163,14 +163,12 @@ class DataParameter:
     #=================
     # Counter Request
     #=================
-    @property
     def increment_counter(self):
         """
             Counter increment in Redis database
         """
         self.nb_request = self.incrementing("nb_request")
 
-    @property
     def expiry_counter(self):
         """
             Expiration of the key nb_request (counter) in Redis database
@@ -194,7 +192,6 @@ class DataParameter:
     #=================
     # user's civility
     #=================
-    @property
     def user_civility(self):
         """
             modification of attributes civility
@@ -219,17 +216,15 @@ def main():
     """
     print("Bonjour Mon petit")
     accueil = input("En quoi puis je t'aider : ")
-    request = DataParameter(accueil)
-    request.user_civility
+    request = Talking(accueil)
+    request.user_civility()
     value_civility = request.civility
-    nb_request = request.nb_request
     nb_incivility = request.nb_request
 
     if not value_civility:
         while not value_civility and nb_incivility < 3:
             print("Tu es impoli ...")
-            nb_request += 1
-            nb_incivility = request.nb_request
+            nb_incivility += 1
             accueil = input("Si tu es impoli, je ne peux rien pour toi ... : ")
             request.user_home = accueil
             request.user_civility
@@ -239,7 +234,7 @@ def main():
     if nb_incivility >= 3:
         print("cette impolitesse me FATIGUE ...")
         print("reviens me voir demain !")
-        request.expiry_counter
+
     else:
         print("Que veux tu savoir ... ?")
 
