@@ -48,7 +48,7 @@ def initialization(accueil):
                            # Script class
                            #==============
 # Redis server organization
-class DataParameter:
+class Talking:
     """
         Constants for processing keywords for Google Map APIs and grandpy's behavior
         according to the content of the user question
@@ -205,7 +205,7 @@ def main():
     # Else (civility) ==> line 244
     #-----------------------------
     question = input("Que veux tu savoir ... ?")
-    request = DataParameter(question)
+    request = Talking(question)
     quotas = request.quotas
     value_quotas = request.nb_request
     nb_request = request.nb_request
@@ -215,7 +215,6 @@ def main():
         value_quotas = nb_request
         if value_quotas >= 10:
             quotas = True
-            request.write_quotas(True)
         if value_quotas == 5:
             print("Houla ma mémoire n'est plus ce qu'elle était ... ")
 
@@ -224,7 +223,6 @@ def main():
 
     print("cette séance de recherche me FATIGUE ...")
     print("reviens me voir demain !")
-    request.expiry_counter
 
 if __name__ == "__main__":
     main()
