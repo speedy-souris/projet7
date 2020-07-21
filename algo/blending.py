@@ -55,6 +55,7 @@ class Talking:
         Constants for processing keywords for Google Map APIs and grandpy's behavior
         according to the content of the user question
             - DONNEE_CIVILITY----set()
+            - INDECENCY_LIST-----set()
 
         Management for initializing configuration database Redis
             - redis_connect() ==> connection initialization for the Redis database
@@ -63,14 +64,26 @@ class Talking:
             - expiry()        ==> data value expiration times for the Redis database
             - reading         ==> read data value for the Redis database
     """
-#--------------------------------------------------------------
-# Data for civility (DONNEE_CIVILITY = set()) ==> line 64 to 68
-#--------------------------------------------------------------
+    #------------------------
+    # Data for test civility
+    #------------------------
     DONNEE_CIVILITY = set(
         [
         "bonjour", "bonsoir","salut","hello","hi"
         ]
     )
+    #-----------------------
+    # Data for test decency
+    #-----------------------
+    INDECENCY_LIST = set(
+        [
+        "vieux","con","poussierieux","ancetre","demoder","vieillard","senille",
+        "dinosaure","decrepit","arrierer ","rococo","centenaire","senille",
+        "vieillot","archaique","gateux","croulant","antiquite","baderne","fossile",
+        "bjr","bsr","slt"
+        ]
+    )
+
 
     def __init__(self, user_home):
         """
@@ -81,6 +94,8 @@ class Talking:
                                        for the Google Map API
                 - civility         ==> initialization of civility attribut
                 - quotas           ==> initialisation of quotas attribut
+                - indecency        ==> user`s coarseness (value boolean)
+                - nb_request       ==> number of user requests
                 - redis_connect()  ==> initialization of the connection method
                                        to the Redis database
                 - initial_status() ==> initialization of data values
@@ -89,6 +104,7 @@ class Talking:
         self.user_home = user_home
         self.civility = False
         self.quotas = False
+        self.indecency = False
         self.nb_request = 0
         self.redis_connect()
         self.initial_status()
@@ -144,20 +160,20 @@ class Talking:
             for the Redis database
 
                 - write_ civility()   ==> default initialization of civility values
-                                            for the Redis database
+                                          for the Redis database
                 - write_quotas()      ==> default initialization of quotas values
-                                            for the Redis database
-                - write_counter()       ==> default initialization of counter values
-                                            for the Redis database
+                                          for the Redis database
+                - write_indecency()   ==> default initialization of indecency values
+                                          for the Redis database
+                - write_counter()     ==> default initialization of counter values
+                                          for the Redis database
 
         """
         self.write_civility(False)
         self.write_quotas(False)
+        self.write_indecency(False)
         self.write_counter("0")
 
-#---------------------------------------------------
-# Civility in the Redis database ==> line 151 to 162
-#---------------------------------------------------
     #==============================================
     # value of data Civility in the Redis database
     #==============================================
@@ -174,9 +190,9 @@ class Talking:
         """
         return str_convers(self.reading("civility"))
 
-    #==============================================
+    #============================================
     # value of data quotas in the Redis database
-    #==============================================
+    #============================================
     def write_quotas(self, quotas):
         """
             saving of quotas configuration in Redis database
@@ -189,6 +205,22 @@ class Talking:
             reading of quotas configuration in Redis database
         """
         return str_convers(self.reading("quotas"))
+
+    #===============================================
+    # value of data Indecency in the Redis database
+    #===============================================
+    def write_indecency(self, indecency):
+        """
+            saving of indecency configuration in Redis database
+        """
+        self.writing("indecency", bool_convers(indecency))
+
+    @property
+    def read_indecency(self):
+        """
+            reading of indecency configuration in Redis database
+        """
+        return str_convers(self.reading("indecency"))
 
     #=================
     # Counter Request
@@ -235,27 +267,46 @@ class Talking:
             ]
         )
         self.civility = result
-        self.write_civility(self.civility)
+        # ~ self.write_civility(self.civility)
+
+    #=================
+    # user's decency
+    #=================
+    def user_indecency(self):
+        """
+            modification of attributes indecency
+        """
+        # list of words to find in questions
+        list_user_home = self.user_home.split()
+        # search indecency
+        result = bool(
+            [
+            w for w in list_user_home if w.lower() in self.INDECENCY_LIST
+            ]
+        )
+        self.indecency = result
+        # ~ self.write_indecency(self.indecency)
 
 #==================
 # script execution
 #==================
 def main():
     """
-        - welcome of the user with politeness check
-        - request limitation to 10
-          from the user after politeness check
+        request limitation to 10
+        from the user after politeness check
+        and without coarseness
     """
-    #------------------------------------
-    # Else (civility) ==> line 244 a 238
-    #------------------------------------
+    #---------------------------------
+    # awaits the courtesy of the user
+    #---------------------------------
     print("Bonjour Mon petit")
     accueil = input("En quoi puis je t'aider : ")
     request = Talking(accueil)
     request.user_civility()
     value_civility = request.civility
-    nb_incivility = request.nb_request
+    nb_incivility = 0
 
+    # rudeness of the user
     if not value_civility:
         while not value_civility and nb_incivility < 3:
             print("Tu es impoli ...")
@@ -265,30 +316,55 @@ def main():
             request.user_civility
             value_civility = request.civility
 
-
+    # big stress of Grandpy because of incivility ==> back in 24 hours
     if nb_incivility >= 3:
         print("cette impolitesse me FATIGUE ...")
         reconnection(accueil)
 
+    # Waits for user question
     else:
         question = input("Que veux tu savoir ... ?")
         request = Talking(question)
+        request.user_indecency()
         value_quotas = request.quotas
-        nb_request = request.nb_request
+        value_indecency = request.indecency
+        nb_indecency = 0
+        nb_request = 0
 
+        # User coarseness
+        if value_indecency:
+            while value_indecency and nb_indecency < 3:
+                print("Tu es grossier ...")
+                nb_indecency += 1
+                rudeness = input("Si tu es grossier, je ne peux rien pour toi ... : ")
+                request.user_home = rudeness
+                request.user_indecency()
+                value_indecency = request.indecency
 
-        while not value_quotas:
-            if nb_request >= 10:
-                value_quotas = True
-            if nb_request == 5:
-                print("Houla ma mémoire n'est plus ce qu'elle était ... ")
+        # big stress of Grandpy because of indecency ==> back in 24 hours
+        if nb_indecency >= 3:
+            print("cette grossierete me FATIGUE ...")
+            reconnection(question)
 
-            print("Voici Ta Réponse !")
-            question = input("Que veux tu savoir ... ?")
-            nb_request += 1
+        # Waits for user new question
+        else:
+            while not value_quotas:
+                # maximum number of responses reached
+                if nb_request >= 10:
+                    value_quotas = True
 
-        print("cette séance de recherche me FATIGUE ...")
-        reconnection(question)
+                # Grandpy starts to tire
+                if nb_request == 5:
+                    print("Houla ma mémoire n'est plus ce qu'elle était ... ")
+
+                # grandpy's reply
+                print("Voici Ta Réponse !")
+                question = input("Que veux tu savoir ... ?")
+                nb_request += 1
+
+            # grandpy exhaustion
+            print("cette séance de recherche me FATIGUE ...")
+            reconnection(question)
 
 if __name__ == "__main__":
     main()
