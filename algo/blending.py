@@ -41,9 +41,48 @@ def str_convers(value):
 # reconnection after 24 hours of waiting
 #========================================
 def reconnection(question):
+    """
+        stop questions and answers for 24 hours
+    """
     print("reviens me voir demain !")
     # ~ request = Talking(question)
     # ~ request.expiry_counter()
+
+#=================
+# attent question
+#=================
+def waiting_question(request):
+    """
+        waiting for user question
+    """
+    question = input("Que veux tu savoir ... ?")
+    request.user_home = question
+    request.user_indecency()
+    return (request.quotas, request.indecency)
+
+#=============
+# rude answer
+#=============
+def rude_user(request):
+    """
+        rude user
+    """
+    print("Tu es grossier ...")
+    rudeness = input("Si tu es grossier, je ne peux rien pour toi ... : ")
+    request.user_home = rudeness
+    request.user_indecency()
+    return request.indecency
+
+#=====================
+# stress of indecency
+#=====================
+def stress_indecency(question):
+    """
+        stress of Grandpy
+    """
+    print("cette grossierete me FATIGUE ...")
+    reconnection(question)
+
 
 
                            #==============
@@ -323,28 +362,21 @@ def main():
 
     # Waits for user question
     else:
-        question = input("Que veux tu savoir ... ?")
-        request = Talking(question)
-        request.user_indecency()
-        value_quotas = request.quotas
-        value_indecency = request.indecency
+        question = waiting_question(request)
+        value_quotas = question[0]
+        value_indecency = question[1]
         nb_indecency = 0
         nb_request = 0
 
         # User coarseness
         if value_indecency:
             while value_indecency and nb_indecency < 3:
-                print("Tu es grossier ...")
                 nb_indecency += 1
-                rudeness = input("Si tu es grossier, je ne peux rien pour toi ... : ")
-                request.user_home = rudeness
-                request.user_indecency()
-                value_indecency = request.indecency
+                value_indecency = rude_user(request)
 
         # big stress of Grandpy because of indecency ==> back in 24 hours
         if nb_indecency >= 3:
-            print("cette grossierete me FATIGUE ...")
-            reconnection(question)
+            stress_indecency(question)
 
         # Waits for user new question
         else:
@@ -359,8 +391,21 @@ def main():
 
                 # grandpy's reply
                 print("Voici Ta Réponse !")
-                question = input("Que veux tu savoir ... ?")
                 nb_request += 1
+                question = waiting_question(request)
+                value_quotas = question[0]
+                value_indecency = question[1]
+
+                # User coarseness
+                if value_indecency:
+                    while value_indecency and nb_indecency < 3:
+                        nb_indecency += 1
+                        value_indecency = rude_user(request)
+
+                # big stress of Grandpy because of indecency ==> back in 24 hours
+                if nb_indecency >= 3:
+                    stress_indecency(question)
+
 
             # grandpy exhaustion
             print("cette séance de recherche me FATIGUE ...")
