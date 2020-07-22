@@ -58,7 +58,6 @@ def waiting_question(request):
     question = input("Que veux tu savoir ... ?")
     request.user_home = question
     request.user_indecency()
-    return (request.quotas, request.indecency)
 
 #=============
 # rude answer
@@ -83,13 +82,32 @@ def stress_indecency(question):
     print("cette grossierete me FATIGUE ...")
     reconnection(question)
 
+#=======================
+# indecency in response
+#=======================
+def answer_indecency(request):
+    """
+        control of indecency in response
+    """
+    value_indecency = request[0]
+    nb_indecency = request[1]
+    nb_request = request[2]
+    request = request[3]
+
+    if value_indecency:
+            while value_indecency and nb_indecency < 3:
+                nb_indecency += 1
+                nb_request += 1
+                value_indecency = rude_user(request)
+
+    return (nb_indecency, nb_request)
 
 
                            #==============
                            # Script class
                            #==============
 # Redis server organization
-class Talking:
+class Chat:
     """
         Constants for processing keywords for Google Map APIs and grandpy's behavior
         according to the content of the user question
@@ -124,13 +142,14 @@ class Talking:
     )
 
 
-    def __init__(self, user_home):
+    def __init__(self):
         """
             constructor
             for initializing the API default variables in Redis
-                - user_home        ==> content of the question asked to grandpy
-                                       by the user containing the keywords
-                                       for the Google Map API
+                - messages--|       ==> content of the question asked to grandpy
+                            |--list    by the user containing the keywords
+                            |          for the Google Map API / Grandpy's response
+                - chatters--|      ==> speaker for the question / answer (Grandpy / user)
                 - civility         ==> initialization of civility attribut
                 - quotas           ==> initialisation of quotas attribut
                 - indecency        ==> user`s coarseness (value boolean)
@@ -140,13 +159,38 @@ class Talking:
                 - initial_status() ==> initialization of data values
                                        from the Redis database
         """
-        self.user_home = user_home
+        self.messages = []
+        self.chatters = []
+        self.tmp = ""
         self.civility = False
         self.quotas = False
         self.indecency = False
         self.nb_request = 0
         self.redis_connect()
         self.initial_status()
+
+    #=============
+    # add message
+    #=============
+    def add_message(self, message, chatter):
+        """
+            Add new message with chatter
+        """
+        self.messages.append(message)
+        self.chatters.append(chatter)
+        if chatter == "User":
+            self.nb_request += 1
+            self.tmp = message
+
+    #====================
+    # Read list messages
+    #====================
+    def chat_viewer(self):
+        """
+            Read full list of messages
+        """
+        for chatter, message in zip(self.chatters, self.messages):
+            print(f"{[chatter]} = {message}")
 
     #==============
     # Server Redis
@@ -298,11 +342,11 @@ class Talking:
             modification of attributes civility
         """
         # list of words to find in questions
-        list_user_home = self.user_home.split()
+        user_answer = self.tmp.split()
         # search civility
         result = bool(
             [
-            w for w in list_user_home if w.lower() in self.DONNEE_CIVILITY
+            w for w in user_answer if w.lower() in self.DONNEE_CIVILITY
             ]
         )
         self.civility = result
@@ -338,41 +382,42 @@ def main():
     #---------------------------------
     # awaits the courtesy of the user
     #---------------------------------
-    print("Bonjour Mon petit")
-    accueil = input("En quoi puis je t'aider : ")
-    request = Talking(accueil)
-    request.user_civility()
-    value_civility = request.civility
-    nb_incivility = 0
+    grandpy = "Grandpy"
+    user = "User"
+    talk = Chat()
+    question = "Bonjour Mon petit, en quoi puis je t'aider ?\n"
+    talk.add_message(question, grandpy)
+    accueil = input(question)
+    talk.add_message(accueil, user)
+    talk.user_civility()
+
 
     # rudeness of the user
-    if not value_civility:
-        while not value_civility and nb_incivility < 3:
-            print("Tu es impoli ...")
-            nb_incivility += 1
-            accueil = input("Si tu es impoli, je ne peux rien pour toi ... : ")
-            request.user_home = accueil
-            request.user_civility
-            value_civility = request.civility
+    if not talk.civility:
+        while not talk.civility and talk.nb_request < 3:
+            question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
+            talk.add_message(question, grandpy)
+            accueil = input(question)
+            talk.add_message(accueil, user)
+            talk.user_civility()
 
-    # big stress of Grandpy because of incivility ==> back in 24 hours
-    if nb_incivility >= 3:
-        print("cette impolitesse me FATIGUE ...")
-        reconnection(accueil)
 
+        # big stress of Grandpy because of incivility ==> back in 24 hours
+        if talk.nb_request >= 3:
+            print("cette impolitesse me FATIGUE ...")
+            reconnection(accueil)
     # Waits for user question
     else:
-        question = waiting_question(request)
-        value_quotas = question[0]
-        value_indecency = question[1]
+        waiting_question(request)
+
         nb_indecency = 0
         nb_request = 0
-
-        # User coarseness
-        if value_indecency:
-            while value_indecency and nb_indecency < 3:
-                nb_indecency += 1
-                value_indecency = rude_user(request)
+        response_user = answer_indecency(
+            (value_indecency,nb_indecency, nb_request, request)
+        )
+        nb_indecency = response_user[0]
+        nb_request = response_user[1]
+        request.nb_request = nb_request
 
         # big stress of Grandpy because of indecency ==> back in 24 hours
         if nb_indecency >= 3:
@@ -391,16 +436,19 @@ def main():
 
                 # grandpy's reply
                 print("Voici Ta Réponse !")
+                nb_request = request.nb_request
                 nb_request += 1
                 question = waiting_question(request)
                 value_quotas = question[0]
                 value_indecency = question[1]
-
+                request.nb_request = nb_request
+                request.indecency = value_indecency
                 # User coarseness
-                if value_indecency:
-                    while value_indecency and nb_indecency < 3:
-                        nb_indecency += 1
-                        value_indecency = rude_user(request)
+                response_user = answer_indecency(
+                    (request.indecency, nb_indecency, request.nb_request, request)
+                )
+
+
 
                 # big stress of Grandpy because of indecency ==> back in 24 hours
                 if nb_indecency >= 3:
