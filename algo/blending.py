@@ -40,67 +40,63 @@ def str_convers(value):
 #========================================
 # reconnection after 24 hours of waiting
 #========================================
-def reconnection(question):
+def reconnection(talk):
     """
         stop questions and answers for 24 hours
     """
     print("reviens me voir demain !")
-    # ~ request = Talking(question)
-    # ~ request.expiry_counter()
+    # ~ talk.expiry_counter()
 
 #=================
 # attent question
 #=================
-def waiting_question(request):
+def waiting_question(talk):
     """
         waiting for user question
     """
-    question = input("Que veux tu savoir ... ?")
-    request.user_home = question
-    request.user_indecency()
+    question = "Que veux tu savoir ... ?"
+    talk.add_message(question, talk.grandpy)
+    response = input(question)
+    talk.add_message(response, talk.user)
+    talk.user_indecency()
 
 #=============
 # rude answer
 #=============
-def rude_user(request):
+def rude_user(talk):
     """
         rude user
     """
-    print("Tu es grossier ...")
-    rudeness = input("Si tu es grossier, je ne peux rien pour toi ... : ")
-    request.user_home = rudeness
-    request.user_indecency()
-    return request.indecency
+    question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
+    talk.add_message(question, talk.grandpy)
+    rudeness = input(question)
+    talk.add_message(rudeness, talk.user)
+    talk.user_indecency()
+
 
 #=====================
 # stress of indecency
 #=====================
-def stress_indecency(question):
+def stress_indecency(talk):
     """
         stress of Grandpy
     """
     print("cette grossierete me FATIGUE ...")
-    reconnection(question)
+    reconnection(talk)
 
 #=======================
 # indecency in response
 #=======================
-def answer_indecency(request):
+def answer_indecency(talk):
     """
         control of indecency in response
     """
-    value_indecency = request[0]
-    nb_indecency = request[1]
-    nb_request = request[2]
-    request = request[3]
+    if talk.indecency:
+            while talk.indecency and talk.nb_indecency < 3:
+                talk.nb_indecency += 1
+                talk.nb_request += 1
+                rude_user(talk)
 
-    if value_indecency:
-            while value_indecency and nb_indecency < 3:
-                nb_indecency += 1
-                nb_request += 1
-                value_indecency = rude_user(request)
-
-    return (nb_indecency, nb_request)
 
 
                            #==============
@@ -153,6 +149,7 @@ class Chat:
                 - civility         ==> initialization of civility attribut
                 - quotas           ==> initialisation of quotas attribut
                 - indecency        ==> user`s coarseness (value boolean)
+                - nb_indecency     ==> number of user indecency
                 - nb_request       ==> number of user requests
                 - redis_connect()  ==> initialization of the connection method
                                        to the Redis database
@@ -162,9 +159,12 @@ class Chat:
         self.messages = []
         self.chatters = []
         self.tmp = ""
+        self.grandpy = "Grandpy"
+        self.user = "User"
         self.civility = False
         self.quotas = False
         self.indecency = False
+        self.nb_indecency = 0
         self.nb_request = 0
         self.redis_connect()
         self.initial_status()
@@ -360,11 +360,11 @@ class Chat:
             modification of attributes indecency
         """
         # list of words to find in questions
-        list_user_home = self.user_home.split()
+        user_answer = self.tmp.split()
         # search indecency
         result = bool(
             [
-            w for w in list_user_home if w.lower() in self.INDECENCY_LIST
+            w for w in user_answer if w.lower() in self.INDECENCY_LIST
             ]
         )
         self.indecency = result
@@ -382,13 +382,11 @@ def main():
     #---------------------------------
     # awaits the courtesy of the user
     #---------------------------------
-    grandpy = "Grandpy"
-    user = "User"
     talk = Chat()
     question = "Bonjour Mon petit, en quoi puis je t'aider ?\n"
-    talk.add_message(question, grandpy)
+    talk.add_message(question, talk.grandpy)
     accueil = input(question)
-    talk.add_message(accueil, user)
+    talk.add_message(accueil, talk.user)
     talk.user_civility()
 
 
@@ -396,32 +394,29 @@ def main():
     if not talk.civility:
         while not talk.civility and talk.nb_request < 3:
             question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
-            talk.add_message(question, grandpy)
+            talk.add_message(question, talk.grandpy)
             accueil = input(question)
-            talk.add_message(accueil, user)
+            talk.add_message(accueil, talk.user)
             talk.user_civility()
 
 
         # big stress of Grandpy because of incivility ==> back in 24 hours
         if talk.nb_request >= 3:
             print("cette impolitesse me FATIGUE ...")
-            reconnection(accueil)
+            reconnection(talk)
     # Waits for user question
     else:
-        waiting_question(request)
+        waiting_question(talk)
 
-        nb_indecency = 0
-        nb_request = 0
-        response_user = answer_indecency(
-            (value_indecency,nb_indecency, nb_request, request)
-        )
-        nb_indecency = response_user[0]
-        nb_request = response_user[1]
-        request.nb_request = nb_request
+        if talk.indecency:
+            talk.nb_indecency += 1
+            talk.indecency = False
+
+        answer_indecency(talk)
 
         # big stress of Grandpy because of indecency ==> back in 24 hours
-        if nb_indecency >= 3:
-            stress_indecency(question)
+        if talk.nb_indecency >= 3:
+            stress_indecency(talk)
 
         # Waits for user new question
         else:
