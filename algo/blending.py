@@ -54,11 +54,20 @@ def waiting_question(talk):
     """
         waiting for user question
     """
-    question = "Que veux tu savoir ... ?"
+    question = "Que veux tu savoir ... ?\n"
     talk.add_message(question, talk.grandpy)
     response = input(question)
     talk.add_message(response, talk.user)
     talk.user_indecency()
+    if talk.indecency:
+        talk.nb_indecency += 1
+        talk.indecency = False
+
+    # big stress of Grandpy because of indecency ==> back in 24 hours
+    if talk.nb_indecency >= 3:
+        stress_indecency(talk)
+    else:
+        answer_indecency(talk)
 
 #=============
 # rude answer
@@ -96,6 +105,8 @@ def answer_indecency(talk):
                 talk.nb_indecency += 1
                 talk.nb_request += 1
                 rude_user(talk)
+    # Waits for user question
+    waiting_question(talk)
 
 
 
@@ -404,55 +415,29 @@ def main():
         if talk.nb_request >= 3:
             print("cette impolitesse me FATIGUE ...")
             reconnection(talk)
-    # Waits for user question
-    else:
-        waiting_question(talk)
-
-        if talk.indecency:
-            talk.nb_indecency += 1
-            talk.indecency = False
-
-        answer_indecency(talk)
-
-        # big stress of Grandpy because of indecency ==> back in 24 hours
-        if talk.nb_indecency >= 3:
-            stress_indecency(talk)
+        # Waits for user question
+        else:
+            waiting_question(talk)
 
         # Waits for user new question
-        else:
-            while not value_quotas:
-                # maximum number of responses reached
-                if nb_request >= 10:
-                    value_quotas = True
+    else:
+        while not talk.quotas:
+            # maximum number of responses reached
+            if talk.nb_request >= 10:
+                talk.quotas = True
 
-                # Grandpy starts to tire
-                if nb_request == 5:
-                    print("Houla ma mémoire n'est plus ce qu'elle était ... ")
+            # Grandpy starts to tire
+            if talk.nb_request == 5:
+                print("Houla ma mémoire n'est plus ce qu'elle était ... ")
 
-                # grandpy's reply
-                print("Voici Ta Réponse !")
-                nb_request = request.nb_request
-                nb_request += 1
-                question = waiting_question(request)
-                value_quotas = question[0]
-                value_indecency = question[1]
-                request.nb_request = nb_request
-                request.indecency = value_indecency
-                # User coarseness
-                response_user = answer_indecency(
-                    (request.indecency, nb_indecency, request.nb_request, request)
-                )
+            # grandpy's reply
+            print("Voici Ta Réponse !")
+            talk.nb_request += 1
+            waiting_question(talk)
 
-
-
-                # big stress of Grandpy because of indecency ==> back in 24 hours
-                if nb_indecency >= 3:
-                    stress_indecency(question)
-
-
-            # grandpy exhaustion
-            print("cette séance de recherche me FATIGUE ...")
-            reconnection(question)
+        # grandpy exhaustion
+        print("cette séance de recherche me FATIGUE ...")
+        reconnection(talk)
 
 if __name__ == "__main__":
     main()
