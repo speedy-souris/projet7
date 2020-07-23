@@ -169,9 +169,9 @@ class Chat:
         """
         self.messages = []
         self.chatters = []
-        self.tmp = ""
-        self.grandpy = "Grandpy"
-        self.user = "User"
+        self.tmp = ""  # temporary variable for civility / indecency wordlist
+        self.grandpy = "Grandpy" # user for message
+        self.user = "User"  # user for message
         self.civility = False
         self.quotas = False
         self.indecency = False
