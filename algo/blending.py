@@ -172,6 +172,7 @@ class Chat:
         self.tmp = ""  # temporary variable for civility / indecency wordlist
         self.grandpy = "Grandpy" # user for message
         self.user = "User"  # user for message
+        self.nb_messages = 0 # number of messages
         self.civility = False
         self.quotas = False
         self.indecency = False
@@ -201,7 +202,8 @@ class Chat:
             Read full list of messages
         """
         for chatter, message in zip(self.chatters, self.messages):
-            print(f"{[chatter]} = {message}")
+            self.nb_messages += 1
+            print(f"{self.nb_messages}.{[chatter]} = {message}")
 
     #==============
     # Server Redis
