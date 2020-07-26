@@ -44,7 +44,9 @@ def reconnection(dialog):
     """
         stop questions and answers for 24 hours
     """
-    print("reviens me voir demain !")
+    response = "reviens me voir demain !"
+    dialog.chat_viewer()
+
     # ~ dialog.expiry_counter()
 
 #=================
@@ -105,8 +107,7 @@ def answer_indecency(dialog):
                 dialog.nb_indecency += 1
                 dialog.nb_request += 1
                 rude_user(dialog)
-    # Waits for user question
-    waiting_question(dialog)
+
 
 
 
@@ -193,6 +194,17 @@ class Chat:
         if chatter == "User":
             self.nb_request += 1
             self.tmp = message
+
+    #========================
+    # message initialization
+    #========================
+    def init_message(self):
+        """
+            resetting the message list
+        """
+        self.messages[:] = []
+        self.chatters[:] = []
+
 
     #====================
     # Read list messages
@@ -415,7 +427,8 @@ def main():
 
         # big stress of Grandpy because of incivility ==> back in 24 hours
         if dialog.nb_request >= 3:
-            print("cette impolitesse me FATIGUE ...")
+            response = "cette impolitesse me FATIGUE ..."
+            dialog.add_message(response, dialog.grandpy)
             reconnection(dialog)
         # Waits for user question
         else:
@@ -430,15 +443,20 @@ def main():
 
             # Grandpy starts to tire
             if dialog.nb_request == 5:
-                print("Houla ma mémoire n'est plus ce qu'elle était ... ")
+                response = "Houla ma mémoire n'est plus ce qu'elle était ... "
+                dialog.add_message(response, dialog.grandpy)
+
 
             # grandpy's reply
-            print("Voici Ta Réponse !")
+            response = "Voici Ta Réponse !"
+            dialog.add_message(response, dialog.grandpy)
+            print(response)
             dialog.nb_request += 1
             waiting_question(dialog)
 
         # grandpy exhaustion
-        print("cette séance de recherche me FATIGUE ...")
+        response = "cette séance de recherche me FATIGUE ..."
+        dialog.add_message(response, dialog.grandpy)
         reconnection(dialog)
 
 if __name__ == "__main__":
