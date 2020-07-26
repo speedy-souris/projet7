@@ -46,7 +46,7 @@ def reconnection(dialog):
     """
     response = "reviens me voir demain !"
     dialog.chat_viewer()
-
+    dialog.init_message()
     # ~ dialog.expiry_counter()
 
 #=================
