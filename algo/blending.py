@@ -49,6 +49,7 @@ def reconnection(dialog):
     response_grandpy(dialog, response)
     print("-------------------------------")
     dialog.chat_viewer()
+    print("-------------------------------")
     dialog.init_message()
     # ~ dialog.expiry_counter()
 
