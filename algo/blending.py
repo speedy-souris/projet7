@@ -108,6 +108,18 @@ def answer_indecency(dialog):
                     dialog.quotas = True
                     stress_indecency(dialog)
 
+
+#==================
+# response grandpy
+#==================
+def answer_returned(dialog):
+    """
+        response returned by grandpy for the courteous user
+    """
+    response = "Voici Ta Réponse !"
+    print(f"{response} : {dialog.tmp}")
+    dialog.add_message(response, dialog.grandpy)
+
 #===============
 # response user
 #===============
@@ -465,11 +477,10 @@ def main():
                 print("ligne 466")
                 waiting_question(dialog)
 
-            response = "Voici Ta Réponse !"
-            print(f"{response} : {dialog.tmp}")
-            dialog.add_message(response, dialog.grandpy)
+            answer_returned(dialog)
             print("ligne 472")
             waiting_question(dialog)
+            answer_returned(dialog)
 
         if dialog.nb_indecency >= 3:
             stress_indecency(dialog)
