@@ -64,14 +64,7 @@ def waiting_question(dialog):
     dialog.add_message(question, dialog.grandpy)
     response_user(dialog, question)
     dialog.user_indecency()
-    if dialog.indecency:
-        dialog.nb_indecency += 1
-        dialog.indecency = False
-    # big stress of Grandpy because of indecency ==> back in 24 hours
-    if dialog.nb_indecency >= 3:
-        stress_indecency(dialog)
-    else:
-        answer_indecency(dialog)
+    answer_indecency(dialog)
 
 #=============
 # rude answer
@@ -106,7 +99,14 @@ def answer_indecency(dialog):
     if dialog.indecency:
             while dialog.indecency and dialog.nb_indecency < 3:
                 dialog.nb_indecency += 1
+                dialog.indecency = False
                 rude_user(dialog)
+                waiting_question(dialog)
+
+                # big stress of Grandpy because of indecency ==> back in 24 hours
+                if dialog.nb_indecency >= 3:
+                    dialog.quotas = True
+                    stress_indecency(dialog)
 
 #===============
 # response user
@@ -431,8 +431,10 @@ def main():
             dialog.user_civility()
             if dialog.civility:
                 dialog.nb_request -= 1
-            if dialog.nb_request < 0:
-                dialog.nb_request = 0
+                if dialog.nb_request < 0:
+                    dialog.nb_request = 0
+            else:
+                dialog.nb_request += 1
 
         # big stress of Grandpy because of incivility ==> back in 24 hours
         if dialog.nb_request >= 3:
@@ -442,36 +444,41 @@ def main():
             reconnection(dialog)
         # Waits for user question
         else:
+            print("ligne 439")
             waiting_question(dialog)
 
         # Waits for user new question
     else:
         while not dialog.quotas:
-            print(dialog.nb_request)
             # maximum number of responses reached
             if dialog.nb_request >= 10:
                 dialog.quotas = True
 
             # Grandpy starts to tire
-            if dialog.nb_request == 5:
+            elif dialog.nb_request == 5:
                 response = "Houla ma mémoire n'est plus ce qu'elle était ... "
                 print(response)
                 dialog.add_message(response, dialog.grandpy)
 
-
-            # grandpy's reply
-            waiting_question(dialog)
+            else:
+                # grandpy's reply
+                print("ligne 466")
+                waiting_question(dialog)
 
             response = "Voici Ta Réponse !"
-            print(response)
+            print(f"{response} : {dialog.tmp}")
             dialog.add_message(response, dialog.grandpy)
+            print("ligne 472")
             waiting_question(dialog)
 
-        # grandpy exhaustion
-        response = "cette séance de recherche me FATIGUE ..."
-        print(response)
-        dialog.add_message(response, dialog.grandpy)
-        reconnection(dialog)
+        if dialog.nb_indecency >= 3:
+            stress_indecency(dialog)
+        else:
+            # grandpy exhaustion
+            response = "cette séance de recherche me FATIGUE ..."
+            print(response)
+            dialog.add_message(response, dialog.grandpy)
+            reconnection(dialog)
 
 if __name__ == "__main__":
     main()
