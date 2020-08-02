@@ -87,6 +87,7 @@ def stress_indecency(dialog):
         stress of Grandpy
     """
     response = "cette grossierete me FATIGUE ..."
+    print(response)
     dialog.add_message(response, dialog.grandpy)
     reconnection(dialog)
 
@@ -482,16 +483,12 @@ def main():
                         print("---- lgne 510 ----")
                         print("---- appel de stress_indecency ----")
                         stress_indecency(dialog)
-                    else:
-                        print("---- ligne 514 ----")
-                        print("---- appel de answer_returned ----")
-                        answer_returned(dialog)
+            else:
+                print("---- ligne 514 ----")
+                print("---- appel de answer_returned ----")
+                answer_returned(dialog)
 
-        if dialog.nb_indecency >= 3:
-            print("---- ligne 532 ----")
-            print("---- appel de stress_indecency----")
-            stress_indecency(dialog)
-        else:
+        if dialog.nb_request >= 10 and dialog.nb_indecency < 3:
             # grandpy exhaustion
             response = "cette séance de recherche me FATIGUE ..."
             print(response)
