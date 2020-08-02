@@ -37,81 +37,10 @@ def str_convers(value):
                            #=================
                            # Script function
                            #=================
-#========================================
-# reconnection after 24 hours of waiting
-#========================================
-def reconnection(dialog):
-    """
-        stop questions and answers for 24 hours
-    """
-    response = "reviens me voir demain !"
-    print(response)
-    dialog.add_message(response, dialog.grandpy)
-    print("-------------------------------")
-    dialog.chat_viewer()
-    print("-------------------------------")
-    dialog.init_message()
-    # ~ dialog.expiry_counter()
 
-#=================
-# attent question
-#=================
-def waiting_question(dialog):
-    """
-        waiting for user question
-    """
-    question = "Que veux tu savoir ... ?\n"
-    dialog.add_message(question, dialog.grandpy)
-    response_user(dialog, question)
-    dialog.user_indecency()
+#----------------------------
 
-#=============
-# rude answer
-#=============
-def rude_user(dialog):
-    """
-        rude user
-    """
-    question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
-    dialog.add_message(question, dialog.grandpy)
-    response_user(dialog, question)
-    dialog.user_indecency()
-
-#=====================
-# stress of indecency
-#=====================
-def stress_indecency(dialog):
-    """
-        stress of Grandpy
-    """
-    response = "cette grossierete me FATIGUE ..."
-    print(response)
-    dialog.add_message(response, dialog.grandpy)
-    reconnection(dialog)
-
-#==================
-# response grandpy
-#==================
-def answer_returned(dialog):
-    """
-        response returned by grandpy for the courteous user
-    """
-    response = "Voici Ta Réponse !"
-    print(f"{response} : {dialog.tmp}")
-    dialog.add_message(response, dialog.grandpy)
-
-#===============
-# response user
-#===============
-def response_user(dialog, question):
-    """
-        added last post from user
-    """
-    response = input(question)
-    dialog.add_message(response, dialog.user)
-    if dialog.civility:
-        dialog.nb_request += 1
-
+#----------------------------
 
                            #==============
                            # Script class
@@ -217,6 +146,81 @@ class Chat:
             zip(self.chatters, self.messages)
         ):
             print(f"{counter + 1}.{[chatter]} = {message}")
+
+    #========================================
+    # reconnection after 24 hours of waiting
+    #========================================
+    def reconnection(self):
+        """
+            stop questions and answers for 24 hours
+        """
+        response = "reviens me voir demain !"
+        print(response)
+        self.add_message(response, self.grandpy)
+        print("-------------------------------")
+        self.chat_viewer()
+        print("-------------------------------")
+        self.init_message()
+        # ~ self.expiry_counter()
+
+    #=================
+    # attent question
+    #=================
+    def waiting_question(self):
+        """
+            waiting for user question
+        """
+        question = "Que veux tu savoir ... ?\n"
+        self.add_message(question, self.grandpy)
+        self.response_user(question)
+        self.user_indecency()
+
+    #=====================
+    # stress of indecency
+    #=====================
+    def stress_indecency(self):
+        """
+            stress of Grandpy
+        """
+        response = "cette grossierete me FATIGUE ..."
+        print(response)
+        self.add_message(response, self.grandpy)
+        self.reconnection()
+
+    #==================
+    # response grandpy
+    #==================
+    def answer_returned(self):
+        """
+            response returned by grandpy for the courteous user
+        """
+        response = "Voici Ta Réponse !"
+        print(f"{response} : {self.tmp}")
+        self.add_message(response, self.grandpy)
+
+    #===============
+    # response user
+    #===============
+    def response_user(self, question):
+        """
+            added last post from user
+        """
+        response = input(question)
+        self.add_message(response, self.user)
+        if self.civility:
+            self.nb_request += 1
+
+    #=============
+    # rude answer
+    #=============
+    def rude_user(self):
+        """
+            rude user
+        """
+        question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
+        self.add_message(question, self.grandpy)
+        self.response_user(question)
+        self.user_indecency()
 
     #==============
     # Server Redis
@@ -411,7 +415,7 @@ def main():
     dialog = Chat()
     question = "Bonjour Mon petit, en quoi puis je t'aider ?\n"
     dialog.add_message(question, dialog.grandpy)
-    response_user(dialog, question)
+    dialog.response_user(question)
     dialog.user_civility()
 
     # rudeness of the user
@@ -419,12 +423,14 @@ def main():
         while not dialog.civility and dialog.nb_request < 3:
             question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
             dialog.add_message(question, dialog.grandpy)
-            response_user(dialog, question)
+            dialog.response_user(question)
             dialog.user_civility()
+
             if dialog.civility:
                 dialog.nb_request -= 1
                 if dialog.nb_request < 0:
                     dialog.nb_request = 0
+                    break
             dialog.nb_request += 1
 
         # big stress of Grandpy because of incivility ==> back in 24 hours
@@ -432,55 +438,50 @@ def main():
             response = "cette impolitesse me FATIGUE ..."
             print(response)
             dialog.add_message(response, dialog.grandpy)
-            reconnection(dialog)
-        else:
-            # Waits for user question
-            waiting_question(dialog)
-
+            dialog.reconnection()
 
     # Waits for user new question
-    else:
-        dialog.request = 0
-        while not dialog.quotas:
-            # maximum number of responses reached
-            if dialog.nb_request >= 10:
-                dialog.quotas = True
+    dialog.nb_request = 0
+    while not dialog.quotas:
+        # maximum number of responses reached
+        if dialog.nb_request >= 10:
+            dialog.quotas = True
 
-            # Grandpy starts to tire
-            if dialog.nb_request == 5:
-                response = "Houla ma mémoire n'est plus ce qu'elle était ... "
-                print(response)
-                dialog.add_message(response, dialog.grandpy)
-
-            # grandpy's reply
-            waiting_question(dialog)
-
-            # indecency in response
-            if dialog.indecency:
-                while dialog.indecency and dialog.nb_indecency < 3:
-                    dialog.nb_indecency += 1
-                    dialog.indecency = False
-                    rude_user(dialog)
-
-                    if not dialog.indecency:
-                        dialog.nb_request -= 1
-                        if dialog.nb_request < 0:
-                            dialog.nb_request = 0
-
-
-                    # big stress of Grandpy because of indecency ==> back in 24 hours
-                    if dialog.nb_indecency >= 3:
-                        dialog.quotas = True
-                        stress_indecency(dialog)
-            else:
-                answer_returned(dialog)
-
-        if dialog.nb_request >= 10 and dialog.nb_indecency < 3:
-            # grandpy exhaustion
-            response = "cette séance de recherche me FATIGUE ..."
+        # Grandpy starts to tire
+        elif dialog.nb_request == 5:
+            response = "Houla ma mémoire n'est plus ce qu'elle était ... "
             print(response)
             dialog.add_message(response, dialog.grandpy)
-            reconnection(dialog)
+        else:
+            # grandpy's reply
+            dialog.waiting_question()
+
+        # indecency in response
+        if dialog.indecency:
+            while dialog.indecency and dialog.nb_indecency < 3:
+                dialog.nb_indecency += 1
+                dialog.indecency = False
+                dialog.rude_user()
+
+                if not dialog.indecency:
+                    dialog.nb_request -= 1
+                    if dialog.nb_request < 0:
+                        dialog.nb_request = 0
+
+
+                # big stress of Grandpy because of indecency ==> back in 24 hours
+                if dialog.nb_indecency >= 3:
+                    dialog.quotas = True
+                    dialog.stress_indecency()
+        else:
+            dialog.answer_returned()
+
+    if dialog.nb_request >= 10 and dialog.nb_indecency < 3:
+        # grandpy exhaustion
+        response = "cette séance de recherche me FATIGUE ..."
+        print(response)
+        dialog.add_message(response, dialog.grandpy)
+        dialog.reconnection()
 
 if __name__ == "__main__":
     main()
