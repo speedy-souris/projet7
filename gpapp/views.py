@@ -5,14 +5,14 @@ import time
 from flask import Flask, render_template
 # ~ import devSetting
 # ~ import gpapp
-from . import question_answer
+from . import blending
 
 # ~ from .devSetting import dataMap as data
-from .devSetting import fDev as func
+# ~ from .devSetting import fDev as func
 # ~ import question_answer as script
 
 app = Flask(__name__)
-
+app.conversation = blending.Chat()
 #======================================
 # main function for displaying answers
 #======================================
@@ -22,9 +22,9 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    conversation = question_answer.DataParameter("")
-    if conversation.read_quotas and conversation.read_counter == 0:
-        conversation.initial_status()
+
+    if app.conversation.read_quotas and app.conversation.read_counter == 0:
+        app.conversation.initial_status()
     return render_template("index.html")
 
 # ~ # Initialization of general parameters
@@ -45,24 +45,22 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    conversation = question_answer.DataParameter(question)
-    if conversation.read_quotas:
-        conversation.initial_status()
+    if app.conversation.read_quotas:
+        app.conversation.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
-    func.user_exchange(question)
+    blending.main()
     # sending parameters
     data_send = {
         "parameter_status": {
-            "quotas_api": conversation.read_quotas,
-            "nb_request": conversation.read_counter,
-            "civility": conversation.read_civility,
-            "decency": conversation.read_decency,
-            "comprehension": conversation.read_comprehension
+            "quotas_api": app.conversation.read_quotas,
+            "nb_request": app.conversation.read_counter,
+            "civility": app.conversation.read_civility,
+            "comprehension": app.conversation.read_comprehension
         },
-        "map_status": data.DataMap().data_map().get("address", ""),
-        "wiki_status": data.dataMap().data_map().get("history", "")
+        # ~ "map_status": data.DataMap().data_map().get("address", ""),
+        # ~ "wiki_status": data.dataMap().data_map().get("history", "")
     }
     return data_send
 
