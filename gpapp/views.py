@@ -5,14 +5,15 @@ import time
 from flask import Flask, render_template
 # ~ import devSetting
 # ~ import gpapp
-from . import blending
+from .blending import instantiation as dialog
+from .blending import main
 
 # ~ from .devSetting import dataMap as data
 # ~ from .devSetting import fDev as func
 # ~ import question_answer as script
 
 app = Flask(__name__)
-app.conversation = blending.Chat()
+
 #======================================
 # main function for displaying answers
 #======================================
@@ -22,9 +23,8 @@ def index():
         Initialization of the index.html page
         single home page
     """
-
-    if app.conversation.read_quotas and app.conversation.read_counter == 0:
-        app.conversation.initial_status()
+    if dialog.read_quotas and dialog.read_counter == 0:
+        dialog.initial_status()
     return render_template("index.html")
 
 # ~ # Initialization of general parameters
@@ -45,23 +45,24 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    if app.conversation.read_quotas:
-        app.conversation.initial_status()
+    if dialog.read_quotas:
+        dialog.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
-    blending.main()
+    main()
     # sending parameters
     data_send = {
         "parameter_status": {
-            "quotas_api": app.conversation.read_quotas,
-            "nb_request": app.conversation.read_counter,
-            "civility": app.conversation.read_civility,
-            "comprehension": app.conversation.read_comprehension
+            "quotas_api": dialog.read_quotas,
+            "nb_request": dialog.read_counter,
+            "civility": dialog.read_civility,
+            "comprehension": dialog.read_comprehension
         },
         # ~ "map_status": data.DataMap().data_map().get("address", ""),
         # ~ "wiki_status": data.dataMap().data_map().get("history", "")
     }
+    print(f"parmetre status ==> {data_send}")
     return data_send
 
 

@@ -1,6 +1,7 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import inspect
 import redis
 
                            #========================
@@ -21,7 +22,7 @@ def bool_convers(value):
     else:
         return "0"
 
- # string ==> boolean
+# string ==> boolean
 def str_convers(value):
     """
         conversion from string to boolean
@@ -34,6 +35,15 @@ def str_convers(value):
     else:
         return True
 
+#================
+# Class instance
+#================
+def instantiation():
+    """
+        instantiating the Chat class
+    """
+    instance = Chat()
+    return instance
                            #=================
                            # Script function
                            #=================
@@ -268,7 +278,19 @@ class Chat:
         """
         question = "Que veux tu savoir ... ?\n"
         self.add_message(question, self.grandpy)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(
+            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+            f" ==> appel de {self.response_user.__name__}"
+        )
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         self.response_user(question)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(
+            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+            f" ==> appel de {self.user_indecency.__name__}"
+        )
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         self.user_indecency()
 
     #=====================
@@ -281,6 +303,12 @@ class Chat:
         response = "cette grossierete me FATIGUE ..."
         print(response)
         self.add_message(response, self.grandpy)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(
+            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+            f" ==> appel de {dialog.reconnection.__name__}"
+        )
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         self.reconnection()
 
     #==================
@@ -315,7 +343,19 @@ class Chat:
         """
         question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
         self.add_message(question, self.grandpy)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(
+            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+            f" ==> appel de {dialog.response_user.__name__}"
+        )
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         self.response_user(question)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(
+            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+            f" ==> appel de {dialog.user_indecency.__name__}"
+        )
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         self.user_indecency()
 
     #==============
@@ -450,7 +490,7 @@ class Chat:
         """
             reading of comprehension configuration in Redis database
         """
-        return str_convers(Conversation.reading("comprehension"))
+        return str_convers(self.reading("comprehension"))
 
     #=================
     # Counter Request
@@ -486,7 +526,7 @@ class Chat:
     #=================
     def user_civility(self):
         """
-            modification of attributes civility
+            modification of attributes civility ==> parser
         """
         # list of words to find in questions
         user_answer = self.tmp.split()
@@ -497,14 +537,14 @@ class Chat:
             ]
         )
         self.civility = result
-        # ~ self.write_civility(self.civility)
+        self.write_civility(self.civility)
 
     #=================
     # user's decency
     #=================
     def user_indecency(self):
         """
-            modification of attributes indecency
+            modification of attributes indecency ==> parser
         """
         # list of words to find in questions
         user_answer = self.tmp.split()
@@ -515,27 +555,27 @@ class Chat:
             ]
         )
         self.indecency = result
-        # ~ self.write_indecency(self.indecency)
+        self.write_indecency(self.indecency)
 
     #=========================
     # Grandpy incomprehension
     #=========================
     def comprehension(self):
-    """
-        modification of attributes decency
-    """
+        """
+            modification of attributes comprehension ==> parser
+        """
         # list of words to find in questions
         list_question = self.question.split()
         # search comprehension
         result = bool(
             [
             w for w in list_question if w.lower() in self.DONNEE_CIVILITY
-                                    and w.lower() in self.INDECENCY_LIST
-                                    and w.lower() in self.UNNECESSARY_LIST
+                                     or w.lower() in self.INDECENCY_LIST
+                                     or w.lower() in self.UNNECESSARY_LIST
             ]
         )
         self.comprehension = result
-        # ~ self.write_comprehension(self.comprehension)
+        self.write_comprehension(self.comprehension)
 
 #==================
 # script execution
@@ -574,7 +614,6 @@ def main():
             response = "cette impolitesse me FATIGUE ..."
             print(response)
             dialog.quotas = True
-            print(dialog.nb_request)
             dialog.add_message(response, dialog.grandpy)
             dialog.reconnection()
 
@@ -591,8 +630,14 @@ def main():
             response = "Houla ma mémoire n'est plus ce qu'elle était ... "
             print(response)
             dialog.add_message(response, dialog.grandpy)
+
         # grandpy's reply
-        print(dialog.nb_request)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(
+            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+            f" ==> appel de {dialog.waiting_question.__name__}"
+        )
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         dialog.waiting_question()
 
         # indecency in response
@@ -600,6 +645,12 @@ def main():
             while dialog.indecency and dialog.nb_indecency < 3:
                 dialog.nb_indecency += 1
                 dialog.indecency = False
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print(
+                    f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+                    f" ==> appel de {dialog.rude_user.__name__}"
+                )
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
                 dialog.rude_user()
 
                 if not dialog.indecency:
@@ -611,8 +662,20 @@ def main():
                 # big stress of Grandpy because of indecency ==> back in 24 hours
                 if dialog.nb_indecency >= 3:
                     dialog.quotas = True
+                    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                    print(
+                        f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+                        f" ==> appel de {dialog.stress_indecency.__name__}"
+                    )
+                    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
                     dialog.stress_indecency()
         else:
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print(
+                f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+                f" ==> appel de {dialog.answer_returned.__name__}"
+            )
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             dialog.answer_returned()
 
     if dialog.nb_request >= 10 and dialog.nb_indecency < 3:
@@ -620,6 +683,12 @@ def main():
         response = "cette séance de recherche me FATIGUE ..."
         print(response)
         dialog.add_message(response, dialog.grandpy)
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print(
+            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
+            f" ==> appel de {dialog.reconnection.__name__}"
+        )
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         dialog.reconnection()
 
 if __name__ == "__main__":
