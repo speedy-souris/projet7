@@ -278,19 +278,13 @@ class Chat:
         """
         question = "Que veux tu savoir ... ?\n"
         self.add_message(question, self.grandpy)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(
-            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-            f" ==> appel de {self.response_user.__name__}"
-        )
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}",end=".")
+        print(f" Appel de {self.response_user.__name__}")
         self.response_user(question)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(
-            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-            f" ==> appel de {self.user_indecency.__name__}"
-        )
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}",end=".")
+        print(f" Appel de {self.user_indecency.__name__}")
         self.user_indecency()
 
     #=====================
@@ -303,12 +297,9 @@ class Chat:
         response = "cette grossierete me FATIGUE ..."
         print(response)
         self.add_message(response, self.grandpy)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(
-            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-            f" ==> appel de {dialog.reconnection.__name__}"
-        )
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {self.reconnection.__name__}")
         self.reconnection()
 
     #==================
@@ -343,19 +334,13 @@ class Chat:
         """
         question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
         self.add_message(question, self.grandpy)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(
-            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-            f" ==> appel de {dialog.response_user.__name__}"
-        )
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {self.response_user.__name__}")
         self.response_user(question)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(
-            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-            f" ==> appel de {dialog.user_indecency.__name__}"
-        )
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {self.user_indecency.__name__}")
         self.user_indecency()
 
     #==============
@@ -592,7 +577,13 @@ def main():
     dialog = Chat()
     question = "Bonjour Mon petit, en quoi puis je t'aider ?\n"
     dialog.add_message(question, dialog.grandpy)
+    print()
+    print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+    print(f" Appel de {dialog.response_user.__name__}")
     dialog.response_user(question)
+    print()
+    print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+    print(f" Appel de {dialog.user_civility.__name__}")
     dialog.user_civility()
 
     # rudeness of the user
@@ -600,7 +591,13 @@ def main():
         while not dialog.civility and dialog.nb_request < 3:
             question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
             dialog.add_message(question, dialog.grandpy)
+            print()
+            print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {dialog.response_user.__name__}")
             dialog.response_user(question)
+            print()
+            print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {dialog.user_civility.__name__}")
             dialog.user_civility()
 
             if dialog.civility:
@@ -615,6 +612,9 @@ def main():
             print(response)
             dialog.quotas = True
             dialog.add_message(response, dialog.grandpy)
+            print()
+            print(f"{inspect.currentframe().f_lineno}", end=".")
+            print(f" Appel de {dialog.reconnection.__name__}")
             dialog.reconnection()
 
     # Waits for user new question
@@ -632,12 +632,9 @@ def main():
             dialog.add_message(response, dialog.grandpy)
 
         # grandpy's reply
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(
-            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-            f" ==> appel de {dialog.waiting_question.__name__}"
-        )
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.waiting_question.__name__}")
         dialog.waiting_question()
 
         # indecency in response
@@ -645,12 +642,9 @@ def main():
             while dialog.indecency and dialog.nb_indecency < 3:
                 dialog.nb_indecency += 1
                 dialog.indecency = False
-                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                print(
-                    f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-                    f" ==> appel de {dialog.rude_user.__name__}"
-                )
-                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                print()
+                print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+                print(f" Appel de {dialog.rude_user.__name__}")
                 dialog.rude_user()
 
                 if not dialog.indecency:
@@ -662,20 +656,14 @@ def main():
                 # big stress of Grandpy because of indecency ==> back in 24 hours
                 if dialog.nb_indecency >= 3:
                     dialog.quotas = True
-                    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                    print(
-                        f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-                        f" ==> appel de {dialog.stress_indecency.__name__}"
-                    )
-                    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                    print()
+                    print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+                    print(f" Appel de {dialog.stress_indecency.__name__}")
                     dialog.stress_indecency()
         else:
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            print(
-                f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-                f" ==> appel de {dialog.answer_returned.__name__}"
-            )
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            print()
+            print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {dialog.answer_returned.__name__}")
             dialog.answer_returned()
 
     if dialog.nb_request >= 10 and dialog.nb_indecency < 3:
@@ -683,12 +671,9 @@ def main():
         response = "cette séance de recherche me FATIGUE ..."
         print(response)
         dialog.add_message(response, dialog.grandpy)
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-        print(
-            f"\"ligne  {inspect.currentframe().f_lineno + 4}\"",
-            f" ==> appel de {dialog.reconnection.__name__}"
-        )
-        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.reconnection.__name__}")
         dialog.reconnection()
 
 if __name__ == "__main__":
