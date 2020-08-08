@@ -212,7 +212,7 @@ class Chat:
         self.civility = False
         self.quotas = False
         self.indecency = False
-        self.comprehension = True
+        self.comprehension = False
         self.nb_indecency = 0
         self.nb_request = 0
         self.redis_connect()
@@ -263,9 +263,11 @@ class Chat:
         response = "reviens me voir demain !"
         print(response)
         self.add_message(response, self.grandpy)
-        print("-------------------------------")
+        print("\n--------------------------------------------")
+        print("-------- HISTORIQUE DE CONVERSATION --------")
+        print("--------------------------------------------")
         self.chat_viewer()
-        print("-------------------------------")
+        print("--------------------------------------------\n")
         self.init_message()
         # ~ self.expiry_counter()
 
@@ -282,6 +284,7 @@ class Chat:
         print(f"{inspect.currentframe().f_lineno + 2}",end=".")
         print(f" Appel de {self.response_user.__name__}")
         self.response_user(question)
+        print(f"retour ligne {inspect.currentframe().f_lineno}")
         print()
         print(f"{inspect.currentframe().f_lineno + 2}",end=".")
         print(f" Appel de {self.user_indecency.__name__}")
@@ -406,8 +409,29 @@ class Chat:
         self.write_civility(False)
         self.write_quotas(False)
         self.write_indecency(False)
-        self.write_comprehension(True)
+        self.write_comprehension(False)
         self.write_counter(0)
+
+    #==========================
+    # status parameter display
+    #==========================
+    def display_status(self):
+        """
+            display of data values for the Redis database
+
+                - civility      ==> civility values for the Redis database
+                - quotas        ==> quotas values for the Redis database
+                - indecency     ==> indecency values for the Redis database
+                - nb_request    ==> number of request in the Redis database
+                - comprehension ==> comprehension values for the Redis database
+        """
+        print(f"\nvaleur civility = {self.civility}")
+        print(f"valeur quotas = {self.quotas}")
+        print(f"valeur indecency = {self.indecency}")
+        print(f"valeur nb_request = {self.nb_request}")
+        print(f"valeur comprehension = {self.comprehension}")
+
+
 
     #==============================================
     # value of data Civility in the Redis database
@@ -545,18 +569,18 @@ class Chat:
     #=========================
     # Grandpy incomprehension
     #=========================
-    def comprehension(self):
+    def user_comprehension(self):
         """
             modification of attributes comprehension ==> parser
         """
         # list of words to find in questions
-        list_question = self.question.split()
+        user_answer = self.tmp.split()
         # search comprehension
         result = bool(
             [
-            w for w in list_question if w.lower() in self.DONNEE_CIVILITY
-                                     or w.lower() in self.INDECENCY_LIST
-                                     or w.lower() in self.UNNECESSARY_LIST
+            w for w in user_answer if w.lower() in self.DONNEE_CIVILITY
+                or w.lower() in self.INDECENCY_LIST
+                or w.lower() in self.UNNECESSARY_LIST
             ]
         )
         self.comprehension = result
@@ -575,19 +599,49 @@ def main():
     # awaits the courtesy of the user
     #---------------------------------
     dialog = Chat()
-    question = "Bonjour Mon petit, en quoi puis je t'aider ?\n"
-    dialog.add_message(question, dialog.grandpy)
+    while dialog.nb_request < 5 and not dialog.comprehension:
+        question = "\nBonjour Mon petit, en quoi puis je t'aider ?\n"
+        dialog.add_message(question, dialog.grandpy)
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.response_user.__name__}")
+        dialog.response_user(question)
+        print(f"\nretour sur la ligne {inspect.currentframe().f_lineno}")
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.user_comprehension.__name__}\n")
+        dialog.user_comprehension()
+        print(f"retour sur la ligne {inspect.currentframe().f_lineno}\n")
+        # unrecognized / recognized words
+        if not dialog.comprehension:
+            print(f"je passe par la ligne {inspect.currentframe().f_lineno}\n")
+            input("Je ne comprends pas, essaye d'être plus précis ...\n")
+            dialog.nb_request += 1
+        print(f"j'arrive sur la ligne {inspect.currentframe().f_lineno}\n")
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.display_status.__name__}")
+        dialog.display_status()
+        print(f"retour sur la ligne {inspect.currentframe().f_lineno}")
+
+    # too many unrecognized words
+    if not dialog.comprehension:
+        dialog.quotas = True
+        response = "Je n'arrive a trouver une réponse !"
+        print(response)
+        dialog.add_message(response, dialog.grandpy)
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.reconnection.__name__}")
+        dialog.reconnection()
     print()
-    print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-    print(f" Appel de {dialog.response_user.__name__}")
-    dialog.response_user(question)
-    print()
+    dialog.nb_request = 0
     print(f"{inspect.currentframe().f_lineno + 2}", end=".")
     print(f" Appel de {dialog.user_civility.__name__}")
     dialog.user_civility()
 
     # rudeness of the user
-    if not dialog.civility:
+    if not dialog.civility and dialog.comprehension:
+        display_status()
         while not dialog.civility and dialog.nb_request < 3:
             question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
             dialog.add_message(question, dialog.grandpy)
@@ -599,12 +653,21 @@ def main():
             print(f"{inspect.currentframe().f_lineno + 2}", end=".")
             print(f" Appel de {dialog.user_civility.__name__}")
             dialog.user_civility()
+            print()
+            print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {dialog.user_comprehension.__name__}")
+            dialog.user_comprehension()
 
             if dialog.civility:
                 dialog.nb_request -= 1
                 if dialog.nb_request < 0:
                     dialog.nb_request = 0
             dialog.nb_request += 1
+
+            if not dialog.comprehension:
+                while not comprehension:
+                    dialog.comprehension = True
+                    input("Je ne comprends pas, essaye d'être plus précis ...")
 
         # big stress of Grandpy because of incivility ==> back in 24 hours
         if dialog.nb_request >= 3:
@@ -616,6 +679,7 @@ def main():
             print(f"{inspect.currentframe().f_lineno}", end=".")
             print(f" Appel de {dialog.reconnection.__name__}")
             dialog.reconnection()
+
 
     # Waits for user new question
     dialog.nb_request = 0
