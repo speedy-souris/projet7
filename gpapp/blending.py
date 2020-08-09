@@ -337,12 +337,10 @@ class Chat:
         """
         question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
         self.add_message(question, self.grandpy)
-        print()
-        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {self.response_user.__name__}")
         self.response_user(question)
-        print()
-        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {self.user_indecency.__name__}")
         self.user_indecency()
 
@@ -351,16 +349,31 @@ class Chat:
     #===================
     def unpoliteness_user(self):
         """
-            user unpoliteness in the question pour grandpy
+            user unpoliteness in the question for grandpy
         """
         question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
-        dialog.add_message(question, dialog.grandpy)
+        self.add_message(question, self.grandpy)
         print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {dialog.response_user.__name__}\n")
-        dialog.response_user(question)
+        print(f" Appel de {self.response_user.__name__}\n")
+        self.response_user(question)
         print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {dialog.user_civility.__name__}")
-        dialog.user_civility()
+        print(f" Appel de {self.user_civility.__name__}")
+        self.user_civility()
+
+    #====================
+    # incorrect question
+    #====================
+    def question_incorrect(self):
+        """
+            unknown words in the question
+        """
+        question = "Je ne comprends pas, essaye d'être plus précis ...\n"
+        self.add_message(question, dialog.grandpy)
+        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {self.user_comprehension.__name__}\n")
+        self.user_comprehension()
+
+
 
     #==============
     # Server Redis
@@ -441,7 +454,7 @@ class Chat:
                 - nb_request    ==> number of request in the Redis database
                 - comprehension ==> comprehension values for the Redis database
         """
-        print(f"\nvaleur civility = {self.civility}")
+        print(f"valeur civility = {self.civility}")
         print(f"valeur quotas = {self.quotas}")
         print(f"valeur indecency = {self.indecency}")
         print(f"valeur nb_request = {self.nb_request}")
@@ -621,20 +634,26 @@ def main():
     :
         question = "\nBonjour Mon petit, en quoi puis je t'aider ?\n"
         dialog.add_message(question, dialog.grandpy)
-        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {dialog.response_user.__name__}")
         dialog.response_user(question)
-        print(f"\nretour sur la ligne {inspect.currentframe().f_lineno}\n")
-        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+
+        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {dialog.user_comprehension.__name__}\n")
         dialog.user_comprehension()
-        print(f"retour sur la ligne {inspect.currentframe().f_lineno}\n")
+
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.display_status.__name__}\n")
+        dialog.display_status()
+
         # unrecognized / recognized words
         if not dialog.comprehension:
-            print(f"je passe par la ligne {inspect.currentframe().f_lineno}\n")
-            question = "Je ne comprends pas, essaye d'être plus précis ...\n"
-            dialog.add_message(question, dialog.grandpy)
+            print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}\n")
+            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {dialog.question_incorrect.__name__}\n")
+            dialog.question_incorrect()
             dialog.nb_request += 1
+
         # rudeness of the user
         if not dialog.civility:
             print(f"je passe par la ligne {inspect.currentframe().f_lineno}\n")
@@ -673,18 +692,11 @@ def main():
     if not dialog.civility and dialog.comprehension:
         dialog.display_status()
         while not dialog.civility and dialog.nb_request < 3:
-            question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
-            dialog.add_message(question, dialog.grandpy)
-            print()
+            print(f"je passe par la ligne {inspect.currentframe().f_lineno}\n")
             print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {dialog.response_user.__name__}")
-            dialog.response_user(question)
-            print()
-            print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {dialog.user_civility.__name__}")
-            dialog.user_civility()
-            print()
-            print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {dialog.user_comprehension.__name__}\n")
+            dialog.unpoliteness_user()
+            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
             print(f" Appel de {dialog.user_comprehension.__name__}")
             dialog.user_comprehension()
 
@@ -692,12 +704,16 @@ def main():
                 dialog.nb_request -= 1
                 if dialog.nb_request < 0:
                     dialog.nb_request = 0
+
             dialog.nb_request += 1
 
             if not dialog.comprehension:
                 while not comprehension:
                     dialog.comprehension = True
-                    input("Je ne comprends pas, essaye d'être plus précis ...")
+                    print(f"je passe par la ligne {inspect.currentframe().f_lineno}\n")
+                    print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+                    print(f" Appel de {dialog.user_comprehension.__name__}\n")
+                    dialog.unpoliteness_user()
 
         # big stress of Grandpy because of incivility ==> back in 24 hours
         if dialog.nb_request >= 3:
@@ -750,8 +766,7 @@ def main():
                 # big stress of Grandpy because of indecency ==> back in 24 hours
                 if dialog.nb_indecency >= 3:
                     dialog.quotas = True
-                    print()
-                    print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+                    print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
                     print(f" Appel de {dialog.stress_indecency.__name__}")
                     dialog.stress_indecency()
         else:
