@@ -35,6 +35,18 @@ def str_convers(value):
     else:
         return True
 
+#========================
+# distressing discussion
+#========================
+def discussion_distressing(civ, ind, com):
+    """
+        stressful and pointless discussion
+    """
+    if not civ and not ind and not com:
+        return True
+    else:
+        return False
+
 #================
 # Class instance
 #================
@@ -325,7 +337,7 @@ class Chat:
         """
         response = input(question)
         self.add_message(response, self.user)
-        if self.civility:
+        if not self.civility or not self.comprehension:
             self.nb_request += 1
 
     #=============
@@ -368,12 +380,10 @@ class Chat:
             unknown words in the question
         """
         question = "Je ne comprends pas, essaye d'être plus précis ...\n"
-        self.add_message(question, dialog.grandpy)
+        self.add_message(question, self.grandpy)
         print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {self.user_comprehension.__name__}\n")
-        self.user_comprehension()
-
-
+        print(f" Appel de {self.response_user.__name__}\n")
+        self.response_user(question)
 
     #==============
     # Server Redis
@@ -628,16 +638,28 @@ def main():
     # awaits the courtesy of the user
     #---------------------------------
     dialog = Chat()
-    while dialog.nb_request < 5\
-        and not dialog.comprehension\
-        and not dialog.civility\
-    :
+    while dialog.nb_request < 3 and discussion_distressing(
+                                        dialog.civility,
+                                        dialog.indecency,
+                                        dialog.comprehension
+                                    ):
         question = "\nBonjour Mon petit, en quoi puis je t'aider ?\n"
         dialog.add_message(question, dialog.grandpy)
         print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {dialog.response_user.__name__}")
         dialog.response_user(question)
 
+        # Test civility
+        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.user_civility.__name__}")
+        dialog.user_civility()
+
+        # Test indecency
+        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {dialog.user_indecency.__name__}")
+        dialog.user_indecency()
+
+        # Test comprehension
         print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {dialog.user_comprehension.__name__}\n")
         dialog.user_comprehension()
@@ -648,9 +670,9 @@ def main():
 
         # unrecognized / recognized words
         if not dialog.comprehension:
-            print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}\n")
+            print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}")
             print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {dialog.question_incorrect.__name__}\n")
+            print(f" Appel de {dialog.question_incorrect.__name__}")
             dialog.question_incorrect()
             dialog.nb_request += 1
 
