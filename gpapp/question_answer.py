@@ -99,7 +99,7 @@ class DataParameter:
             Constants for processing keywords for Google Map APIs and grandpy's behavior
             according to the content of the user question
                 - CIVILITY_LIST-----|
-                - INDECENCY_LIST----|--set()
+                - DECENCY_LIST----|--set()
                 - UNNECESSARY_LIST--|
         Management for initializing configuration database Redis
             - redis_connect() ==> connection initialization for the Redis database
@@ -113,7 +113,7 @@ class DataParameter:
         "bonjour", "bonsoir","salut","hello","hi"
         ]
     )
-    INDECENCY_LIST = set(
+    DECENCY_LIST = set(
         [
         "vieux","con","poussierieux","ancetre","demoder","vieillard","senille",
         "dinosaure","decrepit","arrierer ","rococo","centenaire","senille",
@@ -474,7 +474,7 @@ class DataParameter:
         # search decency
         result2 = bool(
             [
-            w for w in list_question if w.lower() not in self.INDECENCY_LIST
+            w for w in list_question if w.lower() not in self.DECENCY_LIST
             ]
         )
 
@@ -490,7 +490,7 @@ class DataParameter:
         result3 = bool(
             [
             w for w in list_question if w.lower()\
-                in InitData.CIVILITY_LIST and w.lower() in self.INDECENCY_LIST
+                in InitData.CIVILITY_LIST and w.lower() in self.DECENCY_LIST
             ]
         )
 
@@ -676,7 +676,7 @@ class DataParameter:
                 # ~ - decency
          # ~ """
         # ~ Behaviour().t_decency
-        # ~ if question.lower() in config().constant["list_indecency"]:
+        # ~ if question.lower() in config().constant["list_decency"]:
             # ~ Behaviour().f_decency
         # ~ return Behaviour().r_decency
     # ~ #=========================
