@@ -1,6 +1,7 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import inspect
 
                            #==============
                            # Script class
@@ -54,6 +55,7 @@ class QuestionParameter:
         if chatter == "User":
             self.tmp = message
 
+
     #========================
     # message initialization
     #========================
@@ -76,3 +78,51 @@ class QuestionParameter:
             zip(self.chatters, self.messages)
         ):
             print(f"{counter + 1}.{[chatter]} = {message}")
+
+
+    #=============
+    # rude answer
+    #=============
+    def rude_user(self, func):
+        def rude(self):
+            """
+                rude user
+            """
+            question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
+            self.add_message(question, self.grandpy)
+            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {func.response_user.__name__}\n")
+            func.response_user(question)
+        return rude
+
+
+    #===================
+    # user unpoliteness
+    #===================
+    def unpoliteness_user(self, func):
+        def unpoliteness(self):
+            """
+                user unpoliteness in the question for grandpy
+            """
+            question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
+            self.add_message(question, self.grandpy)
+            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {func.response_user.__name__}\n")
+            func.response_user(question)
+        return unpoliteness
+
+
+    #====================
+    # incorrect question
+    #====================
+    def question_incorrect(self, func):
+        def incorrect(self):
+            """
+                unknown words in the question
+            """
+            question = "Je ne comprends pas, essaye d'être plus précis ...\n"
+            self.add_message(question, self.grandpy)
+            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {func.response_user.__name__}\n")
+            func.response_user(question)
+        return incorrect

@@ -122,7 +122,6 @@ class UserQuestion(Chat):
         ]
     )
 
-
     def __init__(self):
         """
             constructor
@@ -149,6 +148,7 @@ class UserQuestion(Chat):
         self.civility = result
         self.write_civility(self.civility)
 
+
     #=================
     # user's decency
     #=================
@@ -166,6 +166,7 @@ class UserQuestion(Chat):
         )
         self.decency = result
         self.write_decency(self.decency)
+
 
     #=========================
     # Grandpy incomprehension

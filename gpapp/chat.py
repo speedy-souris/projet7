@@ -12,7 +12,6 @@ from parameter import QuestionParameter as Params
 #==================================
 # converting data values for Redis
 #==================================
-
 # boolean ==> string
 def bool_convers(value):
     """
@@ -22,6 +21,7 @@ def bool_convers(value):
         return "1"
     else:
         return "0"
+
 
 # string ==> boolean
 def str_convers(value):
@@ -202,6 +202,7 @@ class Chat(Params):
         """
         self.writing("quotas", bool_convers(quotas))
 
+
     @property
     def read_quotas(self):
         """
@@ -218,6 +219,7 @@ class Chat(Params):
             saving of decency configuration in Redis database
         """
         self.writing("decency", bool_convers(decency))
+
 
     @property
     def read_decency(self):
@@ -240,6 +242,7 @@ class Chat(Params):
             bool_convers(self.comprehension)
         )
 
+
     @property
     def read_comprehension(self):
         """
@@ -257,11 +260,13 @@ class Chat(Params):
         """
         self.nb_request = self.incrementing("nb_request")
 
+
     def expiry_counter(self):
         """
             Expiration of the key nb_request (counter) in Redis database
         """
         self.expiry("nb_request", 86400)
+
 
     @property
     def read_counter(self):
@@ -269,6 +274,7 @@ class Chat(Params):
             reading of counter configuration in Redis database
         """
         return self.reading("nb_request")
+
 
     def write_counter(self, value):
         """

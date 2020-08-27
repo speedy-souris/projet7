@@ -35,46 +35,7 @@ class GpAnswer(Chat):
         self.nb_request += 1
 
 
-    #=============
-    # rude answer
-    #=============
-    def rude_user(self):
-        """
-            rude user
-        """
-        question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
-        self.add_message(question, self.grandpy)
-        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {self.response_user.__name__}\n")
-        self.response_user(question)
-
-    #===================
-    # user unpoliteness
-    #===================
-    def unpoliteness_user(self):
-        """
-            user unpoliteness in the question for grandpy
-        """
-        question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
-        self.add_message(question, self.grandpy)
-        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {self.response_user.__name__}\n")
-        self.response_user(question)
-
-    #====================
-    # incorrect question
-    #====================
-    def question_incorrect(self):
-        """
-            unknown words in the question
-        """
-        question = "Je ne comprends pas, essaye d'être plus précis ...\n"
-        self.add_message(question, self.grandpy)
-        print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {self.response_user.__name__}\n")
-        self.response_user(question)
-
-     #========================================
+    #========================================
     # reconnection after 24 hours of waiting
     #========================================
     def reconnection(self):
@@ -92,6 +53,7 @@ class GpAnswer(Chat):
         self.init_message()
         # ~ self.expiry_counter()
 
+
     #=================
     # attent question
     #=================
@@ -105,16 +67,12 @@ class GpAnswer(Chat):
         print(f"{inspect.currentframe().f_lineno + 2}",end=".")
         print(f" Appel de {self.response_user.__name__}")
         self.response_user(question)
-        print(f"retour ligne {inspect.currentframe().f_lineno}")
-        print()
-        print(f"{inspect.currentframe().f_lineno + 2}",end=".")
-        print(f" Appel de {self.user_decency.__name__}")
-        self.user_decency()
+
 
     #=====================
-    # stress of decency
+    # stress of indecency
     #=====================
-    def stress_decency(self):
+    def stress_indecency(self):
         """
             stress of Grandpy
         """
@@ -125,6 +83,23 @@ class GpAnswer(Chat):
         print(f"{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {self.reconnection.__name__}")
         self.reconnection()
+
+
+    #=====================
+    # stress of civility
+    #=====================
+    def stress_incility(self):
+        """
+            stress of Grandpy
+        """
+        response = "cette imopolitesse me FATIGUE ..."
+        print(response)
+        self.add_message(response, self.grandpy)
+        print()
+        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
+        print(f" Appel de {self.reconnection.__name__}")
+        self.reconnection()
+
 
     #===============
     # question user
