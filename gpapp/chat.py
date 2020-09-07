@@ -1,6 +1,7 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import inspect
 import redis
 from parameter import QuestionParameter as Params
 
@@ -282,3 +283,18 @@ class Chat(Params):
             of the request counter in Redis database
         """
         self.writing("nb_request", value)
+
+
+    #====================
+    # incorrect question
+    #====================
+    def question_incorrect(self):
+        """
+                unknown words in the question
+        """
+        question = "Je ne comprends pas, essaye d'être plus précis ...\n"
+        self.add_message(question, self.grandpy)
+        # ~ print(self.question_incorrect.__name__)
+        # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+        # ~ print(f" Appel de {self.response_user.__name__}\n")
+        # ~ self.response_user(question)

@@ -1,6 +1,7 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import inspect
 from chat import Chat
 
 
@@ -185,5 +186,24 @@ class UserQuestion(Chat):
                 or w.lower() in self.UNNECESSARY_LIST
             ]
         )
+        print(self.name("user_comprehension"))
+        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+        print(self.historical(result, "comprehension"))
         self.comprehension = result
         self.write_comprehension(self.comprehension)
+
+
+    #===============
+    # question user
+    #===============
+    def response_user(self):
+        """
+            added last post from user
+        """
+        response = input(f"\n Réponse {self.user} ==> ")
+        print(self.name("response_user"))
+        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+        print(self.call("add_message", "QuestionParameter"))
+        self.add_message(response, self.user)
+
+

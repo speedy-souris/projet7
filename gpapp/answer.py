@@ -101,12 +101,35 @@ class GpAnswer(Chat):
         self.reconnection()
 
 
-    #===============
-    # question user
-    #===============
-    def response_user(self, question):
-        """
-            added last post from user
-        """
-        response = input(question)
-        self.add_message(response, self.user)
+    #=============
+    # rude answer
+    #=============
+    def rude_user(self, func):
+        def rude(self):
+            """
+                rude user
+            """
+            question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
+            self.add_message(question, self.grandpy)
+            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {func.response_user.__name__}\n")
+            func.response_user(question)
+        return rude
+
+
+    #===================
+    # user unpoliteness
+    #===================
+    def unpoliteness_user(self, func):
+        def unpoliteness(self):
+            """
+                user unpoliteness in the question for grandpy
+            """
+            question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
+            self.add_message(question, self.grandpy)
+            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
+            print(f" Appel de {func.response_user.__name__}\n")
+            func.response_user(question)
+        return unpoliteness
+
+

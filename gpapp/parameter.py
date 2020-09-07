@@ -2,12 +2,13 @@
 #!/usr/bin/env python
 
 import inspect
+from debug import Debugging as Dbg
 
                            #==============
                            # Script class
                            #==============
 # user question parameter
-class QuestionParameter:
+class QuestionParameter(Dbg):
     """
         user question parameter for Chat
             - messages--|            content of the question asked to grandpy
@@ -33,6 +34,7 @@ class QuestionParameter:
                 - decency
                 - comprehension
         """
+        super().__init__()
         self.messages = []
         self.chatters = []
         self.tmp = ""  # temporary variable for civility / decency wordlist
@@ -50,6 +52,11 @@ class QuestionParameter:
         """
             Add new message with chatter
         """
+        print(self.name("add_message"))
+        print(self.nb_line(inspect.currentframe().f_lineno+1), end=" ==> ")
+        print(self.historical(f"[{message}]","add_message"))
+        print(self.nb_line(inspect.currentframe().f_lineno+1), end=" ==> ")
+        print(self.historical(f"[{chatter}]","add_message"))
         self.messages.append(message)
         self.chatters.append(chatter)
         if chatter == "User":
@@ -78,51 +85,3 @@ class QuestionParameter:
             zip(self.chatters, self.messages)
         ):
             print(f"{counter + 1}.{[chatter]} = {message}")
-
-
-    #=============
-    # rude answer
-    #=============
-    def rude_user(self, func):
-        def rude(self):
-            """
-                rude user
-            """
-            question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
-            self.add_message(question, self.grandpy)
-            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {func.response_user.__name__}\n")
-            func.response_user(question)
-        return rude
-
-
-    #===================
-    # user unpoliteness
-    #===================
-    def unpoliteness_user(self, func):
-        def unpoliteness(self):
-            """
-                user unpoliteness in the question for grandpy
-            """
-            question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
-            self.add_message(question, self.grandpy)
-            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {func.response_user.__name__}\n")
-            func.response_user(question)
-        return unpoliteness
-
-
-    #====================
-    # incorrect question
-    #====================
-    def question_incorrect(self, func):
-        def incorrect(self):
-            """
-                unknown words in the question
-            """
-            question = "Je ne comprends pas, essaye d'être plus précis ...\n"
-            self.add_message(question, self.grandpy)
-            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {func.response_user.__name__}\n")
-            func.response_user(question)
-        return incorrect
