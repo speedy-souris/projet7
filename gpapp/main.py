@@ -21,15 +21,14 @@ def main():
     #---------------------------------
     grandpy = GpAnswer()
     user = UserQuestion()
-    comprehension = ""
     # grandpy presentation archiving
-    accueil = f"Accueil de {grandpy.grandpy}"\
+    home = f"home de {grandpy.grandpy}"\
         +" ==> Bonjour Mon petit, en quoi puis-je t'aider ?"
-    print(f"\n{accueil}")
+    print(f"\n{home}")
     print(grandpy.name("main"))
     print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
     print(grandpy.call("add_message", "QuestionParameter"))
-    grandpy.add_message(accueil, grandpy.grandpy)
+    grandpy.add_message(home, grandpy.grandpy)
     # waiting for user question
     print(grandpy.name("main"))
     print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
@@ -40,26 +39,49 @@ def main():
     print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
     print(grandpy.call("user_comprehension", type(user).__name__))
     user.user_comprehension()
-    comprehension = grandpy.comprehension
     # back after the first analysis
     print(grandpy.name("main"))
     print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-    print(grandpy.return_line(),"\n")
+    print(grandpy.return_line())
     # analyze the value of understanding
-    print(comprehension)
-    if not comprehension:
-        while grandpy.nb_incomprehension < 3 and not comprehension:
-            grandpy.nb_incomprehension += 1
-            #           -------------------
-            print(inspect.currentframe().f_lineno+3, end=" ==> ")
-            print(grandpy.call("Appel","response_user", type(user).__name__),"\n")
-            #           -------------------
-            user.response_user(question)
+    if not user.comprehension:
+        while user.nb_incomprehension < 3 and not user.comprehension:
+            print(grandpy.name("main"))
+            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+            print(grandpy.historical("+1", "nb_incomprehension"))
+            user.nb_incomprehension += 1
+            grandpy.name("main")
+            print(
+                f"{grandpy.nb_line(inspect.currentframe().f_lineno+1)}"\
+                +f" ==> nb_incomprehension = {user.nb_incomprehension}"
+            )
+            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+            print(grandpy.call("question_incorrect", type(grandpy).__name__))
+            grandpy.question_incorrect()
+            # waiting for user question
+            print(grandpy.name("main"))
+            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+            print(grandpy.call("response_user", type(user).__name__))
+            user.response_user()
+            # udetermines the comprehension value in the user question
+            print(grandpy.name("main"))
+            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+            print(grandpy.call("user_comprehension", type(user).__name__))
             user.user_comprehension()
 
     else:
-        print("je suis ici")
+        print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+        print(grandpy.call("waiting_question", "GpAnswer"))
+        grandpy.waiting_question()
+        # waiting for user question
+        print(grandpy.name("main"))
+        print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+        print(grandpy.call("response_user", type(user).__name__))
+        user.response_user()
 
+    # return after analyzing the comprehension value
+    if user.nb_incomprehension >= 3:
+        grandpy.stress_incomprehension()
     # ~ while grandpy.nb_incivility < 3\
         # ~ and grandpy.nb_incomprehension < 3\
         # ~ and grandpy.nb_indecency< 3:

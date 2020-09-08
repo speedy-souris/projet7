@@ -35,9 +35,9 @@ class Debugging:
             self.dbg_color = self.green
         elif func_name == "add_message":
             self.dbg_color = self.red
-        elif func_name == "question_incorrect":
-            self.dbg_color = self.orange
-        elif func_name == "waiting_question":
+        elif func_name == "waiting_question" or func_name == "question_incorrect"\
+            or func_name == "stress_incomprehension" or func_name == "stress_indecency"\
+            or func_name == "stress_incivility":
             self.dbg_color = self.blue
         elif func_name == "user_comprehension" or func_name == "user_decency"\
             or func_name == "user_civility" or func_name == "response_user":
@@ -51,14 +51,12 @@ class Debugging:
         """
             determines the debug color of the function call
         """
-        if (func_name == "response_user" or func_name == "user_comprehension"\
-            or func_name == "user_decency" or func_name == "user_civility")\
-            and class_name == "UserQuestion":
+        if class_name == "UserQuestion":
             self.dbg_color = self.purple
-        elif (func_name == "add_message" or func_name == "comprehension"\
-            or func_name == "civility" or func_name == "decency")\
-            and class_name == "QuestionParameter":
+        elif class_name == "QuestionParameter":
             self.dbg_color = self.red
+        elif class_name == "GpAnswer":
+            self.dbg_color = self.blue
 
         return f"Appel de {self.dbg_color}{func_name}{self.reset}"\
             +f" dans {self.dbg_color}{class_name}{self.reset}"
@@ -76,6 +74,12 @@ class Debugging:
         elif func_name == "add_message" or func_name == "comprehension"\
             or func_name == "civility" or func_name == "decency":
             self.dbg_color = self.red
+        elif func_name == "nb_incomprehension" or func_name == "nb_request"\
+            or func_name == "nb_indecency" or func_name == "nb_incivility":
+            self.dbg_color = self.orange
+        elif func_name == "stress_incomprehension" or func_name == "stress_indecency"\
+            or func_name == "stress_incivility":
+            self.dbg_color = self.blue
         return f"Ajout de {self.dbg_color}{result}{self.reset}"\
             +f" dans {self.dbg_color}{func_name}{self.reset}"
     # line numbre in function
@@ -83,8 +87,9 @@ class Debugging:
         """
             determine the next line number in the function
         """
+        if line != 0:
+            dbg_color = self.green
         return f"{self.dbg_color}ligne {line}{self.reset}"
-
 
 
     # after function

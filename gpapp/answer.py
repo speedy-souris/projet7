@@ -42,8 +42,8 @@ class GpAnswer(Chat):
         """
             stop questions and answers for 24 hours
         """
-        response = "reviens me voir demain !"
-        print(response)
+        response = f"Réponse de {self.grandpy} ==> reviens me voir demain !"
+        print(f"\n{response}")
         self.add_message(response, self.grandpy)
         print("\n--------------------------------------------")
         print("-------- HISTORIQUE DE CONVERSATION --------")
@@ -61,12 +61,10 @@ class GpAnswer(Chat):
         """
             waiting for user question
         """
-        question = "Que veux tu savoir ... ?\n"
-        self.add_message(question, self.grandpy)
-        print()
-        print(f"{inspect.currentframe().f_lineno + 2}",end=".")
-        print(f" Appel de {self.response_user.__name__}")
-        self.response_user(question)
+        response = "Que veux tu savoir ... ?"
+        print(self.name("waiting_question"))
+        print(f"Reponse de {self.grandpy} ==> {answer}")
+        self.add_message(answer, self.grandpy)
 
 
     #=====================
@@ -76,60 +74,84 @@ class GpAnswer(Chat):
         """
             stress of Grandpy
         """
-        response = "cette grossierete me FATIGUE ..."
+        response = "cette grossierete me FATIGUE ... !"
         print(response)
         self.add_message(response, self.grandpy)
-        print()
         print(f"{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {self.reconnection.__name__}")
         self.reconnection()
 
 
-    #=====================
+    #====================
     # stress of civility
-    #=====================
-    def stress_incility(self):
+    #====================
+    def stress_incivility(self):
         """
             stress of Grandpy
         """
-        response = "cette imopolitesse me FATIGUE ..."
+        response = "cette impolitesse me FATIGUE ... !"
         print(response)
         self.add_message(response, self.grandpy)
         print()
         print(f"{inspect.currentframe().f_lineno + 2}", end=".")
         print(f" Appel de {self.reconnection.__name__}")
         self.reconnection()
+
+
+    #===========================
+    # stress of incomprehension
+    #===========================
+    def stress_incomprehension(self):
+        """
+            stress of Grandpy
+        """
+        response = f"Réponse de {self.grandpy} ==> "\
+            f"cette incomprehension me FATIGUE ... !"
+        print(f"\n{response}")
+        print(self.name("stress_incomprehension"))
+        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+        print(self.call("add_message", "QuestionParameter"))
+        self.add_message(response, self.grandpy)
+        print(self.name("stress_incomprehension"))
+        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+        print(self.call(self.reconnection.__name__, type(self).__name__))
+        self.reconnection()
+
 
 
     #=============
     # rude answer
     #=============
-    def rude_user(self, func):
-        def rude(self):
-            """
-                rude user
-            """
-            question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
-            self.add_message(question, self.grandpy)
-            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {func.response_user.__name__}\n")
-            func.response_user(question)
-        return rude
+    def rude_user(self):
+        """
+            rude user
+        """
+        question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
+        self.add_message(question, self.grandpy)
 
 
     #===================
     # user unpoliteness
     #===================
-    def unpoliteness_user(self, func):
-        def unpoliteness(self):
-            """
-                user unpoliteness in the question for grandpy
-            """
-            question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
-            self.add_message(question, self.grandpy)
-            print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            print(f" Appel de {func.response_user.__name__}\n")
-            func.response_user(question)
-        return unpoliteness
+    def unpoliteness_user(self):
+        """
+            user unpoliteness in the question for grandpy
+        """
+        question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
+        self.add_message(question, self.grandpy)
 
 
+    #====================
+    # incorrect question
+    #====================
+    def question_incorrect(self):
+        """
+                unknown words in the question
+        """
+        response = f"Réponse de {self.grandpy} ==> "\
+            +"Je ne comprends pas, essaye d'être plus précis ... !"
+        print(f"\n{response}")
+        print(self.name("question_incorrect"))
+        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
+        print(self.call("add_message", "QuestionParameter"))
+        self.add_message(response, self.grandpy)

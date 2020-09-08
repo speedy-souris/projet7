@@ -82,6 +82,5 @@ class QuestionParameter(Dbg):
             Read full list of messages
         """
         for (counter, (chatter, message)) in enumerate(
-            zip(self.chatters, self.messages)
-        ):
+            zip(self.chatters, self.messages)):
             print(f"{counter + 1}.{[chatter]} = {message}")
