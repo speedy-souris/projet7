@@ -2,10 +2,56 @@
 #!/usr/bin/env python
 
 import inspect
-# ~ from chat import Chat
+from chat import Chat
 from question import UserQuestion
 from answer import GpAnswer
+from parameter import QuestionParameter
+from debug import Debugging
 
+#===================
+# utility functions
+#===================
+def presentation_user(params, persona):
+    """
+        user presentation analysis
+    """
+    # waiting for user question
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('user_request', type(persona).__name__))
+    return_user = persona.user_request()
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('add_message', type(params).__name__))
+    params.add_message(return_user, params.user)
+    # determines the comprehension value in the user question
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('comprehension_check', type(persona).__name__))
+    persona.comprehension_check()
+    # determines the civility value in the user question
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('civility_check', type(persona).__name__))
+    persona.civility_check()
+    # determines the decency value in the user question
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('decency_check', type(persona).__name__))
+    persona.decency_check()
+
+def reconnect_parameter(params, response, persona):
+    """
+        reconnection parameter after 24h00
+    """
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('add_message', type(params).__name__))
+    params.add_message(response, params.grandpy)
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('reconnection_delay', type(persona).__name__))
+    persona.reconnection_delay()
 
 #=======================
 # main script execution
@@ -19,296 +65,97 @@ def main():
     #---------------------------------
     # awaits the courtesy of the user
     #---------------------------------
-    grandpy = GpAnswer()
-    user = UserQuestion()
+    debug = Debugging()
+    params = QuestionParameter(debug)
+    user = UserQuestion(params)
+    grandpy = GpAnswer(params)
+    persona = Chat(user, grandpy, params)
     # grandpy presentation archiving
-    home = f"home de {grandpy.grandpy}"\
-        +" ==> Bonjour Mon petit, en quoi puis-je t'aider ?"
-    print(f"\n{home}")
-    print(grandpy.name("main"))
-    print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-    print(grandpy.call("add_message", "QuestionParameter"))
-    grandpy.add_message(home, grandpy.grandpy)
-    # waiting for user question
-    print(grandpy.name("main"))
-    print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-    print(grandpy.call("response_user", type(user).__name__))
-    user.response_user()
-    # udetermines the comprehension value in the user question
-    print(grandpy.name("main"))
-    print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-    print(grandpy.call("user_comprehension", type(user).__name__))
-    user.user_comprehension()
-    # back after the first analysis
-    print(grandpy.name("main"))
-    print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-    print(grandpy.return_line())
+    txt_home = "Bonjour Mon petit, en quoi puis-je t'aider ?"
+    home = f'Accueil de {params.grandpy} ==> {txt_home}'
+    print(f'\n{home}')
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.call('add_message', type(params).__name__))
+    params.add_message(txt_home, params.grandpy)
+    # behavior analysis
+    presentation_user(params, persona)
+    # return line after testing
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.return_line())
     # analyze the value of understanding
-    if not user.comprehension:
-        while user.nb_incomprehension < 3 and not user.comprehension:
-            print(grandpy.name("main"))
-            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-            print(grandpy.historical("+1", "nb_incomprehension"))
-            user.nb_incomprehension += 1
-            grandpy.name("main")
-            print(
-                f"{grandpy.nb_line(inspect.currentframe().f_lineno+1)}"\
-                +f" ==> nb_incomprehension = {user.nb_incomprehension}"
-            )
-            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-            print(grandpy.call("question_incorrect", type(grandpy).__name__))
-            grandpy.question_incorrect()
-            # waiting for user question
-            print(grandpy.name("main"))
-            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-            print(grandpy.call("response_user", type(user).__name__))
-            user.response_user()
-            # udetermines the comprehension value in the user question
-            print(grandpy.name("main"))
-            print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-            print(grandpy.call("user_comprehension", type(user).__name__))
-            user.user_comprehension()
-
+    while (
+        params.nb_incomprehension < 3 and params.nb_incivility < 3
+        and params.nb_indecency < 3 and not params.civility
+    ):
+        # decency
+        if not params.decency:
+            params.nb_indecency += 1
+            print(params.debug.name('main'))
+            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(params.debug.call('rude_request', type(persona).__name__))
+            question = persona.rude_request()
+            print(params.debug.name('main'))
+            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(params.debug.call('add_message', type(params).__name__))
+            params.add_message(question, params.grandpy)
+            # behavior analysis
+            presentation_user(params, persona)
+        # comprehension
+        elif not params.comprehension:
+            params.nb_incomprehension += 1
+            print(params.debug.name('main'))
+            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(params.debug.call('incorrect_request', type(persona).__name__))
+            response = persona.incorrect_request()
+            print(params.debug.name('main'))
+            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(params.debug.call('add_message', type(params).__name__))
+            params.add_message(response, params.grandpy)
+            # behavior analysis
+            presentation_user(params, persona)
+        else:
+            params.nb_incivility += 1
+            print(params.debug.name('main'))
+            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(params.debug.call('unpoliteness_request', type(persona).__name__))
+            response = persona. unpoliteness_request()
+            print(params.debug.name('main'))
+            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(params.debug.call('add_message', type(params).__name__))
+            params.add_message(response, params.grandpy)
+            # behavior analysis
+            presentation_user(params, persona)
+    # return line after analisis
+    print(params.debug.name('main'))
+    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+    print(params.debug.return_line())
+    # conditions after the first analysis
+    if params.nb_incomprehension > 3:
+        print(params.debug.name('main'))
+        print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(params.debug.call('incorrect_limit', type(persona).__name__))
+        response = persona.incorrect_limit()
+        reconnect_parameter(params, response, persona)
+    elif params.nb_incivility > 3:
+        print(params.debug.name('main'))
+        print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(params.debug.call('incivility_limit', type(persona).__name__))
+        response = persona.incivility_limit()
+        reconnect_parameter(params, response, persona)
+    elif params.nb_indecency > 3:
+        print(params.debug.name('main'))
+        print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(params.debug.call('indecency_limit', type(persona).__name__))
+        response = persona.indecency_limit()
+        persona.reconnection_delay()
     else:
-        print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-        print(grandpy.call("waiting_question", "GpAnswer"))
-        grandpy.waiting_question()
-        # waiting for user question
-        print(grandpy.name("main"))
-        print(grandpy.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-        print(grandpy.call("response_user", type(user).__name__))
-        user.response_user()
-
-    # return after analyzing the comprehension value
-    if user.nb_incomprehension >= 3:
-        grandpy.stress_incomprehension()
-    # ~ while grandpy.nb_incivility < 3\
-        # ~ and grandpy.nb_incomprehension < 3\
-        # ~ and grandpy.nb_indecency< 3:
-
-        # Test decency
-        # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        # ~ print(f" Appel de {user.user_decency.__name__}")
-        # ~ user.user_decency()
-
-        # ~ if not user.decency\
-            # ~ and user.decency != user.comprehension\
-            # ~ and user.civility != user.comprehension:
-
-            # ~ dialog.nb_indecency += 1
-        # ~ print(f"\nligne {inspect.currentframe().f_lineno} nombre indecency", end=" = ")
-        # ~ print(f"{dialog.nb_indecency}")
-
-        # ~ # Test civility
-        # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        # ~ print(f" Appel de {user.user_civility.__name__}")
-        # ~ user.user_civility()
-        # ~ if not user.civility and (user.decency and user.civility) != user.comprehension:
-            # ~ dialog.nb_incivility += 1
-        # ~ print(f"\nligne {inspect.currentframe().f_lineno} ==> {dialog.nb_incivility}")
-
-        # ~ # Test comprehension
-        # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-        # ~ print(f" Appel de {user.user_comprehension.__name__}\n")
-        # ~ user.user_comprehension()
-        # ~ if not user.comprehension:
-            # ~ dialog.nb_incomprehension += 1
-        # ~ else:
-            # ~ user.comprehension = False
-        # ~ print(
-            # ~ f"ligne {inspect.currentframe().f_lineno} ==> {dialog.nb_incomprehension}"
-        # ~ )
-        # ~ dialog.display_status()
-        # ~ # unrecognized / recognized words
-        # ~ if user.comprehension:
-            # ~ print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}")
-            # ~ dialog.display_status()
-            # ~ # rudeness of the user
-            # ~ if not user.decency:
-                # ~ print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}")
-                # ~ user.rude_user()
-                # ~ # rudeness of the user
-                # ~ if not user.civility:
-                    # ~ print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}\n")
-                    # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-                    # ~ print(f" Appel de {user.unpoliteness_user.__name__}")
-                    # ~ user.unpoliteness_user()
-                    # ~ print(f"la ligne {inspect.currentframe().f_lineno}")
-                # ~ else:
-                    # ~ print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}")
-
-            # ~ else:
-                # ~ print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}\n")
-                # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-                # ~ print(f" Appel de {dialog.rude_user.__name__}")
-                # ~ user.rude_user()
-                # ~ print(f"la ligne {inspect.currentframe().f_lineno}")
-        # ~ else:
-            # ~ print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}\n")
-            # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            # ~ print(f" Appel de {grandpy.question_incorrect.__name__}")
-            # ~ grandpy.question_incorrect()
-            # ~ print(f"la ligne {inspect.currentframe().f_lineno}")
-            # ~ dialog.display_status()
-            # ~ print(f"\nje passe par la ligne {inspect.currentframe().f_lineno}\n")
-        # ~ if dialog.nb_incivility >= 3:
-            # ~ dialog.quotas = True
-            # ~ print(
-                # ~ f"{inspect.currentframe().f_lineno}. Cette IMPOLITESSE me FATIGUE ... !"
-            # ~ )
-            # ~ user.reconnection()
-            # ~ print(f"la ligne {inspect.currentframe().f_lineno}")
-        # ~ elif dialog.nb_indecency >= 3:
-            # ~ dialog.quotas = True
-            # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            # ~ print(f" Appel de {grandpy.stress_decency.__name__}")
-            # ~ grandpy.stress_decency()
-            # ~ print(f"la ligne {inspect.currentframe().f_lineno}")
-        # ~ elif dialog.nb_incomprehension >= 3:
-            # ~ dialog.quotas = True
-            # ~ print(
-                # ~ f"{inspect.currentframe().f_lineno}. Aujourd'hui je ne suis pas au TOP ... !"
-            # ~ )
-            # ~ grandpy.reconnection()
-            # ~ print(f"la ligne {inspect.currentframe().f_lineno}")
-        # ~ else:
-            # ~ # Waits for user new question
-            # ~ print("question")
-            # ~ dialog.nb_request = 0
-            # ~ while not dialog.quotas:
-                # ~ # maximum number of responses reached
-                # ~ if dialog.nb_request >= 10:
-                    # ~ dialog.quotas = True
-
-                # ~ # Grandpy starts to tire
-                # ~ if dialog.nb_request == 5:
-
-                    # ~ response = "Houla ma mémoire n'est plus ce qu'elle était ... "
-                    # ~ print(response)
-                    # ~ dialog.add_message(response, dialog.grandpy)
-
-                # ~ # grandpy's reply
-                # ~ print()
-                # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-                # ~ print(f" Appel de {dialog.waiting_question.__name__}")
-                # ~ dialog.waiting_question()
-
-                # ~ # decency in response
-                # ~ if dialog.decency:
-                    # ~ while dialog.decency and dialog.nb_indecency < 3:
-                        # ~ dialog.nb_indecency += 1
-                        # ~ dialog.decency = False
-                        # ~ print()
-                        # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-                        # ~ print(f" Appel de {dialog.rude_user.__name__}")
-                        # ~ dialog.rude_user()
-
-                        # ~ if not dialog.decency:
-                            # ~ dialog.nb_request -= 1
-                            # ~ if dialog.nb_request < 0:
-                                # ~ dialog.nb_request = 0
+        params.reset_status()
 
 
-                        # ~ # big stress of Grandpy because of decency ==> back in 24 hours
-                        # ~ if dialog.nb_indecency >= 3:
-                            # ~ dialog.quotas = True
-                            # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-                            # ~ print(f" Appel de {grandpy.stress_decency.__name__}")
-                            # ~ grandpy.stress_decency()
-                # ~ else:
-                    # ~ print()
-                    # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-                    # ~ print(f" Appel de {dialog.answer_returned.__name__}")
-                    # ~ dialog.answer_returned()
-
-            # ~ if dialog.nb_request >= 10 and dialog.nb_indecency < 3:
-                # ~ # grandpy exhaustion
-                # ~ response = "cette séance de recherche me FATIGUE ..."
-                # ~ print(response)
-                # ~ dialog.add_message(response, dialog.grandpy)
-                # ~ print()
-                # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-                # ~ print(f" Appel de {dialog.reconnection.__name__}")
-                # ~ dialog.reconnection()
-
-        # ~ # display chat setting status
-        # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-        # ~ print(f" Appel de {dialog.display_status.__name__}\n")
-        # ~ dialog.display_status()
-
-            # ~ # display chat setting status
-            # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-            # ~ print(f" Appel de {dialog.display_status.__name__}\n")
-            # ~ dialog.display_status()
-
-            # ~ dialog.nb_request += 1
-
-        # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-        # ~ print(f" Appel de {dialog.user_decency.__name__}\n")
-        # ~ dialog.user_civility()
-
-        # ~ print(f"j'arrive sur la ligne {inspect.currentframe().f_lineno}\n")
-        # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-        # ~ print(f" Appel de {dialog.display_status.__name__}")
-        # ~ dialog.display_status()
-        # ~ print(f"retour sur la ligne {inspect.currentframe().f_lineno}")
-
-    # ~ # too many unrecognized words
-    # ~ if not user.comprehension:
-        # ~ dialog.quotas = True
-        # ~ response = "Je n'arrive a trouver une réponse !"
-        # ~ print(response)
-        # ~ dialog.add_message(response, dialog.grandpy)
-        # ~ print()
-        # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-        # ~ print(f" Appel de {dialog.reconnection.__name__}")
-        # ~ dialog.reconnection()
-    # ~ print()
-    # ~ dialog.nb_request = 0
-    # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-    # ~ print(f" Appel de {dialog.user_civility.__name__}")
-    # ~ dialog.user_civility()
-
-    # ~ # rudeness of the user
-    # ~ if not user.civility and user.comprehension:
-        # ~ dialog.display_status()
-        # ~ while not user.civility and dialog.nb_request < 3:
-            # ~ print(f"je passe par la ligne {inspect.currentframe().f_lineno}\n")
-            # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-            # ~ print(f" Appel de {dialog.user_comprehension.__name__}\n")
-            # ~ dialog.unpoliteness_user()
-            # ~ print(f"\n{inspect.currentframe().f_lineno + 2}", end=".")
-            # ~ print(f" Appel de {dialog.user_comprehension.__name__}")
-            # ~ dialog.user_comprehension()
-
-            # ~ if user.civility:
-                # ~ dialog.nb_request -= 1
-                # ~ if dialog.nb_request < 0:
-                    # ~ dialog.nb_request = 0
-
-            # ~ dialog.nb_request += 1
-
-            # ~ if not user.comprehension:
-                # ~ while not comprehension:
-                    # ~ user.comprehension = True
-                    # ~ print(f"je passe par la ligne {inspect.currentframe().f_lineno}\n")
-                    # ~ print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-                    # ~ print(f" Appel de {dialog.user_comprehension.__name__}\n")
-                    # ~ dialog.unpoliteness_user()
-
-        # ~ # big stress of Grandpy because of incivility ==> back in 24 hours
-        # ~ if dialog.nb_request >= 3:
-            # ~ response = "cette impolitesse me FATIGUE ..."
-            # ~ print(response)
-            # ~ dialog.quotas = True
-            # ~ dialog.add_message(response, dialog.grandpy)
-            # ~ print()
-            # ~ print(f"{inspect.currentframe().f_lineno}", end=".")
-            # ~ print(f" Appel de {dialog.reconnection.__name__}")
-            # ~ dialog.reconnection()
 
 
-    # ~
 
 if __name__ == "__main__":
     main()

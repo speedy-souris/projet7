@@ -2,286 +2,142 @@
 #!/usr/bin/env python
 
 import inspect
-import redis
-from parameter import QuestionParameter as Params
-
-
-                           #========================
-                           # class setting function
-                           #========================
-
-#==================================
-# converting data values for Redis
-#==================================
-# boolean ==> string
-def bool_convers(value):
-    """
-        conversion from boolean to string
-    """
-    if value :
-        return "1"
-    else:
-        return "0"
-
-
-# string ==> boolean
-def str_convers(value):
-    """
-        conversion from string to boolean
-    """
-    value = value.decode("utf8")
-    if value == "0":
-        return False
-    elif value == "":
-        return False
-    else:
-        return True
 
 
                            #==============
                            # Script class
                            #==============
 # Redis server organization
-class Chat(Params):
+class Chat:
     """
-        Params ==> mother class (QuestionParameter)
-        API Private Key and Constants Management :
-            local (development) / external (production)
-                status_env()
-                    - key_data["map"]         ==> KEY_API_MAP / HEROKU_KEY_API_MAP
-                    - key_data["staticMap"]   ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
-                    - key_data["status_prod"] ==> True / False
-
-        Management for initializing configuration database Redis
-            - redis_connect() ==> connection initialization for the Redis database
-            - writing()       ==> writing of data value for the Redis database
-            - incrementing()  ==> incrementing the data value for the Redis database
-            - expiry()        ==> data value expiration times for the Redis database
-            - reading         ==> read data value for the Redis database
+        object management class
     """
     #===========================
     # Constructor of Chat class
     #===========================
-    def __init__(self):
+    def __init__(self, user, grandpy, params):
         """
-            constructor for initializing the API default variables in Redis
-                - quotas           ==> initialisation of quotas attribut
-                - nb_indecency     ==> number of user indecency
-                - nb_request       ==> number of user requests
-                - redis_connect()  ==> initialization of the connection method
-                                       to the Redis database
-                - initial_status() ==> initialization of data values
-                                       from the Redis database
+            constructor
+                - user
+                - grandpy
         """
-        super().__init__()
-        self.quotas = False
-        self.nb_incivility = 0
-        self.nb_indecency = 0
-        self.nb_incomprehension = 0
-        self.nb_request = 0
-        self.redis_connect()
-        self.initial_status()
-
-
-    #==============
-    # Server Redis
-    #==============
-    def redis_connect(self):
-        """
-            connection to the Redis database
-        """
-        self.connect = redis.Redis(
-            host="localhost",
-            port=6379,
-            db=0
-        )
-
-
-    # writing
-    def writing(self, data, value):
-        """
-            writing data to Redis database
-        """
-        self.connect.set(data, value)
-
-
-    # increment
-    def incrementing(self, data):
-        """
-            incrementing the request counter in Redis database
-        """
-        self.connect.incr(data)
-
-
-    # expiration time
-    def expiry(self, data, value):
-        """
-            expiration
-            of the counter variable in Redis database
-            (after 24 hours)
-        """
-        self.connect.expire(data, value)
-
-
-    # reading
-    def reading(self, data):
-        """
-            reading data in Redis database
-        """
-        return self.connect.get(data)
-
-
-    #==================================
-    # Initialization status parameters
-    #==================================
-    def initial_status(self):
-        """
-            creation and initialization by default of data values
-            for the Redis database
-
-                - write_ civility()   ==> default initialization of civility values
-                                          for the Redis database
-                - write_quotas()      ==> default initialization of quotas values
-                                          for the Redis database
-                - write_decency()   ==> default initialization of decency values
-                                          for the Redis database
-                - write_counter()     ==> default initialization of counter values
-                                          for the Redis database
-
-        """
-        self.write_civility(False)
-        self.write_quotas(False)
-        self.write_decency(False)
-        self.write_comprehension(False)
-        self.write_counter(0)
-
-
-    #==========================
-    # status parameter display
-    #==========================
-    def display_status(self):
-        """
-            display of data values in the question
-
-                - nb_incivility      ==> number of civility
-                - nb_indecency       ==> number of decency
-                - nb_incomprehension ==> number of comprehension
-        """
-        print(f"\nquestion = {self.tmp}\n")
-        print(f"Valeur de quotas = {self.quotas}")
-        print(f"Valeur de civility = {self.civility}")
-        print(f"valeur de decency = {self.decency}")
-        print(f"valeur de comprehension = {self.comprehension}")
-        print(f"Nombre d'incivility = {self.nb_incivility}")
-        print(f"Nombre d'indecency = {self.nb_indecency}")
-        print(f"Nombre d'incomprehension = {self.nb_incomprehension}")
-
-
-    #==============================================
-    # value of data Civility in the Redis database
-    #==============================================
-    def write_civility(self, civility):
-        """
-            saving of civility configuration in Redis database
-        """
-        self.writing("civility", bool_convers(civility))
-
-    @property
-    def read_civility(self):
-        """
-            reading of civility configuration in Redis database
-        """
-        return str_convers(self.reading("civility"))
-
-
-    #============================================
-    # value of data quotas in the Redis database
-    #============================================
-    def write_quotas(self, quotas):
-        """
-            saving of quotas configuration in Redis database
-        """
-        self.writing("quotas", bool_convers(quotas))
-
-
-    @property
-    def read_quotas(self):
-        """
-            reading of quotas configuration in Redis database
-        """
-        return str_convers(self.reading("quotas"))
-
-
-    #===============================================
-    # value of data decency in the Redis database
-    #===============================================
-    def write_decency(self, decency):
-        """
-            saving of decency configuration in Redis database
-        """
-        self.writing("decency", bool_convers(decency))
-
-
-    @property
-    def read_decency(self):
-        """
-            reading of decency configuration in Redis database
-        """
-        return str_convers(self.reading("decency"))
-
+        self.user = user
+        self.grandpy = grandpy
+        self.params = params
 
     #===============
-    # comprehension
+    # user property
     #===============
-    def write_comprehension(self, comprehension):
+    def user_request(self):
         """
-            saving of comprehension configuration in Redis database
+            call waiting for user request
         """
-        self.comprehension = comprehension
-        self.writing(
-            "comprehension",
-            bool_convers(self.comprehension)
-        )
+        print(self.params.debug.name('user_request'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('question_user', 'UserQuestion'))
+        return self.user.question_user()
 
-
-    @property
-    def read_comprehension(self):
+    def civility_check(self):
         """
-            reading of comprehension configuration in Redis database
+            call for civility check
         """
-        return str_convers(self.reading("comprehension"))
+        print(self.params.debug.name('civility_check'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('user_civility', 'UserQuestion'))
+        self.user.user_civility()
 
-
-    #=================
-    # Counter Request
-    #=================
-    def increment_counter(self):
+    def decency_check(self):
         """
-            Counter increment in Redis database
+            call for decency check
         """
-        self.nb_request = self.incrementing("nb_request")
+        print(self.params.debug.name('decency_check'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('user_decency', 'UserQuestion'))
+        self.user.user_decency()
 
-
-    def expiry_counter(self):
+    def comprehension_check(self):
         """
-            Expiration of the key nb_request (counter) in Redis database
+            call for comprehension check
         """
-        self.expiry("nb_request", 86400)
+        print(self.params.debug.name('comprehension_check'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('user_comprehension', 'UserQuestion'))
+        self.user.user_comprehension()
 
-
-    @property
-    def read_counter(self):
+    #==================
+    # grandpy property
+    #==================
+    def grandpy_reply(self):
         """
-            reading of counter configuration in Redis database
+            call for grandpy's answer
         """
-        return self.reading("nb_request")
+        self.grandpy.answer_returned
 
-
-    def write_counter(self, value):
+    def reconnection_delay(self):
         """
-            modification of the value
-            of the request counter in Redis database
+            call for the 24:00 stop
         """
-        self.writing("nb_request", value)
+        print(self.params.debug.name('reconnection_delay'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('reconnection', 'GpAnswer'))
+        self.grandpy.reconnection()
 
+    def waiting_request(self):
+        """
+            call to wait for grandpy ==> response asked to the user
+        """
+        self.grandpy.waiting_question()
 
+    def indecency_limit(self):
+        """
+            call for grandpy's reaction ==> too much user indecency
+        """
+        print(self.params.debug.name('indecency_limit'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('stress_indecency', 'GpAnswer'))
+        return self.grandpy.stress_indecency()
+
+    def incivility_limit(self):
+        """
+            call for grandpy's reaction ==> too much user incivility
+        """
+        print(self.params.debug.name('incivility_limit'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('stress_incivility', 'GpAnswer'))
+        return self.grandpy.stress_incivility()
+
+    def incorrect_limit(self):
+        """
+            call for grandpy's reaction ==> too much user incomprehension
+        """
+        print(self.params.debug.name('incorrect_limit'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('stress_incomprehension', 'GpAnswer'))
+        return self.grandpy.stress_incomprehension()
+
+    def rude_request(self):
+        """
+            call for rude user
+        """
+        print(self.params.debug.name('rude_request'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('rude_user', 'GpAnswer'))
+        return self.grandpy.rude_user()
+
+    def unpoliteness_request(self):
+        """
+            call for unpoliteness user
+        """
+        print(self.params.debug.name('unpoliteness_request'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('unpoliteness_user', 'GpAnswer'))
+        return self.grandpy.unpoliteness_user()
+
+    def incorrect_request(self):
+        """
+            call for user incomprehension
+        """
+        print(self.params.debug.name('incorrect_request'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(self.params.debug.call('question_incorrect', 'GpAnswer'))
+        return self.grandpy.question_incorrect()

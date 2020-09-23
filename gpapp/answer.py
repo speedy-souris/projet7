@@ -2,25 +2,23 @@
 #!/usr/bin/env python
 
 import inspect
-from chat import Chat
+
 
 
                            #==============
                            # Script class
                            #==============
 # Grandpy response
-class GpAnswer(Chat):
+class GpAnswer:
     """
         organization of the grandpy's answer
-            Chat ==> mother class
     """
-    def __init__(self):
+    def __init__(self, params):
         """
             constructor
                organization of the grandpy's answer
         """
-        super().__init__()
-
+        self.params = params
 
     #==================
     # response grandpy
@@ -29,10 +27,10 @@ class GpAnswer(Chat):
         """
             response returned by grandpy for the courteous user
         """
-        response = "Voici Ta Réponse !"
-        print(f"{response} : {self.tmp}")
-        self.add_message(response, self.grandpy)
-        self.nb_request += 1
+        response = 'Voici Ta Réponse !'
+        print(f'{response} : {self.params.tmp}')
+        self.params.add_message(response, self.params.grandpy)
+        self.params.nb_request += 1
 
 
     #========================================
@@ -42,16 +40,18 @@ class GpAnswer(Chat):
         """
             stop questions and answers for 24 hours
         """
-        response = f"Réponse de {self.grandpy} ==> reviens me voir demain !"
-        print(f"\n{response}")
-        self.add_message(response, self.grandpy)
-        print("\n--------------------------------------------")
-        print("-------- HISTORIQUE DE CONVERSATION --------")
-        print("--------------------------------------------")
-        self.chat_viewer()
-        print("--------------------------------------------\n")
-        self.init_message()
-        # ~ self.expiry_counter()
+        txt_response = 'reviens me voir demain !'
+        response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
+        print(f'\n{response}')
+        self.params.add_message(txt_response, self.params.grandpy)
+        print('\n--------------------------------------------')
+        print('-------- HISTORIQUE DE CONVERSATION --------')
+        print('--------------------------------------------')
+        self.params.chat_viewer()
+        print('--------------------------------------------\n')
+        self.params.init_message()
+        self.params.quotas = True
+        # ~ self.params.expiry_counter()
 
 
     #=================
@@ -61,10 +61,11 @@ class GpAnswer(Chat):
         """
             waiting for user question
         """
-        response = "Que veux tu savoir ... ?"
-        print(self.name("waiting_question"))
-        print(f"Reponse de {self.grandpy} ==> {answer}")
-        self.add_message(answer, self.grandpy)
+        response = f'Réponse de {self.params.grandpy} ==> Que veux tu savoir ... ?'
+        print(f'\n{response}')
+        print(self.params.debug.name('waiting_question'))
+        print(self.params.debug.call('add_message', 'QuestionParameter'))
+        self.params.add_message(response, self.params.grandpy)
 
 
     #=====================
@@ -74,12 +75,13 @@ class GpAnswer(Chat):
         """
             stress of Grandpy
         """
-        response = "cette grossierete me FATIGUE ... !"
-        print(response)
-        self.add_message(response, self.grandpy)
-        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {self.reconnection.__name__}")
-        self.reconnection()
+        print(self.params.debug.name('stress_indecency'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(f'Réponse de {self.params.grandpy}')
+        txt_response = 'cette grossierete me FATIGUE ... !'
+        response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
+        print(f'\n{response}')
+        return txt_response
 
 
     #====================
@@ -89,13 +91,13 @@ class GpAnswer(Chat):
         """
             stress of Grandpy
         """
-        response = "cette impolitesse me FATIGUE ... !"
-        print(response)
-        self.add_message(response, self.grandpy)
-        print()
-        print(f"{inspect.currentframe().f_lineno + 2}", end=".")
-        print(f" Appel de {self.reconnection.__name__}")
-        self.reconnection()
+        print(self.params.debug.name('stress_incivility'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(f'Réponse de {self.params.grandpy}')
+        txt_response = 'cette impolitesse me FATIGUE ... !'
+        response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
+        print(f'\n{response}')
+        return txt_response
 
 
     #===========================
@@ -105,17 +107,13 @@ class GpAnswer(Chat):
         """
             stress of Grandpy
         """
-        response = f"Réponse de {self.grandpy} ==> "\
-            f"cette incomprehension me FATIGUE ... !"
-        print(f"\n{response}")
-        print(self.name("stress_incomprehension"))
-        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-        print(self.call("add_message", "QuestionParameter"))
-        self.add_message(response, self.grandpy)
-        print(self.name("stress_incomprehension"))
-        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-        print(self.call(self.reconnection.__name__, type(self).__name__))
-        self.reconnection()
+        print(self.params.debug.name('stress_incomprehension'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(f'Réponse de {self.params.grandpy}')
+        txt_response = f'cette incomprehension me FATIGUE ... !'
+        response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
+        print(f'\n{response}')
+        return txt_response
 
 
 
@@ -126,8 +124,14 @@ class GpAnswer(Chat):
         """
             rude user
         """
-        question = "Si tu es grossier, je ne peux rien pour toi ... : \n"
-        self.add_message(question, self.grandpy)
+        print(self.params.debug.name('rude_user'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(f'Réponse de {self.params.grandpy}')
+        txt_response = 'Si tu es grossier, je ne peux rien pour toi ... : '
+        response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
+        print(f'\n{response}')
+        return txt_response
+
 
 
     #===================
@@ -137,8 +141,13 @@ class GpAnswer(Chat):
         """
             user unpoliteness in the question for grandpy
         """
-        question = "Si tu es impoli, je ne peux rien pour toi ... : \n"
-        self.add_message(question, self.grandpy)
+        print(self.params.debug.name('unpoliteness_user'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(f'Réponse de {self.params.grandpy}')
+        txt_response = 'Si tu es impoli, je ne peux rien pour toi ... : '
+        response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
+        print(f'\n{response}')
+        return txt_response
 
 
     #====================
@@ -148,10 +157,12 @@ class GpAnswer(Chat):
         """
                 unknown words in the question
         """
-        response = f"Réponse de {self.grandpy} ==> "\
-            +"Je ne comprends pas, essaye d'être plus précis ... !"
-        print(f"\n{response}")
-        print(self.name("question_incorrect"))
-        print(self.nb_line(inspect.currentframe().f_lineno+2), end=" ==> ")
-        print(self.call("add_message", "QuestionParameter"))
-        self.add_message(response, self.grandpy)
+        print(self.params.debug.name('question_incorrect'))
+        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        print(f'Réponse de {self.params.grandpy}')
+        txt_response = "Je ne comprends pas, essaye d'être plus précis ... !"
+        response = f'Réponse de {self.params.grandpy} ==> '
+        print(f'{response}')
+        return txt_response
+
+
