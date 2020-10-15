@@ -200,10 +200,8 @@ class QuestionParameter:
         self.decency = False
         self.comprehension = False
         self.quotas = False
-        self.nb_incivility = 1
-        self.nb_indecency = 1
-        self.nb_incomprehension = 1
-        self.nb_request = 1
+        self.counter_request = 0
+        self.nb_request = 0
         self.redis_connect()
         self.initial_status()
 
@@ -278,14 +276,14 @@ class QuestionParameter:
         self.write_quotas(False)
         self.write_decency(False)
         self.write_comprehension(False)
-        self.write_counter(1)
+        self.write_counter(0)
 
     def reset_status(self):
         """
             resetting the counters:
                - nb_incomprehension  --|
                - nb_incivility  -------|
-               - nb_indecency  --------| ==> 1
+               - nb_indecency  --------| ==> 0
                - nb_request  ----------|
 
             initialisation parameters:
@@ -294,10 +292,10 @@ class QuestionParameter:
                 - decency --------|
                 - quotas  --------|
         """
-        self.nb_incomprehension = 1
-        self.nb_incivility = 1
-        self.nb_indecency = 1
-        self.nb_request = 1
+        self.nb_incomprehension = 0
+        self.nb_incivility = 0
+        self.nb_indecency = 0
+        self.nb_request = 0
         self.comprehension = False
         self.decency = False
         self.civility = False
@@ -440,6 +438,9 @@ class QuestionParameter:
         """
         # start
         print(self.debug.name('add_message'))
+        print(
+            f'{self.debug.nb_line(inspect.currentframe().f_lineno)} CREATION ARCHIVE'
+        )
         print(self.debug.nb_line(inspect.currentframe().f_lineno+1), end=' ==> ')
         print(self.debug.historical(f'{message}','add_message'))
         print(self.debug.nb_line(inspect.currentframe().f_lineno+1), end=' ==> ')
@@ -469,7 +470,9 @@ class QuestionParameter:
         """
             Read full list of messages
         """
+        print()
         for (counter, (chatter, message)) in enumerate(
             zip(self.chatters, self.messages)):
             print(f'{counter + 1}.{[chatter]} = {message}')
+        print()
 

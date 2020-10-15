@@ -29,8 +29,7 @@ class GpAnswer:
         """
         response = 'Voici Ta Réponse !'
         print(f'{response} : {self.params.tmp}')
-        self.params.add_message(response, self.params.grandpy)
-        self.params.nb_request += 1
+        return response
 
 
     #========================================
@@ -44,11 +43,11 @@ class GpAnswer:
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
         print(f'\n{response}')
         self.params.add_message(txt_response, self.params.grandpy)
-        print('\n--------------------------------------------')
-        print('-------- HISTORIQUE DE CONVERSATION --------')
-        print('--------------------------------------------')
+        print('\n----------------------------------------------------------------')
+        print('-------- HISTORIQUE DE CONVERSATION ----------------------------')
+        print('----------------------------------------------------------------')
         self.params.chat_viewer()
-        print('--------------------------------------------\n')
+        print('----------------------------------------------------------------\n')
         self.params.init_message()
         self.params.quotas = True
         # ~ self.params.expiry_counter()
@@ -61,11 +60,10 @@ class GpAnswer:
         """
             waiting for user question
         """
-        response = f'Réponse de {self.params.grandpy} ==> Que veux tu savoir ... ?'
+        label = "Qu'est ce que tu veux savoir"
+        response = input(f'Réponse de {self.params.grandpy} ==> {label}')
         print(f'\n{response}')
-        print(self.params.debug.name('waiting_question'))
-        print(self.params.debug.call('add_message', 'QuestionParameter'))
-        self.params.add_message(response, self.params.grandpy)
+        return response
 
 
     #=====================
@@ -161,7 +159,7 @@ class GpAnswer:
         print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
         print(f'Réponse de {self.params.grandpy}')
         txt_response = "Je ne comprends pas, essaye d'être plus précis ... !"
-        response = f'Réponse de {self.params.grandpy} ==> '
+        response = f'\nRéponse de {self.params.grandpy} ==> {txt_response}'
         print(f'{response}')
         return txt_response
 
