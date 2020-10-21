@@ -31,7 +31,7 @@ class Debugging:
         """
             determines the debugging color of the name
         """
-        if func_name == 'main' or func_name == 'presentation_user'\
+        if func_name == 'main' or func_name == 'check_presentation_user'\
             or func_name == 'reconnect_parameter':
             self.dbg_color = self.green
         elif func_name == 'add_message':

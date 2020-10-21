@@ -312,7 +312,7 @@ class QuestionParameter:
                 - nb_indecency       ==> number of decency
                 - nb_incomprehension ==> number of comprehension
         """
-        print(f'\nquestion = {self.tmp}\n')
+        print(f'question = {self.tmp}\n')
         print(f'Valeur de quotas = {self.quotas}')
         print(f'Valeur de civility = {self.civility}')
         print(f'valeur de decency = {self.decency}')
@@ -320,7 +320,8 @@ class QuestionParameter:
         print(f"Nombre d'incivility = {self.nb_incivility}")
         print(f"Nombre d'indecency = {self.nb_indecency}")
         print(f"Nombre d'incomprehension = {self.nb_incomprehension}")
-
+        print(f'Nombre de request = {self.nb_request}')
+        print(f'Counter request = {self.counter_request}\n')
 
     #==============================================
     # value of data Civility in the Redis database

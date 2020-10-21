@@ -27,8 +27,10 @@ class GpAnswer:
         """
             response returned by grandpy for the courteous user
         """
-        response = 'Voici Ta Réponse !'
-        print(f'{response} : {self.params.tmp}')
+        txt_returned = f'Voici Ta Réponse à la question {self.params.tmp} !'
+        response = 'La Réponse est ... !'
+        print(f'\n{txt_returned} : {response}')
+        self.params.add_message(txt_returned, self.params.grandpy)
         return response
 
 
@@ -48,6 +50,7 @@ class GpAnswer:
         print('----------------------------------------------------------------')
         self.params.chat_viewer()
         print('----------------------------------------------------------------\n')
+        self.params.display_status()
         self.params.init_message()
         self.params.quotas = True
         # ~ self.params.expiry_counter()
@@ -60,11 +63,22 @@ class GpAnswer:
         """
             waiting for user question
         """
-        label = "Qu'est ce que tu veux savoir"
-        response = input(f'Réponse de {self.params.grandpy} ==> {label}')
+        label = 'Hey bien, tu peux me poser ta question maintenant ... ! '
+        response = f'Réponse de {self.params.grandpy} ==> {label}'
         print(f'\n{response}')
-        return response
+        return label
 
+    #=====================
+    # attent new question
+    #=====================
+    def waiting_new_question(self):
+        """
+            waiting for user new question
+        """
+        label = 'As tu une nouvelle question a me demander ? '
+        response = f'Réponse de {self.params.grandpy} ==> {label}'
+        print(f'\n{response}')
+        return label
 
     #=====================
     # stress of indecency
@@ -113,8 +127,6 @@ class GpAnswer:
         print(f'\n{response}')
         return txt_response
 
-
-
     #=============
     # rude answer
     #=============
@@ -129,7 +141,6 @@ class GpAnswer:
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
         print(f'\n{response}')
         return txt_response
-
 
 
     #===================
