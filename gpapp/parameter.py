@@ -1,7 +1,10 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import os
+
 import inspect
+
 import redis
 
 
@@ -200,7 +203,6 @@ class QuestionParameter:
         self.decency = False
         self.comprehension = False
         self.quotas = False
-        self.counter_request = 0
         self.nb_request = 0
         self.redis_connect()
         self.initial_status()
@@ -321,7 +323,6 @@ class QuestionParameter:
         print(f"Nombre d'indecency = {self.nb_indecency}")
         print(f"Nombre d'incomprehension = {self.nb_incomprehension}")
         print(f'Nombre de request = {self.nb_request}')
-        print(f'Counter request = {self.counter_request}\n')
 
     #==============================================
     # value of data Civility in the Redis database
@@ -437,16 +438,16 @@ class QuestionParameter:
         """
             Add new message with chatter
         """
-        # start
-        print(self.debug.name('add_message'))
-        print(
-            f'{self.debug.nb_line(inspect.currentframe().f_lineno)} CREATION ARCHIVE'
-        )
-        print(self.debug.nb_line(inspect.currentframe().f_lineno+1), end=' ==> ')
-        print(self.debug.historical(f'{message}','add_message'))
-        print(self.debug.nb_line(inspect.currentframe().f_lineno+1), end=' ==> ')
-        print(self.debug.historical(f'{chatter}','add_message'))
-        # end
+        if os.environ.get('DEBUG') == 'True':
+            print(self.debug.name('add_message'))
+            print(
+                f'{self.debug.nb_line(inspect.currentframe().f_lineno)} CREATION ARCHIVE'
+            )
+            print(self.debug.nb_line(inspect.currentframe().f_lineno+1), end=' ==> ')
+            print(self.debug.historical(f'{message}','add_message'))
+            print(self.debug.nb_line(inspect.currentframe().f_lineno+1), end=' ==> ')
+            print(self.debug.historical(f'{chatter}','add_message'))
+
         self.messages.append(message)
         self.chatters.append(chatter)
         if chatter == 'User':

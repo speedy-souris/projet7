@@ -1,6 +1,8 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import os
+
 import inspect
 
 
@@ -87,9 +89,11 @@ class GpAnswer:
         """
             stress of Grandpy
         """
-        print(self.params.debug.name('stress_indecency'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(f'Réponse de {self.params.grandpy}')
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('stress_indecency'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(f'Réponse de {self.params.grandpy}')
+            
         txt_response = 'cette grossierete me FATIGUE ... !'
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
         print(f'\n{response}')
@@ -103,9 +107,11 @@ class GpAnswer:
         """
             stress of Grandpy
         """
-        print(self.params.debug.name('stress_incivility'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(f'Réponse de {self.params.grandpy}')
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('stress_incivility'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(f'Réponse de {self.params.grandpy}')
+
         txt_response = 'cette impolitesse me FATIGUE ... !'
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
         print(f'\n{response}')
@@ -119,9 +125,11 @@ class GpAnswer:
         """
             stress of Grandpy
         """
-        print(self.params.debug.name('stress_incomprehension'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(f'Réponse de {self.params.grandpy}')
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('stress_incomprehension'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(f'Réponse de {self.params.grandpy}')
+
         txt_response = f'cette incomprehension me FATIGUE ... !'
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
         print(f'\n{response}')
@@ -134,9 +142,11 @@ class GpAnswer:
         """
             rude user
         """
-        print(self.params.debug.name('rude_user'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(f'Réponse de {self.params.grandpy}')
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('rude_user'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(f'Réponse de {self.params.grandpy}')
+
         txt_response = 'Si tu es grossier, je ne peux rien pour toi ... : '
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
         print(f'\n{response}')
@@ -150,9 +160,11 @@ class GpAnswer:
         """
             user unpoliteness in the question for grandpy
         """
-        print(self.params.debug.name('unpoliteness_user'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(f'Réponse de {self.params.grandpy}')
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('unpoliteness_user'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(f'Réponse de {self.params.grandpy}')
+
         txt_response = 'Si tu es impoli, je ne peux rien pour toi ... : '
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
         print(f'\n{response}')
@@ -166,9 +178,11 @@ class GpAnswer:
         """
                 unknown words in the question
         """
-        print(self.params.debug.name('question_incorrect'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(f'Réponse de {self.params.grandpy}')
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('question_incorrect'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(f'Réponse de {self.params.grandpy}')
+            
         txt_response = "Je ne comprends pas, essaye d'être plus précis ... !"
         response = f'\nRéponse de {self.params.grandpy} ==> {txt_response}'
         print(f'{response}')

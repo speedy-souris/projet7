@@ -1,6 +1,8 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import os
+
 import inspect
 
 
@@ -36,9 +38,11 @@ class UserQuestion:
             w for w in user_answer if w.lower() in self.params.DONNEE_CIVILITY
             ]
         )
-        print(self.params.debug.name('user_civility'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(self.params.debug.historical(result, 'civility'))
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('user_civility'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(self.params.debug.historical(result, 'civility'))
+
         self.params.civility = result
         self.params.write_civility(self.params.civility)
 
@@ -58,9 +62,11 @@ class UserQuestion:
             w for w in user_answer if w.lower() not in self.params.INDECENCY_LIST
             ]
         )
-        print(self.params.debug.name('user_decency'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(self.params.debug.historical(result, 'decency'))
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('user_decency'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(self.params.debug.historical(result, 'decency'))
+
         self.params.decency = result
         self.params.write_decency(self.params.decency)
 
@@ -82,9 +88,11 @@ class UserQuestion:
                 or w.lower() in self.params.UNNECESSARY_LIST
             ]
         )
-        print(self.params.debug.name('user_comprehension'))
-        print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(self.params.debug.historical(result, 'comprehension'))
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('user_comprehension'))
+            print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            print(self.params.debug.historical(result, 'comprehension'))
+            
         self.params.comprehension = result
         self.params.write_comprehension(self.params.comprehension)
 
@@ -96,7 +104,8 @@ class UserQuestion:
         """
             added last post from user
         """
-        print(self.params.debug.name('question_user'))
+        if os.environ.get('DEBUG') == 'True':
+            print(self.params.debug.name('question_user'))
         label = f'Question de user ==> '
         requete_user = input(label)
         return requete_user
