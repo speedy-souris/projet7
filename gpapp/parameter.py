@@ -196,9 +196,10 @@ class QuestionParameter:
         self.debug = debug
         self.messages = []
         self.chatters = []
-        self.tmp = ''  # temporary variable for civility / decency wordlist
-        self.grandpy = 'Grandpy' # user for message
-        self.user = 'User'  # user for message
+        self.tmp = ''  # temporary attribut for civility / decency wordlist
+        self.grandpy = 'Grandpy' # robot for chat message
+        self.user = 'User'  # user for chat message
+        self.data = False  # tempory attribut for decency / comprehension value
         self.civility = False
         self.decency = False
         self.comprehension = False
@@ -280,6 +281,7 @@ class QuestionParameter:
         self.write_comprehension(False)
         self.write_counter(0)
 
+    # Reseting status
     def reset_status(self):
         """
             resetting the counters:
@@ -302,6 +304,19 @@ class QuestionParameter:
         self.decency = False
         self.civility = False
         self.quotas = False
+
+    # Reseting behavior parameters
+    def reset_behavior(self):
+        """
+            initialisation behavior parameters:
+                - comprehension --|
+                - civility -------| ==> False
+                - decency --------|
+                - data -----------|
+        """
+        self.comprehension = False
+        self.decency = False
+        self.civility = False
 
     #==========================
     # status parameter display

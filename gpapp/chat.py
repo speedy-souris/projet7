@@ -64,7 +64,6 @@ class Chat:
             print(self.params.debug.name('decency_check'))
             print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
             print(self.params.debug.call('user_decency', 'UserQuestion'))
-        
         self.user.user_decency()
 
     # comprehension test

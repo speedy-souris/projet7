@@ -31,7 +31,7 @@ class GpAnswer:
         """
         txt_returned = f'Voici Ta Réponse à la question {self.params.tmp} !'
         response = 'La Réponse est ... !'
-        print(f'\n{txt_returned} : {response}')
+        print(f'\nRéponse de {self.params.grandpy} ==> {txt_returned} :')
         self.params.add_message(txt_returned, self.params.grandpy)
         return response
 
