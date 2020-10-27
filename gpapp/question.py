@@ -97,6 +97,24 @@ class UserQuestion:
         self.params.write_comprehension(self.params.comprehension)
 
 
+    #========
+    # parser
+    #========
+    def parser(self):
+        """
+            function that cuts the string of characters (question asked to GrandPy)
+            into a word list then delete all unnecessary words to keep only
+            the keywords for the search
+        """
+
+        # list of words to remove in questions
+        list_question = self.tmp.split()
+        result = [
+            w for w in list_question if w.lower() not in self.params.UNNECESSARY_LIST
+        ]
+
+        return result
+
     #===============
     # question user
     #===============

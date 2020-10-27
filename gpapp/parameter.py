@@ -205,6 +205,7 @@ class QuestionParameter:
         self.comprehension = False
         self.quotas = False
         self.nb_request = 0
+        self.key_data = {}
         self.redis_connect()
         self.initial_status()
 
@@ -214,14 +215,22 @@ class QuestionParameter:
     #==============
     def redis_connect(self):
         """
-            connection to the Redis database
+            method for connection to the Redis database
+                - status_env["status_prod"] = False ==> Redis database in local
+                - status_env["status_prod"] = True ==> Redis database in online
         """
-        self.connect = redis.Redis(
-            host='localhost',
-            port=6379,
-            db=0
-        )
-
+        if not self.status_env["status_prod"]:
+            self.connect = redis.Redis(
+                host='localhost',
+                port=6379,
+                db=0
+            )
+        else:
+            self.connect = redis.Redis(
+                host="grandpy-papy-robot.herokuapp.com/",
+                port=6379,
+                db=1
+            )
 
     # writing
     def writing(self, data, value):
@@ -255,6 +264,31 @@ class QuestionParameter:
             reading data in Redis database
         """
         return self.connect.get(data)
+
+    # Google API keys
+    @property
+    def status_env(self):
+        """
+            management of environment variables
+            local and online
+                - key_data["map"]         ==> =|
+                - key_data["staticMap"]   ==> =|- private keys for Google APIs
+                                                 (local or online)
+                - key_data["status_prod"] ==> boolean for redis database
+                                              connection method
+
+        """
+        if os.environ.get("HEROKU_KEY_API_MAP") is None:
+
+            self.key_data["map"] = os.getenv("KEY_API_MAP")
+            self.key_data["staticMap"] = os.getenv("KEY_API_STATIC_MAP")
+            self.key_data["status_prod"] = False
+        else:
+            self.key_data["map"] = os.getenv("HEROKU_KEY_API_MAP")
+            self.key_data["staticMap"] = os.getenv("HEROKU_KEY_API_STATIC_MAP")
+            self.key_data["status_prod"] = True
+
+        return self.key_data
 
 
     #==================================

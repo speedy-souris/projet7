@@ -3,14 +3,10 @@
 
 import time
 from flask import Flask, render_template
-# ~ import devSetting
-# ~ import gpapp
-from .blending import instantiation as dialog
-from .blending import main
 
-# ~ from .devSetting import dataMap as data
-# ~ from .devSetting import fDev as func
-# ~ import question_answer as script
+from .parameter import QuestionParameter
+from .process import Processing
+from .main import main
 
 app = Flask(__name__)
 
@@ -23,8 +19,8 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    if dialog.read_quotas and dialog.read_counter == 0:
-        dialog.initial_status()
+    if QuestionParameter.read_quotas and QuestionParameter.read_counter == 0:
+        QuestionParameter.initial_status()
     return render_template("index.html")
 
 # ~ # Initialization of general parameters
@@ -45,8 +41,8 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    if dialog.read_quotas:
-        dialog.initial_status()
+    if QuestionParameter.read_quotas:
+        QuestionParameter.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
@@ -54,13 +50,13 @@ def answer_gp(reflection, question):
     # sending parameters
     data_send = {
         "parameter_status": {
-            "quotas_api": dialog.read_quotas,
-            "nb_request": dialog.read_counter,
-            "civility": dialog.read_civility,
-            "comprehension": dialog.read_comprehension
+            "quotas_api": QuestionParameter.read_quotas,
+            "nb_request": QuestionParameter.read_counter,
+            "civility": QuestionParameter.read_civility,
+            "comprehension": QuestionParameter.read_comprehension
         },
-        # ~ "map_status": data.DataMap().data_map().get("address", ""),
-        # ~ "wiki_status": data.dataMap().data_map().get("history", "")
+        "map_status": Processing.map_coordinates.get("address", ""),
+        "wiki_status": Processing.map_coordinates.get("history", "")
     }
     print(f"parmetre status ==> {data_send}")
     return data_send
