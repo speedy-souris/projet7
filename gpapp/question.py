@@ -2,7 +2,6 @@
 #!/usr/bin/env python
 
 import os
-
 import inspect
 
 
@@ -108,7 +107,7 @@ class UserQuestion:
         """
 
         # list of words to remove in questions
-        list_question = self.tmp.split()
+        list_question = self.params.tmp.split()
         result = [
             w for w in list_question if w.lower() not in self.params.UNNECESSARY_LIST
         ]

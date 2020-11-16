@@ -2,42 +2,9 @@
 #!/usr/bin/env python
 
 import os
-
 import inspect
 
-import redis
-
-
-                           #========================
-                           # class setting function
-                           #========================
-
-#==================================
-# converting data values for Redis
-#==================================
-# boolean ==> string
-def bool_convers(value):
-    """
-        conversion from boolean to string
-    """
-    if value :
-        return '1'
-    else:
-        return '0'
-
-
-# string ==> boolean
-def str_convers(value):
-    """
-        conversion from string to boolean
-    """
-    value = value.decode('utf8')
-    if value == '0':
-        return False
-    elif value == '':
-        return False
-    else:
-        return True
+from .dataRedis import redis_connect
 
 
                            #==============
@@ -46,40 +13,16 @@ def str_convers(value):
 # user question parameter
 class QuestionParameter:
     """
-        API Private Key and Constants Management :
-            local (development) / external (production)
-                status_env()
-                    - key_data['map']         ==> KEY_API_MAP / HEROKU_KEY_API_MAP
-                    - key_data['staticMap']   ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
-                    - key_data['status_prod'] ==> True / False
-
-        Management for initializing configuration database Redis
-            - redis_connect() ==> connection initialization for the Redis database
-            - writing()       ==> writing of data value for the Redis database
-            - incrementing()  ==> incrementing the data value for the Redis database
-            - expiry()        ==> data value expiration times for the Redis database
-            - reading         ==> read data value for the Redis database
-
         the content of the user question for the analyzer script
             - messages--|            content of the question asked to grandpy
                         |-- list ==> by the user containing the keywords
                         |            for the Google Map API / Grandpy's response
             - chatters--|----------- speaker for the question / answer (Grandpy / user)
-            - tmp ---------      ==> temporary variable for for the question parser
-            - grandpy -----      ==> grandpa robot
-            - user --------      ==> user asking questions
-
-        default variables in Redis
-            - quotas           ==> initialisation of quotas attribut
-            - nb_indecency     ==> number of user indecency
-            - nb_request       ==> number of user requests
-            - redis_connect()  ==> initialization of the connection method
-                                   to the Redis database
-            - initial_status() ==> initialization of data values
-                                   from the Redis database
-            - civility
-            - decency
-            - comprehension
+            - tmp                ==> temporary variable for for the question parser
+            - grandpy            ==> grandpa robot
+            - user               ==> user asking questions
+            - tmp_response       ==> tempory variable for grandpy response
+            - connect            ==> object for the connection to the redis database
     """
     #========================
     # Data for test civility
@@ -186,7 +129,7 @@ class QuestionParameter:
     )
 
     # constructor
-    def __init__(self, debug):
+    def __init__(self, debug=None):
         """
             contructor of parameter
                 - messages, tmp, grandpy, user
@@ -199,290 +142,13 @@ class QuestionParameter:
         self.tmp = ''  # temporary attribut for civility / decency wordlist
         self.grandpy = 'Grandpy' # robot for chat message
         self.user = 'User'  # user for chat message
-        self.data = False  # tempory attribut for decency / comprehension value
-        self.civility = False
-        self.decency = False
-        self.comprehension = False
-        self.quotas = False
-        self.nb_request = 0
-        self.key_data = {}
-        self.redis_connect()
-        self.initial_status()
+        self.tmp_response = ''  # tempory attribut for message of grandpy
+        self.connect = redis_connect()
 
 
-    #==============
-    # Server Redis
-    #==============
-    def redis_connect(self):
-        """
-            method for connection to the Redis database
-                - status_env["status_prod"] = False ==> Redis database in local
-                - status_env["status_prod"] = True ==> Redis database in online
-        """
-        if not self.status_env["status_prod"]:
-            self.connect = redis.Redis(
-                host='localhost',
-                port=6379,
-                db=0
-            )
-        else:
-            self.connect = redis.Redis(
-                host="grandpy-papy-robot.herokuapp.com/",
-                port=6379,
-                db=1
-            )
-
-    # writing
-    def writing(self, data, value):
-        """
-            writing data to Redis database
-        """
-        self.connect.set(data, value)
-
-
-    # increment
-    def incrementing(self, data):
-        """
-            incrementing the request counter in Redis database
-        """
-        self.connect.incr(data)
-
-
-    # expiration time
-    def expiry(self, data, value):
-        """
-            expiration
-            of the counter variable in Redis database
-            (after 24 hours)
-        """
-        self.connect.expire(data, value)
-
-
-    # reading
-    def reading(self, data):
-        """
-            reading data in Redis database
-        """
-        return self.connect.get(data)
-
-    # Google API keys
-    @property
-    def status_env(self):
-        """
-            management of environment variables
-            local and online
-                - key_data["map"]         ==> =|
-                - key_data["staticMap"]   ==> =|- private keys for Google APIs
-                                                 (local or online)
-                - key_data["status_prod"] ==> boolean for redis database
-                                              connection method
-
-        """
-        if os.environ.get("HEROKU_KEY_API_MAP") is None:
-
-            self.key_data["map"] = os.getenv("KEY_API_MAP")
-            self.key_data["staticMap"] = os.getenv("KEY_API_STATIC_MAP")
-            self.key_data["status_prod"] = False
-        else:
-            self.key_data["map"] = os.getenv("HEROKU_KEY_API_MAP")
-            self.key_data["staticMap"] = os.getenv("HEROKU_KEY_API_STATIC_MAP")
-            self.key_data["status_prod"] = True
-
-        return self.key_data
-
-
-    #==================================
-    # Initialization status parameters
-    #==================================
-    def initial_status(self):
-        """
-            creation and initialization by default of data values
-            for the Redis database
-
-                - write_ civility()   ==> default initialization of civility values
-                                          for the Redis database
-                - write_quotas()      ==> default initialization of quotas values
-                                          for the Redis database
-                - write_decency()   ==> default initialization of decency values
-                                          for the Redis database
-                - write_counter()     ==> default initialization of counter values
-                                          for the Redis database
-
-        """
-        self.write_civility(False)
-        self.write_quotas(False)
-        self.write_decency(False)
-        self.write_comprehension(False)
-        self.write_counter(0)
-
-    # Reseting status
-    def reset_status(self):
-        """
-            resetting the counters:
-               - nb_incomprehension  --|
-               - nb_incivility  -------|
-               - nb_indecency  --------| ==> 0
-               - nb_request  ----------|
-
-            initialisation parameters:
-                - comprehension --|
-                - civility -------| ==> False
-                - decency --------|
-                - quotas  --------|
-        """
-        self.nb_incomprehension = 0
-        self.nb_incivility = 0
-        self.nb_indecency = 0
-        self.nb_request = 0
-        self.comprehension = False
-        self.decency = False
-        self.civility = False
-        self.quotas = False
-
-    # Reseting behavior parameters
-    def reset_behavior(self):
-        """
-            initialisation behavior parameters:
-                - comprehension --|
-                - civility -------| ==> False
-                - decency --------|
-                - data -----------|
-        """
-        self.comprehension = False
-        self.decency = False
-        self.civility = False
-
-    #==========================
-    # status parameter display
-    #==========================
-    def display_status(self):
-        """
-            display of data values in the question
-
-                - nb_incivility      ==> number of civility
-                - nb_indecency       ==> number of decency
-                - nb_incomprehension ==> number of comprehension
-        """
-        print(f'question = {self.tmp}\n')
-        print(f'Valeur de quotas = {self.quotas}')
-        print(f'Valeur de civility = {self.civility}')
-        print(f'valeur de decency = {self.decency}')
-        print(f'valeur de comprehension = {self.comprehension}')
-        print(f"Nombre d'incivility = {self.nb_incivility}")
-        print(f"Nombre d'indecency = {self.nb_indecency}")
-        print(f"Nombre d'incomprehension = {self.nb_incomprehension}")
-        print(f'Nombre de request = {self.nb_request}')
-
-    #==============================================
-    # value of data Civility in the Redis database
-    #==============================================
-    def write_civility(self, civility):
-        """
-            saving of civility configuration in Redis database
-        """
-        self.writing('civility', bool_convers(civility))
-
-    @property
-    def read_civility(self):
-        """
-            reading of civility configuration in Redis database
-        """
-        return str_convers(self.reading('civility'))
-
-
-    #============================================
-    # value of data quotas in the Redis database
-    #============================================
-    def write_quotas(self, quotas):
-        """
-            saving of quotas configuration in Redis database
-        """
-        self.writing('quotas', bool_convers(quotas))
-
-
-    @property
-    def read_quotas(self):
-        """
-            reading of quotas configuration in Redis database
-        """
-        return str_convers(self.reading('quotas'))
-
-
-    #===============================================
-    # value of data decency in the Redis database
-    #===============================================
-    def write_decency(self, decency):
-        """
-            saving of decency configuration in Redis database
-        """
-        self.writing('decency', bool_convers(decency))
-
-
-    @property
-    def read_decency(self):
-        """
-            reading of decency configuration in Redis database
-        """
-        return str_convers(self.reading('decency'))
-
-
-    #===============
-    # comprehension
-    #===============
-    def write_comprehension(self, comprehension):
-        """
-            saving of comprehension configuration in Redis database
-        """
-        self.comprehension = comprehension
-        self.writing(
-            'comprehension',
-            bool_convers(self.comprehension)
-        )
-
-
-    @property
-    def read_comprehension(self):
-        """
-            reading of comprehension configuration in Redis database
-        """
-        return str_convers(self.reading('comprehension'))
-
-
-    #=================
-    # Counter Request
-    #=================
-    def increment_counter(self):
-        """
-            Counter increment in Redis database
-        """
-        self.nb_request = self.incrementing('nb_request')
-
-
-    def expiry_counter(self):
-        """
-            Expiration of the key nb_request (counter) in Redis database
-        """
-        self.expiry('nb_request', 86400)
-
-
-    @property
-    def read_counter(self):
-        """
-            reading of counter configuration in Redis database
-        """
-        return self.reading('nb_request')
-
-
-    def write_counter(self, value):
-        """
-            modification of the value
-            of the request counter in Redis database
-        """
-        self.writing('nb_request', value)
-
-    #=============
-    # add message
-    #=============
+    #===================================
+    # add messages to create an archive
+    #===================================
     def add_message(self, message, chatter):
         """
             Add new message with chatter
@@ -503,9 +169,9 @@ class QuestionParameter:
             self.tmp = message
 
 
-    #========================
-    # message initialization
-    #========================
+    #==============================================
+    # initialization of the message in the archive
+    #==============================================
     def init_message(self):
         """
             resetting the message list
@@ -514,9 +180,9 @@ class QuestionParameter:
         self.chatters[:] = []
 
 
-    #====================
-    # Read list messages
-    #====================
+    #===================================
+    # Read list messages in the archive
+    #===================================
     def chat_viewer(self):
         """
             Read full list of messages

@@ -20,7 +20,7 @@ class Processing:
     #================================
     # address coordinate calculation
     #================================
-    def map_coordinates():
+    def map_coordinates(self):
         """
             calculating the coordinates of the question asked to granbpy
             Vars :
@@ -30,17 +30,21 @@ class Processing:
         """
 
         # keyword isolation for question
-        parse_answer = user.parser()
+        parse_answer = self.user.parser()
         place_id_dict = self.get_place_id_list(
             address=" ".join(parse_answer)
         )
         # creation and test public key api google map
-        place_id = place_id_dict["candidates"][0]["place_id"]
-        # creation of api google map coordinate address display setting
-        # and wikipedia address history display setting
-        self.map_status['address'] = self.get_address(place_id=place_id)
-        self.map_status["history"] =\
-            self.get_history(search_history=" ".join(parse_answer))
+        try:
+            place_id = place_id_dict["candidates"][0]["place_id"]
+        except IndexError:
+            self.map_status = {}
+        else:
+            # creation of api google map coordinate address display setting
+            # and wikipedia address history display setting
+            self.map_status['address'] = self.get_address(place_id=place_id)
+            self.map_status["history"] =\
+                self.get_history(search_history=" ".join(parse_answer))
 
         return self.map_status
 

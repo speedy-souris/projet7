@@ -6,63 +6,12 @@ $(document).ready(function(){
     */
 
     /*
-      *=================================
-      * display with API quotas reached
-      *=================================
-    */
-    function display_quotas(){
-
-        var instruction = [
-            $("#quotas").show(),
-            $("#window_sill").hide(),
-            $("#other").hide(),
-            $("#gp_reflection").hide(),
-            $("#ask").hide()
-        ];
-        return instruction
-    };
-
-    /*
-      *=========================================
-      * display answer on question not included
-      *=========================================
-    */
-    function display_incomprehension(){
-
-        var instruction = [
-            $("#gp_reflection").hide(),
-            $("#other").hide(),
-            $("#comprehension").show(),
-            $("#ask").show(),
-            $("#question").val("")
-        ];
-        return instruction
-    };
-
-    /*
-      *===================================
-      * display answer without politeness
-      *===================================
-    */
-    function display_politeness(){
-
-        var instruction = [
-            $("#gp_reply1").hide(),
-            $("#gp_reflection").hide(),
-            $("#gp_reply2").show(),
-            $("#ask").show(),
-            $("#question").val("")
-        ];
-        return instruction
-    };
-
-    /*
       *========================
       * default answer display
       * (without constraints)
       *========================
     */
-    function display_default(response_json){
+    const display_default = (response_json) => {
 
         var instruction = [
                 $("#ask").hide(),
@@ -105,86 +54,19 @@ $(document).ready(function(){
       * general display of responses with constraints
       *===============================================
     */
-    function answer(response){
+    const answer = (response) => {
+        console.log('je suis la'+ response);
         var response_json = JSON.parse(response);
         var lt_mes =[
                     "#gp_reply4","#gp_reply5",
                     "#gp_reply6","#gp_reply7"
         ];
-        $("#question").val("");
-        console.log(response_json);
-
-        // answer display with politeness of the user
-        if ((response_json["parameter_status"]["civility"]) &&
-            (!response_json["parameter_status"]["quotas_api"])){
-                // welcome message
-                if (response_json["parameter_status"]["nb_request"] <= 1){
-
-                    $("#gp_reflection").hide();
-                    $("#word_of_welcome").show();
-                    $("#ask").show();
-                // overwork message
-                }else if (response_json["parameter_status"]["nb_request"] == 5){
-
-                    $("#overstrain").show();
-                    $.each(display_default(response_json), function(value){
-                        $(value);
-                    });
-                // grandpy burnout message
-                }else if (response_json["parameter_status"]["nb_request"] >= 10){
-
-                    $.each(display_quotas(), function(value){
-                        $(value);
-                    });
-                // message of misunderstanding
-                }else if (!response_json["parameter_status"]["comprehension"]){
-
-                    $.each(display_incomprehension(), function(value){
-                        $(value);
-                    });
-                // message of disgrace for disrespect
-                }else if (!response_json["parameter_status"]["decency"]){
-
-                    $.each(display_politeness(), function(value){
-                        $(value);
-                    });
-                // display answer requested
-                }else{
-                        $(lt_mes[Math.floor(Math.random()*lt_mes.length)]).show();
-                        $.each(display_default(response_json), function(value){
-                            $(value);
-                        });
-                };
-        // quota overrun for API requests
-        }else{
-                if (!response_json["parameter_status"]["decency"]){
-
-                    $.each(display_politeness(), function(value){
-                        $(value);
-                    });
-
-                }else if (!response_json["parameter_status"]["comprehension"]){
-
-                    $.each(display_incomprehension(), function(value){
-                        $(value);
-                    });
-
-                }else if (response_json["parameter_status"]["quotas_api"]){
-
-                    $.each(display_quotas(), function(value){
-                        $(value);
-                    });
-
-                }else{
-
-                    $("#gp_reply2").hide();
-                    $("#gp_reflection").hide();
-                    $("#gp_reply1").show();
-                    $("#ask").show();
-                    $("#question").val("");
-                };
-        };
-    };
+        console.log(response_json)
+        
+        
+        
+    }
+    
 
     /*
       *===============

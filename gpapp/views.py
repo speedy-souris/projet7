@@ -4,9 +4,8 @@
 import time
 from flask import Flask, render_template
 
-from .parameter import QuestionParameter
-from .process import Processing
 from .main import main
+
 
 app = Flask(__name__)
 
@@ -19,8 +18,6 @@ def index():
         Initialization of the index.html page
         single home page
     """
-    if QuestionParameter.read_quotas and QuestionParameter.read_counter == 0:
-        QuestionParameter.initial_status()
     return render_template("index.html")
 
 # ~ # Initialization of general parameters
@@ -41,22 +38,15 @@ def answer_gp(reflection, question):
             - history
             - location
     """
-    if QuestionParameter.read_quotas:
-        QuestionParameter.initial_status()
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
     main()
     # sending parameters
     data_send = {
-        "parameter_status": {
-            "quotas_api": QuestionParameter.read_quotas,
-            "nb_request": QuestionParameter.read_counter,
-            "civility": QuestionParameter.read_civility,
-            "comprehension": QuestionParameter.read_comprehension
-        },
-        "map_status": Processing.map_coordinates.get("address", ""),
-        "wiki_status": Processing.map_coordinates.get("history", "")
+        "grandpy_response": main.params.tmp_response,
+        "map_status": main.internal_process.map_coordinates.get("address", ""),
+        "wiki_status": main.internal_process.map_coordinates.get("history", "")
     }
     print(f"parmetre status ==> {data_send}")
     return data_send

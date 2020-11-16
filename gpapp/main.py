@@ -2,14 +2,14 @@
 #!/usr/bin/env python
 
 import os
-
 import inspect
 
-from chat import Chat
-from question import UserQuestion
-from answer import GpAnswer
-from parameter import QuestionParameter
-from debug import Debugging
+from .chat import Chat
+from .question import UserQuestion
+from .answer import GpAnswer
+from .parameter import QuestionParameter
+from .process import Processing
+from .debug import Debugging
 
 #===================
 # utility functions
@@ -135,248 +135,246 @@ def main():
     user = UserQuestion(params)
     grandpy = GpAnswer(params)
     persona = Chat(user, grandpy, params)
-    params.reset_status()
-    # grandpy presentation archiving
-    message = grandpy_message()
-    print(f'Accueil de {params.grandpy} ==> {message}')
-    while params.nb_incivility < 3\
-        and params.nb_indecency < 3\
-        and params.nb_incomprehension < 3:
-        # grandpy response archiving
-        if os.environ.get('DEBUG') == 'True':
-            print(params.debug.name('main'))
-            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-            print(params.debug.call('add_message', type(params).__name__))
-        params.add_message(message, params.grandpy)
+    internal_process = Processing(user, params)
+    connect = params.connect
 
-        # behavior analysis
-        if os.environ.get('DEBUG') == 'True':
-            print(params.debug.name('main'))
-            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-            print(params.debug.call('check_presentation_user', 'check_presentation_user'))
-        check_presentation_user(params, persona)
+    connect.initial_status(connect)
+    # ~ while params.nb_incivility < 3\
+        # ~ and params.nb_indecency < 3\
+        # ~ and params.nb_incomprehension < 3:
+        # ~ # grandpy response archiving
+        # ~ if os.environ.get('DEBUG') == 'True':
+            # ~ print(params.debug.name('main'))
+            # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            # ~ print(params.debug.call('add_message', type(params).__name__))
+        # ~ params.add_message(message, params.grandpy)
 
-        # return line after testing
-        if os.environ.get('DEBUG') == 'True':
-            print(params.debug.name('main'))
-            print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-            print(f'{params.debug.return_line()} vers TEST DE CIVILITY')
-        # analyze the value of indecency
-        if not params.decency:
-            params.nb_indecency += 1
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('rude_request', type(persona).__name__))
-            message = persona.rude_request()
+        # ~ # behavior analysis
+        # ~ if os.environ.get('DEBUG') == 'True':
+            # ~ print(params.debug.name('main'))
+            # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            # ~ print(params.debug.call('check_presentation_user', 'check_presentation_user'))
+        # ~ check_presentation_user(params, persona)
 
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('add_message', type(params).__name__))
-            params.add_message(message, params.grandpy)
-            if params.nb_indecency < 3:
-                message = grandpy_message('disrespectful')
+        # ~ # return line after testing
+        # ~ if os.environ.get('DEBUG') == 'True':
+            # ~ print(params.debug.name('main'))
+            # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+            # ~ print(f'{params.debug.return_line()} vers TEST DE CIVILITY')
+        # ~ # analyze the value of indecency
+        # ~ if not params.decency:
+            # ~ params.nb_indecency += 1
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('rude_request', type(persona).__name__))
+            # ~ message = persona.rude_request()
 
-        # analyze the value of understand
-        elif not params.comprehension:
-            params.nb_incomprehension += 1
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('incorrect_request', type(persona).__name__))
-            message = persona.incorrect_request()
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('add_message', type(params).__name__))
+            # ~ params.add_message(message, params.grandpy)
+            # ~ if params.nb_indecency < 3:
+                # ~ message = grandpy_message('disrespectful')
 
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('add_message', type(params).__name__))
-            params.add_message(message, params.grandpy)
-            if params.nb_incomprehension < 3:
-                message = grandpy_message('incomprehension')
+        # ~ # analyze the value of understand
+        # ~ elif not params.comprehension:
+            # ~ params.nb_incomprehension += 1
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('incorrect_request', type(persona).__name__))
+            # ~ message = persona.incorrect_request()
 
-        # analyze the value of incivility
-        elif not params.civility:
-            params.nb_incivility += 1
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('unpoliteness_request', type(persona).__name__))
-            message = persona.unpoliteness_request()
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('add_message', type(params).__name__))
-            params.add_message(message, params.grandpy)
-            if params.nb_incivility < 3:
-                message = grandpy_message('rudeness')
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('add_message', type(params).__name__))
+            # ~ params.add_message(message, params.grandpy)
+            # ~ if params.nb_incomprehension < 3:
+                # ~ message = grandpy_message('incomprehension')
 
-        else:
-            break
+        # ~ # analyze the value of incivility
+        # ~ elif not params.civility:
+            # ~ params.nb_incivility += 1
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('unpoliteness_request', type(persona).__name__))
+            # ~ message = persona.unpoliteness_request()
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('add_message', type(params).__name__))
+            # ~ params.add_message(message, params.grandpy)
+            # ~ if params.nb_incivility < 3:
+                # ~ message = grandpy_message('rudeness')
 
-        # incivility limit exceeded
-        if params.nb_indecency < 3\
-            and params.nb_incivility < 3\
-            and params.nb_incomprehension < 3:
+        # ~ else:
+            # ~ break
 
-            print(f'\nRéponse de {params.grandpy} ==> {message}')
-        if params.nb_incivility >= 3:
-            message = persona.incivility_limit()
+        # ~ # incivility limit exceeded
+        # ~ if params.nb_indecency < 3\
+            # ~ and params.nb_incivility < 3\
+            # ~ and params.nb_incomprehension < 3:
 
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('add_message', type(params).__name__))
-            params.add_message(message, params.grandpy)
+            # ~ print(f'\nRéponse de {params.grandpy} ==> {message}')
+        # ~ if params.nb_incivility >= 3:
+            # ~ message = persona.incivility_limit()
 
-        # indecency limit exceeded
-        elif params.nb_indecency >= 3:
-            message = persona.indecency_limit()
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('add_message', type(params).__name__))
+            # ~ params.add_message(message, params.grandpy)
 
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('add_message', type(params).__name__))
-            params.add_message(message, params.grandpy)
+        # ~ # indecency limit exceeded
+        # ~ elif params.nb_indecency >= 3:
+            # ~ message = persona.indecency_limit()
 
-        # incomprehesion limit exceeded
-        elif params.nb_incomprehension >= 3:
-            message = persona.incorrect_limit()
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('add_message', type(params).__name__))
+            # ~ params.add_message(message, params.grandpy)
 
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('add_message', type(params).__name__))
-            params.add_message(message, params.grandpy)
+        # ~ # incomprehesion limit exceeded
+        # ~ elif params.nb_incomprehension >= 3:
+            # ~ message = persona.incorrect_limit()
 
-    if os.environ.get('DEBUG') == 'True':
-        print(params.debug.name('main'))
-        print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(f'{params.debug.return_line()} aprés TEST DE CIVILITY')
-    # grandpy response archiving
-    if params.civility:
-        params.reset_status()
-        if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('waiting_request', type(persona).__name__))
-        message = persona.waiting_request()
-        while params.nb_indecency < 3\
-            and params.nb_incomprehension < 3\
-            and params.nb_request < 10:
-            # grandpy response archiving
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('add_message', type(params).__name__))
-            params.add_message(message, params.grandpy)
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('add_message', type(params).__name__))
+            # ~ params.add_message(message, params.grandpy)
 
-            # behavior analysis
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(params.debug.call('check_question_user', 'check_question_user'))
-            message = check_question_user(params, persona)
+    # ~ if os.environ.get('DEBUG') == 'True':
+        # ~ print(params.debug.name('main'))
+        # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+        # ~ print(f'{params.debug.return_line()} aprés TEST DE CIVILITY')
+    # ~ # grandpy response archiving
+    # ~ if params.civility:
+        # ~ params.reset_status()
+        # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('waiting_request', type(persona).__name__))
+        # ~ message = persona.waiting_request()
+        # ~ while params.nb_indecency < 3\
+            # ~ and params.nb_incomprehension < 3\
+            # ~ and params.nb_request < 10:
+            # ~ # grandpy response archiving
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('add_message', type(params).__name__))
+            # ~ params.add_message(message, params.grandpy)
 
-            # return line after testing
-            if os.environ.get('DEBUG') == 'True':
-                print(params.debug.name('main'))
-                print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                print(f'{params.debug.return_line()} vers TEST DE DECENCY')
+            # ~ # behavior analysis
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(params.debug.call('check_question_user', 'check_question_user'))
+            # ~ message = check_question_user(params, persona)
 
-            # analyze the value of indecency
-            if not params.decency:
-                params.nb_indecency += 1
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('rude_request', type(persona).__name__))
-                message = persona.rude_request()
+            # ~ # return line after testing
+            # ~ if os.environ.get('DEBUG') == 'True':
+                # ~ print(params.debug.name('main'))
+                # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                # ~ print(f'{params.debug.return_line()} vers TEST DE DECENCY')
 
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('add_message', type(params).__name__))
-                params.add_message(message, params.grandpy)
+            # ~ # analyze the value of indecency
+            # ~ if not params.decency:
+                # ~ params.nb_indecency += 1
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('rude_request', type(persona).__name__))
+                # ~ message = persona.rude_request()
 
-                if params.nb_indecency < 3:
-                    message = grandpy_message('disrespectful')
-                    print(f'Réponse de {params.grandpy} ==> {message}')
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('add_message', type(params).__name__))
+                # ~ params.add_message(message, params.grandpy)
 
-            # analyze the value of understand
-            elif not params.comprehension:
-                params.nb_incomprehension += 1
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('incorrect_request', type(persona).__name__))
+                # ~ if params.nb_indecency < 3:
+                    # ~ message = grandpy_message('disrespectful')
+                    # ~ print(f'Réponse de {params.grandpy} ==> {message}')
 
-                message = persona.incorrect_request()
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('add_message', type(params).__name__))
-                params.add_message(message, params.grandpy)
-                if params.nb_incomprehension < 3:
-                    message = grandpy_message('incomprehension')
-                    print(f'Réponse de {params.grandpy} ==> {message}')
+            # ~ # analyze the value of understand
+            # ~ elif not params.comprehension:
+                # ~ params.nb_incomprehension += 1
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('incorrect_request', type(persona).__name__))
 
-            else:
-                message = persona.expected_response()
-                print(f'\nRéponse de {params.grandpy} ==> {message}')
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('add_message', type(params).__name__))
-                params.add_message(message, params.grandpy)
-                params.nb_request += 1
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('waiting_new_request', type(persona).__name__))
-                message = persona.waiting_new_request()
+                # ~ message = persona.incorrect_request()
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('add_message', type(params).__name__))
+                # ~ params.add_message(message, params.grandpy)
+                # ~ if params.nb_incomprehension < 3:
+                    # ~ message = grandpy_message('incomprehension')
+                    # ~ print(f'Réponse de {params.grandpy} ==> {message}')
 
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('add_message', type(params).__name__))
-                params.add_message(message, params.grandpy)
+            # ~ else:
+                # ~ message = persona.expected_response()
+                # ~ print(f'\nRéponse de {params.grandpy} ==> {message}')
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('add_message', type(params).__name__))
+                # ~ params.add_message(message, params.grandpy)
+                # ~ params.nb_request += 1
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('waiting_new_request', type(persona).__name__))
+                # ~ message = persona.waiting_new_request()
 
-                if os.environ.get('DEBUG') == 'True':
-                    print(params.debug.name('main'))
-                    print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                    print(params.debug.call('check_question_user', 'check_question_user'))
-                message = check_question_user(params, persona)
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('add_message', type(params).__name__))
+                # ~ params.add_message(message, params.grandpy)
 
-                if message == 'non':
-                    break
-                elif message == 'oui':
-                    if os.environ.get('DEBUG') == 'True':
-                        print(params.debug.name('main'))
-                        print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-                        print(params.debug.call('waiting_request', type(persona).__name__))
-                    message = persona.waiting_request()
+                # ~ if os.environ.get('DEBUG') == 'True':
+                    # ~ print(params.debug.name('main'))
+                    # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                    # ~ print(params.debug.call('check_question_user', 'check_question_user'))
+                # ~ message = check_question_user(params, persona)
 
-                else:
-                    while message == '' and params.nb_incomprehension < 3:
-                        params.nb_incomprehension += 1
-                        message = grandpy_message('invalid')
-                        print(f'\nRéponse de {params.grandpy} ==> {message}')
-                        params.add_message(message, params.grandpy)
-                        message = check_question_user(params, persona)
-                        params.add_message(message, params.grandpy)
-                    if params.nb_incomprehension >= 3:
-                        message = persona.incorrect_limit()
-                        params.add_message(message, params.grandpy)
-                    elif message == 'non':
-                        break
-                    elif message == 'oui':
-                        message = persona.waiting_request()
-                        #print(f'\nRéponse de {params.grandpy} ==> {message}')
-                        #params.add_message(message, params.grandpy)
-                        continue
+                # ~ if message == 'non':
+                    # ~ break
+                # ~ elif message == 'oui':
+                    # ~ if os.environ.get('DEBUG') == 'True':
+                        # ~ print(params.debug.name('main'))
+                        # ~ print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
+                        # ~ print(params.debug.call('waiting_request', type(persona).__name__))
+                    # ~ message = persona.waiting_request()
 
-    persona.reconnection_delay()
+                # ~ else:
+                    # ~ while message == '' and params.nb_incomprehension < 3:
+                        # ~ params.nb_incomprehension += 1
+                        # ~ message = grandpy_message('invalid')
+                        # ~ print(f'\nRéponse de {params.grandpy} ==> {message}')
+                        # ~ params.add_message(message, params.grandpy)
+                        # ~ message = check_question_user(params, persona)
+                        # ~ params.add_message(message, params.grandpy)
+                    # ~ if params.nb_incomprehension >= 3:
+                        # ~ message = persona.incorrect_limit()
+                        # ~ params.add_message(message, params.grandpy)
+                    # ~ elif message == 'non':
+                        # ~ break
+                    # ~ elif message == 'oui':
+                        # ~ message = persona.waiting_request()
+                        # ~ continue
+
+    # ~ persona.reconnection_delay()
 
 if __name__ == "__main__":
 
