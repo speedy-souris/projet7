@@ -8,7 +8,7 @@ import redis
 #=============================
 # Initialization Server Redis
 #=============================
-class Redis_connect:
+class RedisConnect:
     """
     default variables in Redis
             - quotas           ==> initialisation of quotas attribut
