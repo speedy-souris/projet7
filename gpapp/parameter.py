@@ -4,7 +4,7 @@
 import os
 import inspect
 
-from .dataRedis import redis_connect
+from .dataRedis import RedisConnect
 
 
                            #==============
@@ -142,8 +142,7 @@ class QuestionParameter:
         self.tmp = ''  # temporary attribut for civility / decency wordlist
         self.grandpy = 'Grandpy' # robot for chat message
         self.user = 'User'  # user for chat message
-        self.tmp_response = ''  # tempory attribut for message of grandpy
-        self.connect = redis_connect()
+        self.module_redis = RedisConnect()
 
 
     #===================================
@@ -193,3 +192,5 @@ class QuestionParameter:
             print(f'{counter + 1}.{[chatter]} = {message}')
         print()
 
+if __name__ == "__main__":
+    pass

@@ -48,23 +48,26 @@ class RedisConnect:
         self.nb_incivility = 0
         self.nb_indecency = 0
         self.nb_incomprehension = 0
+        self.tmp_response = ''  # tempory attribut for message of grandpy
         self.key_data = {}
-        self.connect()
+        self.connect = ''
+        self.redis_connect()
+        self.initial_status()
 
-    def connect(self):
+    def redis_connect(self):
         """
             method for connection to the Redis database
                 - status_env["status_prod"] = False ==> Redis database in local
                 - status_env["status_prod"] = True ==> Redis database in online
         """
         if not self.status_env["status_prod"]:
-            redis.Redis(
+            self.connect = redis.Redis(
                 host='localhost',
                 port=6379,
                 db=0
             )
         else:
-            redis.Redis(
+            self.connect = redis.Redis(
                 host="grandpy-papy-robot.herokuapp.com/",
                 port=6379,
                 db=1
@@ -101,7 +104,7 @@ class RedisConnect:
 
     # Google API keys
     @property
-    def status_env():
+    def status_env(self):
         """
             management of environment variables
             local and online
@@ -122,221 +125,242 @@ class RedisConnect:
         return self.key_data
 
     # writing
-    def writing(data, value, connect):
+    def writing(self, data, value):
         """
             writing data to Redis database
         """
-        connect.set(data, value)
+        self.connect.set(data, value)
 
     # increment
-    def incrementing(data, connect):
+    def incrementing(self, data):
         """
             incrementing the request counter in Redis database
         """
-        connect.incr(data)
+        self.connect.incr(data)
 
     # expiration time
-    def expiry(data, value, connect):
+    def expiry(self, data, value):
         """
             expiration
             of the counter variable in Redis database
             (after 24 hours)
         """
-        connect.expire(data, value)
+        self.connect.expire(data, value)
 
     # reading
-    def reading(data, connect):
+    def reading(self, data):
         """
             reading data in Redis database
         """
-        return connect.get(data)
+        return self.connect.get(data)
 
 
     #==============================================
     # value of data Civility in the Redis database
     #==============================================
-    def write_civility(civility, connect):
+    def write_civility(self, civility):
         """
             saving of civility configuration in Redis database
         """
-        connect.writing('civility', bool_convers(civility))
+        self.writing('civility', self.bool_convers(civility))
 
-    def read_civility(connect):
+    def read_civility(self):
         """
             reading of civility configuration in Redis database
         """
-        return str_convers(connect.reading('civility'))
+        return self.str_convers(self.reading('civility'))
 
 
     #============================================
     # value of data quotas in the Redis database
     #============================================
-    def write_quotas(quotas, connect):
+    def write_quotas(self, quotas):
         """
             saving of quotas configuration in Redis database
         """
-        connect.writing('quotas', bool_convers(quotas))
+        self.writing('quotas', self.bool_convers(quotas))
 
-    def read_quotas(connect):
+    def read_quotas(self):
         """
             reading of quotas configuration in Redis database
         """
-        return str_convers(connect.reading('quotas'))
+        return self.str_convers(self.reading('quotas'))
 
 
     #=============================================
     # value of data decency in the Redis database
     #=============================================
-    def write_decency(decency, connect):
+    def write_decency(self, decency):
         """
             saving of decency configuration in Redis database
         """
-        connect.writing('decency', bool_convers(decency))
+        self.writing('decency', self.bool_convers(decency))
 
-    def read_decency(connect):
+    def read_decency(self):
         """
             reading of decency configuration in Redis database
         """
-        return str_convers(connect.reading('decency'))
+        return self.str_convers(self.reading('decency'))
 
 
     #===================================================
     # value of data comprehension in the Redis database
     #===================================================
-    def write_comprehension(comprehension, connect):
+    def write_comprehension(self, comprehension):
         """
             saving of comprehension configuration in Redis database
         """
-        connect.writing('comprehension', bool_convers(comprehension))
+        self.writing('comprehension', self.bool_convers(comprehension))
 
-    def read_comprehension(connect):
+    def read_comprehension(self):
         """
             reading of comprehension configuration in Redis database
         """
-        return str_convers(connect.reading('comprehension'))
+        return self.str_convers(self.reading('comprehension'))
 
 
     #=================================================
     # value of data Counter Request in Redis database
     #=================================================
-    def increment_counter(connect):
+    def increment_counter(self):
         """
             Counter increment in Redis database
         """
-        connect.writing(
-            'nb_request', write_counter(connect.incrementing('nb_request'))
+        self.writing(
+            'nb_request', write_counter(self.incrementing('nb_request'))
         ) 
 
-    def expiry_counter(connect):
+    def expiry_counter(self):
         """
             Expiration of the key nb_request (counter) in Redis database
         """
-        connect.expiry('nb_request', 86400)
+        self.expiry('nb_request', 86400)
 
-    def write_counter(value, connect):
+    def write_counter(self, value):
         """
             modification of the value
             of the request counter in Redis database
         """
-        connect.writing('nb_request', value)
+        self.writing('nb_request', value)
 
-    def read_counter(connect):
+    def read_counter(self):
         """
             reading of counter configuration in Redis database
         """
-        return connect.reading('nb_request')
+        return self.reading('nb_request')
 
 
     #====================================================
     # value of data Counter incivility in Redis database
     #====================================================
-    def write_incivility(value, connect):
+    def write_incivility(self, value):
         """
             counter incivility in Redis Database
         """
-        connect.writing('nb_incivility', value)
+        self.writing('nb_incivility', value)
     
-    def read_incicility(connect):
+    def read_incicility(self):
         """
             reading of incivility count in Redis database
         """
-        return connect.reading('nb_incivility')
+        return self.reading('nb_incivility')
 
 
-    #====================================================
+    #===================================================
     # value of data Counter indecency in Redis database
-    #====================================================
-    def write_indecency(value, connect):
+    #===================================================
+    def write_indecency(self, value):
         """
             counter indecency in Redis Database
         """
-        connect.writing('nb_indecency', value)
+        self.writing('nb_indecency', value)
 
-    def read_indecency(connect):
+    def read_indecency(self):
         """
             reading of indecency count in Redis database
         """
-        return connect.reading('nb_indecency')
+        return self.reading('nb_indecency')
 
 
-    #====================================================
+    #=========================================================
     # value of data Counter incomprehension in Redis database
-    #====================================================
-    def write_incomprehension(value, connect):
+    #=========================================================
+    def write_incomprehension(self, value):
         """
             counter incomprehension in Redis Database
         """
-        connect.writing('nb_incomprehension', value)
+        self.writing('nb_incomprehension', value)
 
-    def read_incomprehension(connect):
+    def read_incomprehension(self):
         """
             reading of incomprehension count in Redis database
         """
-        return connect.reading('nb_incomprehension')
+        return self.reading('nb_incomprehension')
 
+
+    #============================================
+    # grandpy's response value in Redis database
+    #============================================
+    def write_response(self, value):
+        """
+            grandpy's response in Redis Database
+        """
+        self.writing('gp_response', value)
+
+    def read_response(self):
+        """
+            reading of grandpy's response in Redis database
+        """
+        return self.reading('gp_response')
 
     #==================================
     # Initialization status parameters
     #==================================
-    def initial_status(connect):
+    def initial_status(self):
         """ creation and initialization by default of data values
             for the Redis database
     
-                - write_ civility()  ==> default initialization 
-                                         of civility value
-                - write_quotas()  ==> default initialization 
-                                      of quotas value
-                - write_decency()  ==> default initialization
-                                       of decency value
+                - write_ civility()      ==> default initialization 
+                                             of civility value
+                - write_quotas()         ==> default initialization 
+                                             of quotas value
+                - write_decency()        ==> default initialization
+                                             of decency value
                 - write_comprehension()  ==> default initialization
                                              of comprehension value
-                - write_counter()  ==> default initialization of counter value
+                - write_counter()        ==> default initialization
+                                             of counter value
+                - write_response()       ==> default initialization
+                                             of grandpy's response
         """
-        connect.write_civility(False)
-        connect.write_quotas(False)
-        connect.write_decency(False)
-        connect.write_comprehension(False)
-        connect.write_counter(0)
-        connect.write_incivility(0)
-        connect.write_indecency(0)
-        connect.write_incomprehension(0)
+        self.write_civility(False)
+        self.write_quotas(False)
+        self.write_decency(False)
+        self.write_comprehension(False)
+        self.write_counter(0)
+        self.write_incivility(0)
+        self.write_indecency(0)
+        self.write_incomprehension(0)
+        self.write_response('')
 
-    def update_redis(Args, connect):
+    def update_redis(self, Args):
         """
             update for database redis
                 - Args Value ==> [
                     quotas, civility, decency, comprehension, nb_request, 
-                    nb_incivility, nb_indecency, nb_incomprehension
+                    nb_incivility, nb_indecency, nb_incomprehension,
+                    response
                 ]
         """
-        connect.write_quotas(Args[0])
-        connect.write_civility(Args[1])
-        connect.write_decency(Args[2])
-        connect.write_comprehension(Args[3])
-        connect.write_counter(Args[4])
-        connect.write_incivility(Args[5])
-        connect.write_indecency(Args[6])
-        connect.writeiincomprehension(Args[7])
+        self.write_quotas(Args[0])
+        self.write_civility(Args[1])
+        self.write_decency(Args[2])
+        self.write_comprehension(Args[3])
+        self.write_counter(Args[4])
+        self.write_incivility(Args[5])
+        self.write_indecency(Args[6])
+        self.write_incomprehension(Args[7])
+        self.write_response(Args[8])
 
     def reset_behavior(self):
         """
@@ -344,7 +368,6 @@ class RedisConnect:
                 - comprehension --|
                 - civility -------| ==> False
                 - decency --------|
-                - data -----------|
         """
         self.comprehension = False
         self.decency = False
@@ -359,7 +382,8 @@ class RedisConnect:
             display of data values in the question
                 - Args Value ==> [
                     tmp (user question), quotas, civility, decency, comprehension,
-                    nb_request, nb_incivility, nb_indecency, nb_incomprehension
+                    nb_request, nb_incivility, nb_indecency, nb_incomprehension,
+                    tmp_response (grandpy's response)
                 ]
         """
         print(f'question = {Args[0]}\n')
@@ -371,5 +395,6 @@ class RedisConnect:
         print(f"Nombre d'incivility = {Args[6]}")
         print(f"Nombre d'indecency = {Args[7]}")
         print(f"Nombre d'incomprehension = {Args[8]}")
+        print(f"Réponse de grandpy = {Args[9]}")
 
 

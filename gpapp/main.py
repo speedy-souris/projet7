@@ -19,7 +19,7 @@ def check_presentation_user(params, persona):
         user presentation analysis
     """
     # initialization of user behavior data values
-    params.reset_behavior()
+    redis_connect.reset_behavior()
     # waiting for user question
     if os.environ.get('DEBUG') == 'True':
         print(params.debug.name('check_presentation_user'))
@@ -136,9 +136,25 @@ def main():
     grandpy = GpAnswer(params)
     persona = Chat(user, grandpy, params)
     internal_process = Processing(user, params)
-    connect = params.connect
+    redis_connect = params.module_redis.connect
 
-    connect.initial_status(connect)
+    if redis_connect.read_nb_incivility < 3\
+        and redis_connect.read_nb_incomprehension < 3\
+        and redis_connect.read_nb_indecency <3:
+        # behavior analysis
+        check_presentation_user(params, persona)
+        # analyze the value of indecency
+
+
+    data =[
+        redis_connect.quotas, redis.connect.civility, 
+        redis_connect.decency, redis_connect.comprehension, 
+        redis_connect.nb_request, redis_connect.nb_incivility,
+        redis_connect.nb_indecency, redis_connect.nb_incomprehension,
+        redis_connect.tmp_response
+    ]
+    redis_connect.update_redis(data)
+    return redis_connect
     # ~ while params.nb_incivility < 3\
         # ~ and params.nb_indecency < 3\
         # ~ and params.nb_incomprehension < 3:
