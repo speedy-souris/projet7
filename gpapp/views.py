@@ -42,13 +42,14 @@ def answer_gp(reflection, question):
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
     connect = main()
+    print(connect.read_response())
     # sending parameters
     data_send = {
         "grandpy_response": connect.read_response(),
         # ~ "map_status": main.internal_process.map_coordinates.get("address", ""),
         # ~ "wiki_status": main.internal_process.map_coordinates.get("history", "")
     }
-    print(f"parmetre status ==> {data_send}")
+    print(f"parametre status ==> {data_send}")
     return data_send
 
 

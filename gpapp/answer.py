@@ -20,6 +20,7 @@ class GpAnswer:
                organization of the grandpy's answer
         """
         self.params = params
+        self.data_redis = self.params.data_redis
 
     #==================
     # response grandpy
@@ -32,7 +33,7 @@ class GpAnswer:
         response = 'La Réponse est ... !'
         print(f'\nRéponse de {self.params.grandpy} ==> {txt_returned} :')
         self.params.add_message(txt_returned, self.params.grandpy)
-        self.params.tmp_response = response
+        self.data_redis.tmp_response = response
         return response
 
 
@@ -45,7 +46,7 @@ class GpAnswer:
         """
         txt_response = 'reviens me voir demain !'
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
-        self.params.tmp_response = txt_response
+        self.data_redis.tmp_response = txt_response
         print(f'\n{response}')
         self.params.add_message(txt_response, self.params.grandpy)
         print('\n----------------------------------------------------------------')
@@ -53,10 +54,10 @@ class GpAnswer:
         print('----------------------------------------------------------------')
         self.params.chat_viewer()
         print('----------------------------------------------------------------\n')
-        self.params.display_status()
+        self.data_redis.display_status()
         self.params.init_message()
-        self.params.quotas = True
-        self.params.expiry_counter()
+        self.data_redis.quotas = True
+        self.data_redis.expiry_counter()
 
 
     #=================
@@ -68,7 +69,7 @@ class GpAnswer:
         """
         label = 'Hey bien, tu peux me poser ta question maintenant ... ! '
         response = f'Réponse de {self.params.grandpy} ==> {label}'
-        self.params.tmp_response = label
+        self.data_redis.tmp_response = label
         print(f'\n{response}')
         return label
 
@@ -81,7 +82,7 @@ class GpAnswer:
         """
         label = 'As tu une nouvelle question a me demander ? '
         response = f'Réponse de {self.params.grandpy} ==> {label}'
-        self.params.tmp_response = label
+        self.data_redis.tmp_response = label
         print(f'\n{response}')
         return label
 
@@ -99,7 +100,7 @@ class GpAnswer:
             
         txt_response = 'cette grossierete me FATIGUE ... !'
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
-        self.params.tmp_response = txt_response
+        self.data_redis.tmp_response = txt_response
         print(f'\n{response}')
         return txt_response
 
@@ -118,7 +119,7 @@ class GpAnswer:
 
         txt_response = 'cette impolitesse me FATIGUE ... !'
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
-        self.params.tmp_response = txt_response
+        self.data_redis.tmp_response = txt_response
         print(f'\n{response}')
         return txt_response
 
@@ -137,7 +138,7 @@ class GpAnswer:
 
         txt_response = f'cette incomprehension me FATIGUE ... !'
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
-        self.params.tmp_response = txt_response
+        self.data_redis.tmp_response = txt_response
         print(f'\n{response}')
         return txt_response
 
@@ -155,7 +156,7 @@ class GpAnswer:
 
         txt_response = 'Si tu es grossier, je ne peux rien pour toi ... : '
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
-        self.params.tmp_response = txt_response
+        self.data_redis.tmp_response = txt_response
         print(f'\n{response}')
         return txt_response
 
@@ -174,7 +175,7 @@ class GpAnswer:
 
         txt_response = 'Si tu es impoli, je ne peux rien pour toi ... : '
         response = f'Réponse de {self.params.grandpy} ==> {txt_response}'
-        self.params.tmp_response = txt_response
+        self.data_redis.tmp_response = txt_response
         print(f'\n{response}')
         return txt_response
 
@@ -193,7 +194,7 @@ class GpAnswer:
             
         txt_response = "Je ne comprends pas, essaye d'être plus précis ... !"
         response = f'\nRéponse de {self.params.grandpy} ==> {txt_response}'
-        self.params.tmp_response = txt_response
+        self.data_redis.tmp_response = txt_response
         print(f'{response}')
         return txt_response
 

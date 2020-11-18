@@ -21,6 +21,7 @@ class UserQuestion:
                 organization of the user's question
         """
         self.params = params
+        self.data_redis = self.params.data_redis
 
     #=================
     # user's civility
@@ -42,8 +43,7 @@ class UserQuestion:
             print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
             print(self.params.debug.historical(result, 'civility'))
 
-        self.params.civility = result
-        self.params.write_civility(self.params.civility)
+        self.data_redis.civility = result
 
 
     #=================
@@ -66,8 +66,7 @@ class UserQuestion:
             print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
             print(self.params.debug.historical(result, 'decency'))
 
-        self.params.decency = result
-        self.params.write_decency(self.params.decency)
+        self.data_redis.decency = result
 
 
     #=========================
@@ -92,8 +91,7 @@ class UserQuestion:
             print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
             print(self.params.debug.historical(result, 'comprehension'))
             
-        self.params.comprehension = result
-        self.params.write_comprehension(self.params.comprehension)
+        self.data_redis.comprehension = result
 
 
     #========

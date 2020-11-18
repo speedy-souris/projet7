@@ -142,7 +142,7 @@ class QuestionParameter:
         self.tmp = ''  # temporary attribut for civility / decency wordlist
         self.grandpy = 'Grandpy' # robot for chat message
         self.user = 'User'  # user for chat message
-        self.module_redis = RedisConnect()
+        self.data_redis = RedisConnect()
 
 
     #===================================

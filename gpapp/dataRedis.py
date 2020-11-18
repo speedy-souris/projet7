@@ -343,7 +343,7 @@ class RedisConnect:
         self.write_incomprehension(0)
         self.write_response('')
 
-    def update_redis(self, Args):
+    def update_redis(self):
         """
             update for database redis
                 - Args Value ==> [
@@ -352,15 +352,15 @@ class RedisConnect:
                     response
                 ]
         """
-        self.write_quotas(Args[0])
-        self.write_civility(Args[1])
-        self.write_decency(Args[2])
-        self.write_comprehension(Args[3])
-        self.write_counter(Args[4])
-        self.write_incivility(Args[5])
-        self.write_indecency(Args[6])
-        self.write_incomprehension(Args[7])
-        self.write_response(Args[8])
+        self.write_quotas(self.quotas)
+        self.write_civility(self.civility)
+        self.write_decency(self.decency)
+        self.write_comprehension(self.comprehension)
+        self.write_counter(self.nb_request)
+        self.write_incivility(self.nb_incivility)
+        self.write_indecency(self.nb_indecency)
+        self.write_incomprehension(self.nb_incomprehension)
+        self.write_response(self.tmp_response)
 
     def reset_behavior(self):
         """
@@ -377,7 +377,7 @@ class RedisConnect:
     #==========================
     # status parameter display
     #==========================
-    def display_status(Args):
+    def display_status(self, question):
         """
             display of data values in the question
                 - Args Value ==> [
@@ -386,15 +386,17 @@ class RedisConnect:
                     tmp_response (grandpy's response)
                 ]
         """
-        print(f'question = {Args[0]}\n')
-        print(f'Valeur de quotas = {Args[1]}')
-        print(f'Valeur de civility = {Args[2]}')
-        print(f'valeur de decency = {Args[3]}')
-        print(f'valeur de comprehension = {Args[4]}')
-        print(f'Nombre de request = {Args[5]}')
-        print(f"Nombre d'incivility = {Args[6]}")
-        print(f"Nombre d'indecency = {Args[7]}")
-        print(f"Nombre d'incomprehension = {Args[8]}")
-        print(f"Réponse de grandpy = {Args[9]}")
+        print(f'question = {question}\n')
+        print(f'Valeur de quotas = {self.quotas}')
+        print(f'Valeur de civility = {self.civility}')
+        print(f'valeur de decency = {self.decency}')
+        print(f'valeur de comprehension = {self.comprehension}')
+        print(f'Nombre de request = {self.nb_request}')
+        print(f'Nombre d\'incivility = {self.nb_incivility}')
+        print(f'Nombre d\'indecency = {self.nb_indecency}')
+        print(f'Nombre d\'incomprehension = {self.nb_incomprehension}')
+        print(f'Réponse de grandpy = {self.tmp_response}')
 
 
+if __name__ == '__main__':
+    pass
