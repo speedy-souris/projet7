@@ -40,19 +40,17 @@ class RedisConnect:
         """
             redis server initialization constructor
         """
-        self.civility = False
-        self.decency = False
-        self.comprehension = False
-        self.quotas = False
-        self.nb_request = 0
-        self.nb_incivility = 0
-        self.nb_indecency = 0
-        self.nb_incomprehension = 0
+        self.civility = self.read_civility()
+        self.decency = self.read_decency()
+        self.comprehension = self.read_comprehension()
+        self.quotas = self.read_quotas()
+        self.nb_request = self.read_nb_request()
+        self.nb_incivility = self.read_nb_incivility()
+        self.nb_indecency = self.read_nb_indecency()
+        self.nb_incomprehension = self.read_nb_incomprehension()
         self.tmp_response = ''  # tempory attribut for message of grandpy
         self.key_data = {}
-        self.connect = ''
         self.redis_connect()
-        self.initial_status()
 
     def redis_connect(self):
         """

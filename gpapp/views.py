@@ -45,7 +45,7 @@ def answer_gp(reflection, question):
     print(connect.read_response())
     # sending parameters
     data_send = {
-        "grandpy_response": connect.read_response(),
+        "grandpy_response": connect.tmp_response,
         # ~ "map_status": main.internal_process.map_coordinates.get("address", ""),
         # ~ "wiki_status": main.internal_process.map_coordinates.get("history", "")
     }

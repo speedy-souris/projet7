@@ -28,13 +28,13 @@ def check_presentation_user(params, persona, data_redis):
         )
         print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
         print(params.debug.call('user_request', type(persona).__name__))
-    return_user = persona.user_request()
+    #return_user = persona.user_request()
 
     if os.environ.get('DEBUG') == 'True':
         print(params.debug.name('check_presentation_user'))
         print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
         print(params.debug.call('add_message', type(params).__name__))
-    params.add_message(return_user, params.user)
+    # ~ params.add_message(return_user, params.user)
     
     # determines the comprehension value in the user question
     if os.environ.get('DEBUG') == 'True':
@@ -90,13 +90,13 @@ def check_question_user(params, persona):
         )
         print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
         print(params.debug.call('user_request', type(persona).__name__))
-    return_user = persona.user_request()
+    #return_user = persona.user_request()
 
     if os.environ.get('DEBUG') == 'True':
         print(params.debug.name('check_question_user'))
         print(params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
         print(params.debug.call('add_message', type(params).__name__))
-    params.add_message(return_user, params.user)
+    # ~ params.add_message(return_user, params.user)
 
     # determines the comprehension value in the user question
     if os.environ.get('DEBUG') == 'True':
@@ -387,10 +387,11 @@ def main():
 
 if __name__ == "__main__":
 
-    var_debug = input("Tapez 'd' pour passer en debogage ... !")
-    if var_debug == 'd':
-        os.environ['DEBUG'] = "True"
-    os.system('clear')
-    main()
+    # ~ var_debug = input("Tapez 'd' pour passer en debogage ... !")
+    # ~ if var_debug == 'd':
+        # ~ os.environ['DEBUG'] = "True"
+    # ~ os.system('clear')
+    # ~ main()
+    pass
 
 
