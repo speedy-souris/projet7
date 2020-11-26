@@ -66,7 +66,7 @@ class Chat:
         self.user.user_decency()
 
     # comprehension test
-    def comprehension_check(self):
+    def comprehension_check(self, question):
         """
             call for comprehension check
         """
@@ -75,7 +75,7 @@ class Chat:
             print(self.params.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
             print(self.params.debug.call('user_comprehension', 'UserQuestion'))
 
-        self.user.user_comprehension()
+        self.user.user_comprehension(question)
 
     #==================
     # grandpy property

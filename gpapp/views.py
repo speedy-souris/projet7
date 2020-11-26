@@ -6,22 +6,20 @@ from flask import Flask, render_template
 
 from .main import main
 
-
 app = Flask(__name__)
 
-#======================================
+
 # main function for displaying answers
-#======================================
-@app.route("/")
+@app.route('/')
 def index():
     """
         Initialization of the index.html page
         single home page
     """
-    return render_template("index.html")
+    return render_template('index.html')
 
-# ~ # Initialization of general parameters
-@app.route("/index/<reflection>/<question>")
+# Initialization of general parameters
+@app.route('/index/<reflection>/<question>')
 def answer_gp(reflection, question):
     """
         grandpy's response display function
@@ -41,17 +39,15 @@ def answer_gp(reflection, question):
     # grandpy's reflection time to answer questions
     time_reflection = time.sleep(int(reflection))
     # exchange between the user and grandpy
-    connect = main()
-    print(connect.read_response())
+    dataDiscussion = main(question)
     # sending parameters
     data_send = {
-        "grandpy_response": connect.tmp_response,
+        'grandpy_response': dataDiscussion.read_response
         # ~ "map_status": main.internal_process.map_coordinates.get("address", ""),
         # ~ "wiki_status": main.internal_process.map_coordinates.get("history", "")
     }
-    print(f"parametre status ==> {data_send}")
     return data_send
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pass

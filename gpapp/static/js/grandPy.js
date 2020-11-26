@@ -55,7 +55,6 @@ $(document).ready(function(){
       *===============================================
     */
     const answer = (response) => {
-        console.log('je suis la'+ response);
         var response_json = JSON.parse(response);
         var lt_mes =[
                     "#gp_reply4","#gp_reply5",
