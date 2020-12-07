@@ -6,54 +6,30 @@ import inspect
 
 from .chat import Chat
 from .chatData import Data
-from .chatHistory import History
 from .user import Question
 from .grandpyRobot import Answer
 from .answerSearch import Research
 from .debug import Debugging
 
-# utility functions
-def check_presentation_user(
-    history, question, discussion, dataDiscussion
-    ):
+def check_presentation_user(discussion, dataDiscussion):
     """
         user presentation analysis
     """
-    # initialization of user behavior data values
     dataDiscussion.reset_behavior()
-    # determines the comprehension value in the user user
-    if os.environ.get('DEBUG') == 'True':
-        print(history.debug.name('check_presentation_user'))
-        print(
-            f'{history.debug.nb_line(inspect.currentframe().f_lineno)} CHECK COMPORTEMENT'
-        )
-        print(history.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(history.debug.call('comprehension_check', type(discussion).__name__))
-    discussion.comprehension_check(question)
-
-    # determines the civility value in the user user
-    if os.environ.get('DEBUG') == 'True':
-        print(history.debug.name('check_presentation_user'))
-        print(history.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(history.debug.call('civility_check', type(discussion).__name__))
-    discussion.civility_check(question)
-
-    # determines the decency value in the user user
-    if os.environ.get('DEBUG') == 'True':
-        print(history.debug.name('check_presentation_user'))
-        print(history.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(history.debug.call('decency_check', type(discussion).__name__))
-    discussion.decency_check(question)
-
+    discussion.comprehension_check()
+    discussion.civility_check()
+    discussion.decency_check()
 
 def grandpy_message(stage=None):
     if stage == 'incomprehension':
-        message = \
+        message =\
             "Ha, repose ta user, je n'ai pas bien compris ce que tu veux dire ... !"
     elif stage == 'rudeness':
-        message = "s'il te plait, reformule ta user en étant plus polis ... ! "
+        message =\
+            "s'il te plait, reformule ta user en étant plus polis ... ! "
     elif stage == 'disrespectful':
-        message = "Hola, sois plus RESPECTUEUX ENVERS TES AINES 'MON PETIT' ... !"
+        message =\
+            "Hola, sois plus RESPECTUEUX ENVERS TES AINES 'MON PETIT' ... !"
     elif stage == 'invalid':
         message = 'Répond à la user par <oui> ou par <non> ... !'
     else:
@@ -61,43 +37,12 @@ def grandpy_message(stage=None):
 
     return message 
 
-def check_question_user(history, discussion):
+def check_question_user(discussion):
     """
-        user user analysis
+        user question analysis
     """
-    # initialization of user behavior data values
-    history.reset_behavior()
-    # waiting for user user
-    if os.environ.get('DEBUG') == 'True':
-        print(history.debug.name('check_question_user'))
-        print(
-            f'{history.debug.nb_line(inspect.currentframe().f_lineno)} ATTENTE user'
-        )
-        print(history.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(history.debug.call('user_request', type(discussion).__name__))
-    #return_user = discussion.user_request()
-
-    if os.environ.get('DEBUG') == 'True':
-        print(history.debug.name('check_question_user'))
-        print(history.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(history.debug.call('add_message', type(history).__name__))
-    # ~ history.add_message(return_user, history.user)
-
-    # determines the comprehension value in the user user
-    if os.environ.get('DEBUG') == 'True':
-        print(history.debug.name('check_question_user'))
-        print(
-            f'{history.debug.nb_line(inspect.currentframe().f_lineno)} CHECK COMPORTEMENT'
-        )
-        print(history.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(history.debug.call('comprehension_check', type(discussion).__name__))
+    dataDiscussion.reset_behavior()
     discussion.comprehension_check()
-
-    # determines the decency value in the user user
-    if os.environ.get('DEBUG') == 'True':
-        print(history.debug.name('check_question_user'))
-        print(history.debug.nb_line(inspect.currentframe().f_lineno+2), end=' ==> ')
-        print(history.debug.call('decency_check', type(discussion).__name__))
     discussion.decency_check()
 
     return return_user
@@ -110,26 +55,37 @@ def main(question):
         from the user after politeness check
         and without coarseness
     """
-    #---------------------------------
     # awaits the courtesy of the user
-    #---------------------------------
     debug = Debugging()
-    history = History(debug)
-    user = Question(history)
-    grandpy = Answer(history)
-    discussion = Chat(user, grandpy, history)
     dataDiscussion = Data()
-    research = Research(user, history)
+    user = Question(question, dataDiscussion)
+    research = Research(user, dataDiscussion)
+    grandpy = Answer(dataDiscussion, research)
+    discussion = Chat(user, grandpy)
 
-    if dataDiscussion.read_int_incivility < 3\
-        and dataDiscussion.read_int_incomprehension < 3\
-        and dataDiscussion.read_int_indecency <3:
+    if dataDiscussion.nb_incivility < 3\
+        and dataDiscussion.nb_incomprehension < 3\
+        and dataDiscussion.nb_indecency <3:
         # behavior analysis
-        check_presentation_user(history, question, discussion, dataDiscussion)
+        check_presentation_user(discussion, dataDiscussion)
         # analyze the value of indecency
+        print(f'comprehension ==> {dataDiscussion.comprehension}')
+        print(f'civility ==> {dataDiscussion.civility}')
+        print(f'decency ==> {dataDiscussion.decency}')
+        if dataDiscussion.civility:
+            dataDiscussion.grandpy_response = discussion.waiting_request()
+        elif not dataDiscussion.civility and dataDiscussion.decency:
+            dataDiscussion.grandpy_response = discussion.unpoliteness_request()
+        elif not dataDiscussion.decency:
+            dataDiscussion.grandpy_response = discussion.rude_request()
+        else:
+            dataDiscussion.grandpy_response = discussion.incorrect_request()
 
     dataDiscussion.update_data()
     return dataDiscussion
+
+
+    
     # ~ while history.nb_incivility < 3\
         # ~ and history.nb_indecency < 3\
         # ~ and history.nb_incomprehension < 3:
@@ -373,7 +329,7 @@ if __name__ == "__main__":
     # ~ if var_debug == 'd':
         # ~ os.environ['DEBUG'] = "True"
     # ~ os.system('clear')
-    # ~ main()
+    # ~ main('bonjour')
     pass
 
 

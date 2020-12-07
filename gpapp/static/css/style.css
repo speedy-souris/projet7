@@ -85,7 +85,8 @@ body{
 /* hidden display (grandpy's message)*/
 #gp_title,#answer,#gp_tag,#other,#word_of_welcome,
 #gp_reflection,#quotas,#comprehension,#overstrain,
-#gp_reply1,#gp_reply2,#gp_reply3,#gp_reply4,#gp_reply5,#gp_reply6,#gp_reply7{
+#gp_reply1,#gp_reply2,#gp_reply3,#gp_reply4,#gp_reply5,
+#gp_reply6,#gp_reply7{
 
     display: none;
 }

@@ -1,47 +1,79 @@
 $(document).ready(function(){
-    /*
-      * Display of the answers by default
-      * with and without the constraints
-      * (number of questions, misunderstanding, lack of respect ...)
-    */
+
+    var $ask = $('#ask'),
+        $word_of_welcome = $('#word_of_welcome'),
+        $gp_reflection = $('#gp_reflection'),
+        $gp_reply1 = $('#gp_reply1'),
+        $gp_reply2 = $('#gp_reply2'),
+        $gp_reply3 = $('#gp_reply3'),
+        $gp_reply4 = $('#gp_reply4'),
+        $gp_reply5 = $('#gp_reply5'),
+        $gp_reply6 = $('#gp_reply6'),
+        $gp_reply7 = $('#gp_reply7'),
+        $question = $('#question'),
+        $answer = $('#answer'),
+        $other = $('#other'),
+        $comprehension = $('#comprehension'),
+        $address = $("#address"),
+        $map = $('#map'),
+        $history = $('#history'),
+        $from_question = $('#from_question');
+
+    const home_display = () => {
+        [
+            $ask.hide(),
+            $word_of_welcome.hide(),
+            $g_reflection.hide(),
+            $reply2.hide(),
+            $question.val(''),
+            $answer.show(),
+            $other.show()
+        ];        
+    };
+
+    const request_display = () => {
+        $gp_reply1.hide();
+        $gp_reply2.hide();
+        $word_of_welcome.hide();
+        $comprehension.hide();
+        $gp_reflection.show();
+    };
+
+    // random message from grandpyRobot
+    const random_message = () => {
+        var lt_mes =[
+                    gp_reply4,gp_reply5,
+                    gp_reply6,gp_reply7
+        ];
+        $(lt_mes[Math.floor(Math.random()*lt_mes.length)]).show();
+    };
 
     /*
-      *========================
       * default answer display
       * (without constraints)
-      *========================
     */
     const display_default = (response_json) => {
 
-        var instruction = [
-                $("#ask").hide(),
-                $("#word_of_welcome").hide(),
-                $("#gp_reflection").hide(),
-                $("#gp_reply2").hide(),
-                $("#question").val(""),
-                $("#answer").show(),
-                $("#other").show()
-        ];
+        var instruction = home_display();
         /*
           * redisplay question and
           * display map / address / history (wiki)
        */
         var wiki_answer = response_json["map_status"]["answer"]["history"];
         instruction.push(
-            $("#address").text("l'adresse "+wiki_answer[0]+" se situe : "
+            $address.text("l'adresse "+wiki_answer[0]+" se situe : "
             + JSON.stringify(
                 response_json["map_status"]["answer"]["address"]
                     ["result"]["formatted_address"]
-                )
-            )
+            ))
         );
 
-        instruction.push($("#map")[0].src = response_json["map_status"]["display_map"]);
+        instruction.push($map[0].src = response_json["map_status"]["display_map"]);
 
         if (wiki_answer[0][2]){
-            var texte = $("#history").text(JSON.stringify(wiki_answer[0][2]));
+            var texte = $history.text(JSON.stringify(wiki_answer[0][2]));
         }else{
-            var texte = $("#history").text("Aie aie aie, le \'WIKI\' est vide... !");
+            var texte = $history.text("Aie aie aie, le \'WIKI\' est vide... !");
         };
         // Add wiki
         instruction.push(texte);
@@ -49,39 +81,18 @@ $(document).ready(function(){
         return instruction
     };
 
-    /*
-      *===============================================
-      * general display of responses with constraints
-      *===============================================
-    */
-    const answer = (response) => {
+    // general display of responses with constraints
+    var answer = (response) => {
         var response_json = JSON.parse(response);
-        var lt_mes =[
-                    "#gp_reply4","#gp_reply5",
-                    "#gp_reply6","#gp_reply7"
-        ];
-        console.log(response_json)
+        var message = response_json["grandpy_message"];
         
-        
-        
-    }
-    
+    };
 
-    /*
-      *===============
-      * send question
-      *===============
-    */
-    $("#form_question").submit(function(e){
+    // send question
+    $form_question.submit(function(e){
 
-    /**
-      * display and reflection time to the question
-    */
-        $("#gp_reply1").hide();
-        $("#gp_reply2").hide();
-        $("#word_of_welcome").hide();
-        $("#comprehension").hide();
-        $("#gp_reflection").show();
+        // display and reflection time to the question
+        request_display();
         $.ajax({
             url: "/index/2/" + $("#question").val().toString(),
             type: "GET",
