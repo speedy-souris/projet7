@@ -11,6 +11,8 @@ $(document).ready(function(){
         $gp_reply6 = $('#gp_reply6'),
         $gp_reply7 = $('#gp_reply7'),
         $question = $('#question'),
+        $quotas = $('#quotas'),
+        soverstrain = $('#overstarin'),
         $answer = $('#answer'),
         $other = $('#other'),
         $comprehension = $('#comprehension'),
@@ -32,13 +34,33 @@ $(document).ready(function(){
     };
 
     const request_display = () => {
-        $gp_reply1.hide();
-        $gp_reply2.hide();
-        $word_of_welcome.hide();
-        $comprehension.hide();
-        $gp_reflection.show();
+        $gp_reply1.hide(),
+        $gp_reply2.hide(),
+        $word_of_welcome.hide(),
+        $comprehension.hide(),
+        $gp_reflection.show()
     };
 
+    const politeness_display = () => {
+        [
+            $gp_reply1.hide(),
+            $gp_reflection.hide(),
+            $gp_reply2.show(),
+            $ask.show(),
+            $question.val("")
+        ];
+    };
+
+    const incomprehension_display = () => {
+        [
+            $gp_reflection.hide(),
+            $other.hide(),
+            $comprehension.show(),
+            $ask.show(),
+            $question.val("")
+        ];    
+    };
+    
     // random message from grandpyRobot
     const random_message = () => {
         var lt_mes =[
