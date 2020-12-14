@@ -1,72 +1,133 @@
 $(document).ready(function(){
 
-    var $ask = $('#ask'),
-        $word_of_welcome = $('#word_of_welcome'),
-        $gp_reflection = $('#gp_reflection'),
-        $gp_reply1 = $('#gp_reply1'),
-        $gp_reply2 = $('#gp_reply2'),
-        $gp_reply3 = $('#gp_reply3'),
-        $gp_reply4 = $('#gp_reply4'),
-        $gp_reply5 = $('#gp_reply5'),
-        $gp_reply6 = $('#gp_reply6'),
-        $gp_reply7 = $('#gp_reply7'),
-        $question = $('#question'),
-        $quotas = $('#quotas'),
-        soverstrain = $('#overstarin'),
-        $answer = $('#answer'),
-        $other = $('#other'),
-        $comprehension = $('#comprehension'),
-        $address = $("#address"),
-        $map = $('#map'),
-        $history = $('#history'),
-        $from_question = $('#from_question');
+    const command_value = function(value) => {
+        var command = '';
+        switch (value) {
+            case 'ask':
+                command = $('#ask')
+                break;
+            case 'home':
+                command  = $('#word_of_welcome')
+                break;
+            case 'relection':
+                command = $('#gp_reflection')
+                break;
+            case 'mannerless':
+                command = $('#gp_reply1')
+                break;
+            case 'rude':
+                command = $('#gp_reply2')
+                break;
+            case 'politeness':
+                command = $('#gp_reply3')
+                break;
+            case 'correct1':
+                command = $('#gp_reply4')
+                break;
+            case 'correct2':
+                command = $('#gp_reply5')
+                break;
+            case 'correct3':
+                command = $('#gp_reply6')
+                break;
+            case 'correct4':
+                command = $('#gp_reply7')
+                break;
+            case 'question':
+                command = $('#question')
+                break;
+            case 'quotas':
+                command = $('#quotas')
+                break;
+            case 'overstarin':
+                command = $('#overstarin')
+                break;
+            case 'answer':
+                command = $('#answer')
+                break;
+            case 'other':
+                command = $('#other')
+                break;
+            case 'comprehension':
+                command = $('#comprehension')
+                break;
+            case 'address':
+                command = $('#address')
+                break;
+            case 'map':
+                command = $('#map')
+                break;
+            case 'history':
+                command = $('history')
+                break;
+            case 'form_question':
+                command = $('#form_question')
+                break;
+            case 'ajax':
+                command = $.ajax({
+                    url: "/index/2/" + $('#question').val().toString(),
+                    type: "GET",
+                    dataType: "html",
+                    success: answer
+                });
+        };
+        return command
+    };
 
-    const home_display = () => {
+    const home_display = function() => {
         [
-            $ask.hide(),
-            $word_of_welcome.hide(),
-            $g_reflection.hide(),
-            $reply2.hide(),
-            $question.val(''),
-            $answer.show(),
-            $other.show()
+            command_value('ask').hide(),
+            command_value('word_of_welcome').hide(),
+            command_value('gp_reflection').hide(),
+            command_value('gp_reply2').hide(),
+            command_value('question').val(''),
+            command_value('answer').show(),
+            command_value('other').show()
         ];        
     };
 
-    const request_display = () => {
-        $gp_reply1.hide(),
-        $gp_reply2.hide(),
-        $word_of_welcome.hide(),
-        $comprehension.hide(),
-        $gp_reflection.show()
+    const request_display = function() => {
+        command_value('gp_reply1').hide();
+        command_value('gp_reply2').hide();
+        command_value('word_of_welcome').hide();
+        command_value('comprehension').hide();
+        command_value('gp_reflection').show();
     };
 
-    const politeness_display = () => {
+    const politeness_display = function() => {
         [
-            $gp_reply1.hide(),
-            $gp_reflection.hide(),
-            $gp_reply2.show(),
-            $ask.show(),
-            $question.val("")
+            command_value('gp_reply1').hide(),
+            command_value('gp_reflection').hide(),
+            command_value('gp_reply2').show(),
+            command_value('ask').show(),
+            command_value('question').val('')
         ];
     };
 
-    const incomprehension_display = () => {
+    const incomprehension_display = function() => {
         [
-            $gp_reflection.hide(),
-            $other.hide(),
-            $comprehension.show(),
-            $ask.show(),
-            $question.val("")
+            command_value('gp_reflection').hide(),
+            command_value('other').hide(),
+            command_value('comprehension').show(),
+            command_value('ask').show(),
+            command_value('question').val('')
         ];    
     };
     
     // random message from grandpyRobot
-    const random_message = () => {
+    const random_message = function() => {
         var lt_mes =[
-                    gp_reply4,gp_reply5,
-                    gp_reply6,gp_reply7
+                    command_value('gp_reply4'),command_value('gp_reply5'),
+                    command_value('gp_reply6'),command_value('gp_reply7')
         ];
+        command_value('gp_reply4').hide()
+        command_value('gp_reply5').hide()
+        command_value('gp_reply6').hide()
+        command_value('gp_reply7').hide()
+        command_value('other').hide()
+        command_value('gp_reflection').hide()
+        command_value('question').val('')
+        
         $(lt_mes[Math.floor(Math.random()*lt_mes.length)]).show();
     };
 
@@ -74,7 +135,7 @@ $(document).ready(function(){
       * default answer display
       * (without constraints)
     */
-    const display_default = (response_json) => {
+    const display_default = function(response_json) => {
 
         var instruction = home_display();
         /*
@@ -83,19 +144,19 @@ $(document).ready(function(){
        */
         var wiki_answer = response_json["map_status"]["answer"]["history"];
         instruction.push(
-            $address.text("l'adresse "+wiki_answer[0]+" se situe : "
+            command_value('address').text("l'adresse "+wiki_answer[0]+" se situe : "
             + JSON.stringify(
                 response_json["map_status"]["answer"]["address"]
                     ["result"]["formatted_address"]
             ))
         );
 
-        instruction.push($map[0].src = response_json["map_status"]["display_map"]);
+        instruction.push(command_value('map')[0].src = response_json["map_status"]["display_map"]);
 
         if (wiki_answer[0][2]){
-            var texte = $history.text(JSON.stringify(wiki_answer[0][2]));
+            var texte = command_value('history').text(JSON.stringify(wiki_answer[0][2]));
         }else{
-            var texte = $history.text("Aie aie aie, le \'WIKI\' est vide... !");
+            var texte = command_value('history').text("Aie aie aie, le \'WIKI\' est vide... !");
         };
         // Add wiki
         instruction.push(texte);
@@ -104,23 +165,19 @@ $(document).ready(function(){
     };
 
     // general display of responses with constraints
-    var answer = (response) => {
+    const answer = function(response) => {
         var response_json = JSON.parse(response);
-        var message = response_json["grandpy_message"];
+        console.log(response_json)
+        random_message()
+       
         
     };
 
     // send question
-    $form_question.submit(function(e){
-
+    command_value('form_question').submit(function(e){
         // display and reflection time to the question
         request_display();
-        $.ajax({
-            url: "/index/2/" + $("#question").val().toString(),
-            type: "GET",
-            dataType: "html",
-            success: answer
-        });
+        command_value('ajax');
         e.preventDefault();
     });
 

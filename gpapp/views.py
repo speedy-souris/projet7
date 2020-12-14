@@ -42,7 +42,7 @@ def answer_gp(reflection, question):
     dataDiscussion = main(question)
     # sending parameters
     data_send = {
-        'grandpy_response': dataDiscussion.grandpy_response
+        'grandpy_response': dataDiscussion.grandpy_response,        
         # ~ "map_status": main.internal_process.map_coordinates.get("address", ""),
         # ~ "wiki_status": main.internal_process.map_coordinates.get("history", "")
     }
