@@ -3,7 +3,7 @@
 
 import time
 from flask import Flask, render_template
-
+from .chatData import Data
 from .main import main
 
 app = Flask(__name__)
@@ -17,7 +17,17 @@ def index():
         single home page
     """
     return render_template('index.html')
-
+    
+# initialization DataRedis
+@app.route('/init')
+def init():
+    """
+        Initialization of the dataRedis
+    """
+    data = Data()
+    data.initial_data()
+    return 'DataRedis initialized'
+    
 # Initialization of general parameters
 @app.route('/index/<reflection>/<question>')
 def answer_gp(reflection, question):

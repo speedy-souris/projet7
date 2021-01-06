@@ -38,11 +38,7 @@ class Data:
         """
         self.key_value = {}
         self.dataDiscussion = self.data_access
-        try:
-            self.read_civility
-        except AttributeError:
-            self.initial_data()
-        self.grandpy_response = self.read_response
+        self.grandpy_response = ''
         self.civility = self.read_civility
         self.decency = self.read_decency
         self.comprehension = self.read_comprehension
@@ -51,6 +47,11 @@ class Data:
         self.nb_incivility = self.read_incivility
         self.nb_indecency = self.read_indecency
         self.nb_incomprehension = self.read_incomprehension
+        if 0 < self.nb_incivility >= 3\
+            or 0 < self.nb_indecency >= 3\
+            or 0 < self.nb_incomprehension >= 3:
+            self.init_all()
+            self.initial_data()
 
 #~~~~~~~~~~~~~~~~~~~~~ CALCULATION AND PROPERTY ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -291,19 +292,6 @@ class Data:
         """
         return self.str_int(self.reading('nb_incomprehension'))
 
-    # grandpy's response 
-    def write_response(self, value):
-        """
-            grandpy's response in Redis Database
-        """
-        self.writing('gp_response', value)
-
-    @property
-    def read_response(self):
-        """
-            reading of grandpy's response in Redis database
-        """
-        return self.reading('gp_response')
 
 #~~~~~~~~~~~~~~~~~ GENERAL PROCESSING OF CHAT DATA ~~~~~~~~~~~~~~~~~~~~~
 
@@ -321,8 +309,6 @@ class Data:
                                              of comprehension value
                 - write_counter()        ==> default initialization
                                              of counter value
-                - write_response()       ==> default initialization
-                                             of grandpy's response
         """
         self.write_civility(False)
         self.write_quotas(False)
@@ -332,15 +318,34 @@ class Data:
         self.write_incivility(0)
         self.write_indecency(0)
         self.write_incomprehension(0)
-        self.write_response('')
+
+    def init_all(self):
+        """
+            Initialization all values
+        """
+        self.civility = False
+        self.quotas = False
+        self.decency = False
+        self.comprehension = False
+        self.nb_request = 0
+        self.nb_incivility = 0
+        self.nb_indecency = 0
+        self.nb_incomprehension = 0
+
+    def init_value(self):
+        """
+            Initialization of counter values
+        """
+        self.nb_incivility = 0
+        self.nb_indecency = 0
+        self.nb_incomprehension = 0
 
     def update_data(self):
         """
             update for database redis
                 - Args Value ==> [
                     quotas, civility, decency, comprehension, nb_request, 
-                    nb_incivility, nb_indecency, nb_incomprehension,
-                    response
+                    nb_incivility, nb_indecency, nb_incomprehension
                 ]
         """
         self.write_quotas(self.quotas)
@@ -351,9 +356,8 @@ class Data:
         self.write_incivility(self.nb_incivility)
         self.write_indecency(self.nb_indecency)
         self.write_incomprehension(self.nb_incomprehension)
-        self.write_response(self.grandpy_response)
 
-    def display_data(self, question):
+    def display_data(self, ligne='Inconnu'):
         """
             display of data values in the question
                 - Args Value ==> [
@@ -362,7 +366,7 @@ class Data:
                     grandpy_response (grandpy's response)
                 ]
         """
-        print(f'question = {question}\n')
+        print(f'N° de ligne = {ligne}')
         print(f'Valeur de quotas = {self.quotas}')
         print(f'Valeur de civility = {self.civility}')
         print(f'valeur de decency = {self.decency}')
@@ -373,16 +377,14 @@ class Data:
         print(f'Nombre d\'incomprehension = {self.nb_incomprehension}')
         print(f'Réponse de grandpy = {self.grandpy_response}')
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def reset_behavior(self):
         """
             initialisation behavior parameters:
                 - comprehension --|
-                - civility -------| ==> False
+                                  | ==> False
                 - decency --------|
         """
-        self.civility = False 
         self.decency = False
         self.comprehension = False
 

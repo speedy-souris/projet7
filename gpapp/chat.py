@@ -44,6 +44,7 @@ class Chat:
         """
             call for grandpy's answer
         """
+
         return self.grandpy.answer_returned()
 
     # absence of grandpy
@@ -51,7 +52,7 @@ class Chat:
         """
             call for the 24:00 stop
         """
-        self.grandpy.reconnection()
+        return self.grandpy.reconnection()
 
     # wait user courtesy 
     def waiting_request(self):

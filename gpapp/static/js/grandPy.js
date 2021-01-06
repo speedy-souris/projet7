@@ -1,67 +1,67 @@
 $(document).ready(function(){
 
-    const command_value = function(value) => {
+    const command_value = function(value) {
         var command = '';
         switch (value) {
             case 'ask':
-                command = $('#ask')
+                command = $('#ask');
                 break;
             case 'home':
-                command  = $('#word_of_welcome')
+                command = $('#word_of_welcome');
                 break;
-            case 'relection':
-                command = $('#gp_reflection')
+            case 'reflection':
+                command = $('#gp_reflection');
                 break;
             case 'mannerless':
-                command = $('#gp_reply1')
+                command = $('#gp_reply1');
                 break;
             case 'rude':
-                command = $('#gp_reply2')
+                command = $('#gp_reply2');
                 break;
             case 'politeness':
-                command = $('#gp_reply3')
+                command = $('#gp_reply3');
                 break;
             case 'correct1':
-                command = $('#gp_reply4')
+                command = $('#gp_reply4');
                 break;
             case 'correct2':
-                command = $('#gp_reply5')
+                command = $('#gp_reply5');
                 break;
             case 'correct3':
-                command = $('#gp_reply6')
+                command = $('#gp_reply6');
                 break;
             case 'correct4':
-                command = $('#gp_reply7')
+                command = $('#gp_reply7');
                 break;
             case 'question':
-                command = $('#question')
+                command = $('#question');
                 break;
             case 'quotas':
-                command = $('#quotas')
+                command = $('#quotas');
                 break;
             case 'overstarin':
-                command = $('#overstarin')
+                command = $('#overstarin');
                 break;
             case 'answer':
-                command = $('#answer')
+                command = $('#answer');
                 break;
             case 'other':
-                command = $('#other')
+                command = $('#other');
                 break;
             case 'comprehension':
-                command = $('#comprehension')
+                command = $('#comprehension');
                 break;
             case 'address':
-                command = $('#address')
+                command = $('#address');
                 break;
             case 'map':
-                command = $('#map')
+                command = $('#map');
                 break;
             case 'history':
-                command = $('history')
+                command = $('#history');
                 break;
             case 'form_question':
-                command = $('#form_question')
+                command = $('#form_question');
                 break;
             case 'ajax':
                 command = $.ajax({
@@ -70,64 +70,67 @@ $(document).ready(function(){
                     dataType: "html",
                     success: answer
                 });
+                break;
+            default:
+                console.log('commande non reconnue');
         };
-        return command
+        return command;
     };
 
-    const home_display = function() => {
+    const home_display = function() {
         [
             command_value('ask').hide(),
-            command_value('word_of_welcome').hide(),
-            command_value('gp_reflection').hide(),
-            command_value('gp_reply2').hide(),
+            command_value('home').hide(),
+            command_value('reflection').hide(),
+            command_value('rude').hide(),
             command_value('question').val(''),
             command_value('answer').show(),
             command_value('other').show()
-        ];        
+        ];
     };
 
-    const request_display = function() => {
-        command_value('gp_reply1').hide();
-        command_value('gp_reply2').hide();
-        command_value('word_of_welcome').hide();
+    const request_display = function() {
+        command_value('mannerless').hide();
+        command_value('rude').hide();
+        command_value('home').hide();
         command_value('comprehension').hide();
-        command_value('gp_reflection').show();
+        command_value('reflection').show();
     };
 
-    const politeness_display = function() => {
+    const politeness_display = function() {
         [
-            command_value('gp_reply1').hide(),
-            command_value('gp_reflection').hide(),
-            command_value('gp_reply2').show(),
+            command_value('mannerless').hide(),
+            command_value('reflection').hide(),
+            command_value('rude').show(),
             command_value('ask').show(),
             command_value('question').val('')
         ];
     };
 
-    const incomprehension_display = function() => {
+    const incomprehension_display = function() {
         [
-            command_value('gp_reflection').hide(),
+            command_value('reflection').hide(),
             command_value('other').hide(),
             command_value('comprehension').show(),
             command_value('ask').show(),
             command_value('question').val('')
-        ];    
-    };
-    
-    // random message from grandpyRobot
-    const random_message = function() => {
-        var lt_mes =[
-                    command_value('gp_reply4'),command_value('gp_reply5'),
-                    command_value('gp_reply6'),command_value('gp_reply7')
         ];
-        command_value('gp_reply4').hide()
-        command_value('gp_reply5').hide()
-        command_value('gp_reply6').hide()
-        command_value('gp_reply7').hide()
-        command_value('other').hide()
-        command_value('gp_reflection').hide()
-        command_value('question').val('')
-        
+    };
+
+    // random message from grandpyRobot
+    const random_message = function() {
+        var lt_mes =[
+                    command_value('correct1'),command_value('correct2'),
+                    command_value('correct3'),command_value('correct4')
+        ];
+        command_value('correct1').hide();
+        command_value('correct2').hide();
+        command_value('correct3').hide();
+        command_value('correct4').hide();
+        command_value('other').hide();
+        command_value('reflection').hide();
+        command_value('question').val('');
+
         $(lt_mes[Math.floor(Math.random()*lt_mes.length)]).show();
     };
 
@@ -135,7 +138,7 @@ $(document).ready(function(){
       * default answer display
       * (without constraints)
     */
-    const display_default = function(response_json) => {
+    const display_default = function(response_json) {
 
         var instruction = home_display();
         /*
@@ -161,16 +164,16 @@ $(document).ready(function(){
         // Add wiki
         instruction.push(texte);
 
-        return instruction
+        return instruction;
     };
 
     // general display of responses with constraints
-    const answer = function(response) => {
+    const answer = function(response) {
         var response_json = JSON.parse(response);
-        console.log(response_json)
-        random_message()
-       
-        
+        console.log(response_json);
+        random_message();
+
+
     };
 
     // send question

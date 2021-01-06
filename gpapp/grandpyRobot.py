@@ -9,12 +9,12 @@ class Answer:
     """
         organization of the grandpy's answer
     """
-    def __init__(self, dataDiscussion, response):
+    def __init__(self, question, response):
         """
             constructor
                organization of the grandpy's answer
         """
-        self.dataDiscussion = dataDiscussion
+        self.question = question
         self.response = response
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # response grandpy
@@ -23,9 +23,7 @@ class Answer:
             response returned by grandpy for the courteous user
         """
         txt_returned = f'Voici Ta Réponse à la question {self.question} !'
-        self.dataDiscussion.write_response =\
-            response.get_place_id_list(response)
-        return response
+        return txt_returned
 
     # return from grandpy after 24h00
     def reconnection(self):
@@ -33,6 +31,7 @@ class Answer:
             stop questions and answers for 24 hours
         """
         txt_response = 'reviens me voir demain !'
+        return txt_response
         # ~ response = f'Réponse de {self.history.grandpy} ==> {txt_response}'
         # ~ self.dataDiscussion.grandpy_response = txt_response
         # ~ print(f'\n{response}')
