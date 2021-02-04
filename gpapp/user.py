@@ -106,7 +106,7 @@ class Question:
         ';','.','?','!'
         ]
     )
-    # constructor
+#---------------- constructor ------------------------------------------
     def __init__(self, question, dataDiscussion):
         """
             constructor
@@ -115,7 +115,8 @@ class Question:
         self.question = question
         self.dataDiscussion = dataDiscussion
 
-    # check user incivility
+#----------------- user behavior check ---------------------------------
+
     def user_civility(self):
         """
             modification of attributes civility ==> parser
@@ -130,7 +131,6 @@ class Question:
         )
         self.dataDiscussion.civility = result
 
-    # check user indecency
     def user_decency(self):
         """
             modification of attributes decency ==> parser
@@ -145,7 +145,6 @@ class Question:
         )
         self.dataDiscussion.decency = result
 
-    # check user incomprehension
     def user_comprehension(self):
         """
             modification of attributes comprehension ==> parser
@@ -175,7 +174,16 @@ class Question:
         result = [
             w for w in list_question if w.lower() not in self.UNNECESSARY_LIST
         ]
-        message = ''.join(result)
+        message = ' '.join(result)
         return message
+        
+#------------------------ Response User --------------------------------
 
-
+    def message(self, check):
+        user_response = {
+            'civility': self.user_civility,
+            'decency': self.user_decency,
+            'comprehension': self.user_comprehension,
+            'parser': self.parser
+        }
+        return user_response[check]()

@@ -12,10 +12,10 @@ class Data:
             - quotas           ==> initialisation of quotas attribut
             - nb_indecency     ==> number of user indecency
             - nb_request       ==> number of user requests
-            - redis_data_redis()  ==> initialization of the data_redision method
-                                   to the Redis database
+            - data_data_data()  ==> initialization of the data_dataion method
+                                   to the data database
             - initial_status() ==> initialization of data values
-                                   from the Redis database
+                                   from the data database
             - civility
             - decency
             - comprehension
@@ -25,37 +25,36 @@ class Data:
                 - key_value['map']         ==> KEY_API_MAP / HEROKU_KEY_API_MAP
                 - key_value['staticMap']   ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
                 - key_value['status_prod'] ==> True / False
-    Management for initializing configuration database Redis
-        - redis_data_redis() ==> data_redision initialization for the Redis database
-        - writing()       ==> writing of data value for the Redis database
-        - incrementing()  ==> incrementing the data value for the Redis database
-        - expiry()        ==> data value expiration times for the Redis database
-        - reading         ==> read data value for the Redis database
+    Management for initializing configuration database data
+        - data_data_data() ==> data_dataion initialization for the data database
+        - writing()       ==> writing of data value for the data database
+        - expiry()        ==> data value expiration times for the data database
+        - reading         ==> read data value for the data database
     """
     def __init__(self):
         """
             data chat initialization constructor
         """
         self.key_value = {}
-        self.dataDiscussion = self.data_access
+        self.data = self.data_access
         self.grandpy_response = ''
+        self.grandpy_code = ''
         self.civility = self.read_civility
         self.decency = self.read_decency
         self.comprehension = self.read_comprehension
-        self.quotas = self.read_quotas
         self.nb_request = self.read_counter
         self.nb_incivility = self.read_incivility
         self.nb_indecency = self.read_indecency
         self.nb_incomprehension = self.read_incomprehension
-        if 0 < self.nb_incivility >= 3\
-            or 0 < self.nb_indecency >= 3\
-            or 0 < self.nb_incomprehension >= 3:
-            self.init_all()
-            self.initial_data()
+        # control of query expiration
+        try:
+            self.quotas = self.read_quotas
+        except AttributeError:
+            self.initial_attribute()
+            self.initial_dataBase()
 
-#~~~~~~~~~~~~~~~~~~~~~ CALCULATION AND PROPERTY ~~~~~~~~~~~~~~~~~~~~~~~~
+#---------------------- CALCULATION AND PROPERTY -----------------------
 
-    # convert boolean to string
     @staticmethod
     def bool_convers(value):
         """
@@ -66,7 +65,6 @@ class Data:
         else:
             return '0'
 
-    # convert string to boolean
     @staticmethod
     def str_convers(value):
         """
@@ -80,11 +78,10 @@ class Data:
         else:
             return True
 
-    # convert string to integer
     @staticmethod
     def str_int(value):
         """
-            conversion from string to internal
+            conversion from string to integer
         """
         return int(value)
 
@@ -97,31 +94,35 @@ class Data:
                 - key_value["map"]         ==> =|
                 - key_value["staticMap"]   ==> =|- private keys for Google APIs
                                                   (local or online)
-                - key_value["status_prod"] ==> boolean for redis database
-                                              data_redision method
+                - key_value["status_prod"] ==> boolean for data database
+                                              data_dataion method
         """
         # keys for local use (Dev)
-        if os.environ.get("HEROKU_KEY_API_MAP") is None:
-            self.key_value["map"] = os.getenv("KEY_API_MAP")
-            self.key_value["staticMap"] = os.getenv("KEY_API_STATIC_MAP")
-            self.key_value["status_prod"] = False
+        if os.environ.get('HEROKU_KEY_API_MAP') is None:
+            self.key_value = {
+                'map': os.getenv('KEY_API_MAP'),
+                'staticMap': os.getenv('KEY_API_STATIC_MAP'),
+                'status_prod': False
+            }
         # keys for online use (Prod)
         else:
-            self.key_value["map"] = os.getenv("HEROKU_KEY_API_MAP")
-            self.key_value["staticMap"] = os.getenv("HEROKU_KEY_API_STATIC_MAP")
-            self.key_value["status_prod"] = True
+            self.key_value = {
+                'map': os.getenv('HEROKU_KEY_API_MAP'),
+                'staticMap': os.getenv('HEROKU_KEY_API_STATIC_MAP'),
+                'status_prod': True
+            }
         return self.key_value
 
-#~~~~~~~~~~~~~~~~~~~~~~ ACCESS CHAT DATABASE ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#---------------------- ACCESS CHAT DATABASE ---------------------------
 
     @property
     def data_access(self):
         """
-            method for data_redision to the Redis database
-                - keys["status_prod"] = False ==> Redis database in local
-                - keys["status_prod"] = True ==> Redis database in online
+            method for data_dataion to the data database
+                - keys["status_prod"] = False ==> data database in local
+                - keys["status_prod"] = True ==> data database in online
         """
-        if not self.keys["status_prod"]:
+        if not self.keys['status_prod']:
             return redis.Redis(
                 host='localhost',
                 port=6379,
@@ -129,175 +130,166 @@ class Data:
             )
         else:
             return redis.Redis(
-                host="grandpy-papy-robot.herokuapp.com/",
+                host='grandpy-papy-robot.herokuapp.com/',
                 port=6379,
                 db=1
            )
-#~~~~~~~~~~~~~~~~~~~~~~~ ACCESS CHAT DATA ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+           
+#----------------------- ACCESS CHAT DATA ------------------------------
 
     def writing(self, data, value):
         """
-            writing chat data to Redis database
+            writing chat data to data database
         """
-        self.dataDiscussion.set(data, value)
+        self.data.set(data, value)
 
-    def incrementing(self, data):
-        """
-            incrementing the request counter in Redis database
-        """
-        self.dataDiscussion.incr(data)
-
-    # data deletion for 24 hours
     def expiry(self, data, value):
         """
             expiration
-            of the counter variable in Redis database
+            of the counter variable in data database
             (after 24 hours)
         """
-        self.dataDiscussion.expire(data, value)
+        self.data.expire(data, value)
+        
 
     def reading(self, data):
         """
-            reading data in Redis database
+            reading data in data database
         """
-        return self.dataDiscussion.get(data)
+        return self.data.get(data)
 
+                    #----------------------------
+                    
     def write_civility(self, civility):
         """
-            saving of civility configuration in Redis database
+            saving of civility configuration in data database
         """
         self.writing('civility', self.bool_convers(civility))
 
     @property
     def read_civility(self):
         """
-            reading of civility configuration in Redis database
+            reading of civility configuration in data database
         """
         return self.str_convers(self.reading('civility'))
 
-    # request limit
-    def write_quotas(self, quotas):
-        """
-            saving of quotas configuration in Redis database
-        """
-        self.writing('quotas', self.bool_convers(quotas))
-
-    @property
-    def read_quotas(self):
-        """
-            reading of quotas configuration in Redis database
-        """
-        return self.str_convers(self.reading('quotas'))
-
+                   #-----------------------------
+                   
     def write_decency(self, decency):
         """
-            saving of decency configuration in Redis database
+            saving of decency configuration in data database
         """
         self.writing('decency', self.bool_convers(decency))
 
     @property
     def read_decency(self):
         """
-            reading of decency configuration in Redis database
+            reading of decency configuration in data database
         """
         return self.str_convers(self.reading('decency'))
 
+                    #-----------------------------
+                    
     def write_comprehension(self, comprehension):
         """
-            saving of comprehension configuration in Redis database
+            saving of comprehension configuration in data database
         """
         self.writing('comprehension', self.bool_convers(comprehension))
 
     @property
     def read_comprehension(self):
         """
-            reading of comprehension configuration in Redis database
+            reading of comprehension configuration in data database
         """
         return self.str_convers(self.reading('comprehension'))
 
-    # incrementation of the number of requests
-    def increment_counter(self):
+                    #---------request limit--------------------
+                    
+    def write_quotas(self, quotas):
         """
-            Counter increment in Redis database
+            saving of quotas configuration in data database
         """
-        self.writing(
-            'nb_request', write_counter(self.incrementing('nb_request'))
-        ) 
+        self.writing('quotas', self.bool_convers(quotas))
 
-    # delay of expiration of the number of requests
-    def expiry_counter(self):
+    def expiry_request(self):
         """
-            Expiration of the key nb_request (counter) in Redis database
+            Expiration of the key quotas (limit of request) in data database
         """
-        self.expiry('nb_request', 86400)
+        self.expiry('quotas', 60)
 
-    # number of...
+    @property
+    def read_quotas(self):
+        """
+            reading of quotas configuration in data database
+        """
+        return self.str_convers(self.reading('quotas'))
+
+                        #-----------------------
+                        
     def write_counter(self, value):
         """
             modification of the value
-            of the request counter in Redis database
+            of the request counter in data database
         """
         self.writing('nb_request', value)
 
-    # number of...
     @property
     def read_counter(self):
         """
-            reading of counter configuration in Redis database
+            reading of counter configuration in data database
         """
         return self.str_int(self.reading('nb_request'))
 
-    # number of...
+                        #------------------------
+                        
     def write_incivility(self, value):
         """
-            counter incivility in Redis Database
+            counter incivility in data Database
         """
         self.writing('nb_incivility', value)
 
-    # number of...
     @property
     def read_incivility(self):
         """
-            reading of incivility count in Redis database
+            reading of incivility count in data database
         """
         return self.str_int(self.reading('nb_incivility'))
 
-    # number of...
+                    #---------------------------
+                    
     def write_indecency(self, value):
         """
-            counter indecency in Redis Database
+            counter indecency in data Database
         """
         self.writing('nb_indecency', value)
 
-    # number of...
     @property
     def read_indecency(self):
         """
-            reading of indecency count in Redis database
+            reading of indecency count in data database
         """
         return self.str_int(self.reading('nb_indecency'))
 
-    # number of...
+                    #--------------------------
+                    
     def write_incomprehension(self, value):
         """
-            counter incomprehension in Redis Database
+            counter incomprehension in data Database
         """
         self.writing('nb_incomprehension', value)
 
-    # number of...
     @property
     def read_incomprehension(self):
         """
-            reading of incomprehension count in Redis database
+            reading of incomprehension count in data database
         """
         return self.str_int(self.reading('nb_incomprehension'))
 
+#----------------- GENERAL PROCESSING OF CHAT DATA ---------------------
 
-#~~~~~~~~~~~~~~~~~ GENERAL PROCESSING OF CHAT DATA ~~~~~~~~~~~~~~~~~~~~~
-
-    def initial_data(self):
+    def initial_dataBase(self):
         """ creation and initialization by default of data values
-            for the Redis database
+            for the data database
     
                 - write_ civility()      ==> default initialization 
                                              of civility value
@@ -319,7 +311,7 @@ class Data:
         self.write_indecency(0)
         self.write_incomprehension(0)
 
-    def init_all(self):
+    def initial_attribute(self):
         """
             Initialization all values
         """
@@ -332,7 +324,7 @@ class Data:
         self.nb_indecency = 0
         self.nb_incomprehension = 0
 
-    def init_value(self):
+    def initial_value(self):
         """
             Initialization of counter values
         """
@@ -340,9 +332,9 @@ class Data:
         self.nb_indecency = 0
         self.nb_incomprehension = 0
 
-    def update_data(self):
+    def update_dataBase(self):
         """
-            update for database redis
+            update for database data
                 - Args Value ==> [
                     quotas, civility, decency, comprehension, nb_request, 
                     nb_incivility, nb_indecency, nb_incomprehension
@@ -377,7 +369,6 @@ class Data:
         print(f'Nombre d\'incomprehension = {self.nb_incomprehension}')
         print(f'Réponse de grandpy = {self.grandpy_response}')
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     def reset_behavior(self):
         """
             initialisation behavior parameters:
@@ -387,6 +378,12 @@ class Data:
         """
         self.decency = False
         self.comprehension = False
+
+    # Expiration data of request
+    def expiration_data(self):
+        self.quotas = True
+        self.grandpy_code = 'exhausted'
+        self.display_data()
 
 if __name__ == '__main__':
     pass

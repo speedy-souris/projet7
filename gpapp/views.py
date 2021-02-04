@@ -25,7 +25,7 @@ def init():
         Initialization of the dataRedis
     """
     data = Data()
-    data.initial_data()
+    data.initial_dataBase()
     return 'DataRedis initialized'
     
 # Initialization of general parameters
@@ -52,9 +52,11 @@ def answer_gp(reflection, question):
     dataDiscussion = main(question)
     # sending parameters
     data_send = {
-        'grandpy_response': dataDiscussion.grandpy_response,        
-        # ~ "map_status": main.internal_process.map_coordinates.get("address", ""),
-        # ~ "wiki_status": main.internal_process.map_coordinates.get("history", "")
+        'grandpy_response': dataDiscussion[0].grandpy_response,
+        'grandpy_code': dataDiscussion[0].grandpy_code,
+        'map_status': dataDiscussion[1].get('address', ''),
+        'map_status': dataDiscussion[1].get('map', ''),
+        'wiki_status': dataDiscussion[1].get('history', '')
     }
     return data_send
 

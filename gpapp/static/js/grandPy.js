@@ -18,7 +18,7 @@ $(document).ready(function(){
             case 'rude':
                 command = $('#gp_reply2');
                 break;
-            case 'politeness':
+            case 'correct':
                 command = $('#gp_reply3');
                 break;
             case 'correct1':
@@ -39,8 +39,8 @@ $(document).ready(function(){
             case 'quotas':
                 command = $('#quotas');
                 break;
-            case 'overstarin':
-                command = $('#overstarin');
+            case 'overstrain':
+                command = $('#overstrain');
                 break;
             case 'answer':
                 command = $('#answer');
@@ -78,15 +78,13 @@ $(document).ready(function(){
     };
 
     const home_display = function() {
-        [
-            command_value('ask').hide(),
-            command_value('home').hide(),
-            command_value('reflection').hide(),
-            command_value('rude').hide(),
-            command_value('question').val(''),
-            command_value('answer').show(),
-            command_value('other').show()
-        ];
+        command_value('ask').hide();
+        command_value('home').hide();
+        command_value('reflection').hide();
+        command_value('rude').hide();
+        command_value('question').val('');
+        command_value('answer').show();
+        command_value('other').show();
     };
 
     const request_display = function() {
@@ -97,32 +95,38 @@ $(document).ready(function(){
         command_value('reflection').show();
     };
 
-    const politeness_display = function() {
-        [
-            command_value('mannerless').hide(),
-            command_value('reflection').hide(),
-            command_value('rude').show(),
-            command_value('ask').show(),
-            command_value('question').val('')
-        ];
+    const rudeness_display = function() {
+        command_value('mannerless').hide();
+        command_value('reflection').hide();
+        command_value('rude').show();
+        command_value('ask').show();
+        command_value('question').val('');
+    };
+
+    const mannerless_display = function() {
+        command_value('rude').hide();
+        command_value('reflection').hide();
+        command_value('mannerless').show();
+        command_value('ask').show();
+        command_value('question').val('');
     };
 
     const incomprehension_display = function() {
-        [
-            command_value('reflection').hide(),
-            command_value('other').hide(),
-            command_value('comprehension').show(),
-            command_value('ask').show(),
-            command_value('question').val('')
-        ];
+        command_value('reflection').hide();
+        command_value('other').hide();
+        command_value('comprehension').show();
+        command_value('ask').show();
+        command_value('question').val('');
     };
 
     // random message from grandpyRobot
     const random_message = function() {
         var lt_mes =[
                     command_value('correct1'),command_value('correct2'),
-                    command_value('correct3'),command_value('correct4')
+                    command_value('correct3'),command_value('correct4'),
+                    command_value('correct')
         ];
+        command_value('correct').hide();
         command_value('correct1').hide();
         command_value('correct2').hide();
         command_value('correct3').hide();
@@ -134,46 +138,89 @@ $(document).ready(function(){
         $(lt_mes[Math.floor(Math.random()*lt_mes.length)]).show();
     };
 
+    const ask_display = function() {
+        command_value('reflection').hide();
+        command_value('other').hide();
+        command_value('home').show();
+        command_value('question').val('');
+    };
+
+    const fatigue_display = function() {
+        command_value('correct').hide();
+        command_value('correct1').hide();
+        command_value('correct2').hide();
+        command_value('correct3').hide();
+        command_value('correct4').hide();
+        command_value('reflection').hide();
+        command_value('other').hide();
+        command_value('overstrain').show();
+        command_value('question').val('');
+    };
+
+    const quotas_display = function() {
+        command_value('rude').hide();
+        command_value('mannerless').hide();
+        command_value('comprehension').hide();
+        command_value('reflection').hide();
+        command_value('other').hide();
+        command_value('ask').hide();
+        command_value('quotas').show();
+    };
+
+    const display_default = function(response_json) {
     /*
       * default answer display
       * (without constraints)
     */
-    const display_default = function(response_json) {
-
-        var instruction = home_display();
+        home_display();
         /*
           * redisplay question and
           * display map / address / history (wiki)
        */
-        var wiki_answer = response_json["map_status"]["answer"]["history"];
-        instruction.push(
+       if (response_json["map_status"]["answer"]){
+            var wiki_answer = response_json["map_status"]["answer"]["history"];
             command_value('address').text("l'adresse "+wiki_answer[0]+" se situe : "
-            + JSON.stringify(
+                + JSON.stringify(
                 response_json["map_status"]["answer"]["address"]
-                    ["result"]["formatted_address"]
-            ))
-        );
-
-        instruction.push(command_value('map')[0].src = response_json["map_status"]["display_map"]);
-
-        if (wiki_answer[0][2]){
-            var texte = command_value('history').text(JSON.stringify(wiki_answer[0][2]));
-        }else{
-            var texte = command_value('history').text("Aie aie aie, le \'WIKI\' est vide... !");
+                ["result"]["formatted_address"]
+                )
+            );
+    
+            command_value('map')[0].src = response_json["map_status"]["display_map"];
+    
+            if (wiki_answer[0][2]){
+                var texte = command_value('history').text(JSON.stringify(wiki_answer[0][2]));
+            }else{
+                var texte = command_value('history').text("Aie aie aie, le \'WIKI\' est vide... !");
+            };
+            // Add wiki
+           
+        } else {
+            var texte = command_value('map').text("aucun adresse n'a pas été trouvé");
         };
-        // Add wiki
-        instruction.push(texte);
-
-        return instruction;
     };
 
     // general display of responses with constraints
     const answer = function(response) {
         var response_json = JSON.parse(response);
         console.log(response_json);
-        random_message();
-
-
+        if (response_json['grandpy_code'] === 'response'){
+            random_message();
+            display_default(response_json);
+        }else if (response_json['grandpy_code'] === 'mannerless'){
+            mannerless_display();
+        }else if (response_json['grandpy_code'] === 'disrespectful'){
+            rudeness_display();
+        }else if (response_json['grandpy_code'] === 'incomprehension'){
+            incomprehension_display();
+        }else if (response_json['grandpy_code'] === 'tired'){
+            fatigue_display();
+            display_default(response_json);
+        }else if (response_json['grandpy_code'] === 'exhausted'){
+            quotas_display();
+        }else {
+            ask_display();
+        };
     };
 
     // send question

@@ -92,7 +92,8 @@ class Debugging:
 
         return f'Ajout de {self.dbg_color}{result}{self.reset}'\
             +f' dans {self.dbg_color}{func_name}{self.reset}'
-    # line numbre in function
+            
+    # line number in function
     def nb_line(self, line):
         """
             determine the next line number in the function
