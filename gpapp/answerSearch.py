@@ -66,18 +66,20 @@ class Research:
             self.map_status['address']['parser'] = question
 
         finally:
+            history_value = [
+                self.history_data(
+                    self.map_status['address']['result']['formatted_address']
+                )[3][0],
+                history_parser = self.history_data(
+                    self.map_status['address']['parser']
+                )[3][0]
+            ]
 
-            if self.history_data(
-                self.map_status['address']['result']['formatted_address']
-            )[3][0] != '':
+            if history_address != '':
+                value = history_address
 
-                value =\
-                    self.history_data(
-                        self.map_status['address']['result']['formatted_address']
-                    )[3][0]
-                    
-            elif self.history_data(self.map_status['address']['parser'])[3][0] != '':
-                value = self.history_data(self.map_status['address']['parser'])[3][0]
+            elif history_parser != '':
+                value = history_parser
 
             else:
                 value = ''
