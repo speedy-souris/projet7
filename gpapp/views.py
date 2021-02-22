@@ -54,9 +54,11 @@ def answer_gp(reflection, question):
     data_send = {
         'grandpy_response': dataDiscussion[0].grandpy_response,
         'grandpy_code': dataDiscussion[0].grandpy_code,
-        'map_status': dataDiscussion[1].get('address', ''),
-        'map_status': dataDiscussion[1].get('map', ''),
-        'wiki_status': dataDiscussion[1].get('history', '')
+        'map_status': {
+            'address': dataDiscussion[1].get('address', ''),
+            'map': dataDiscussion[1].get('map', ''),
+            'history': dataDiscussion[1].get('history', '')
+        }        
     }
     return data_send
 

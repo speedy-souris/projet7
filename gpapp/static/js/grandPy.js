@@ -173,30 +173,39 @@ $(document).ready(function(){
       * (without constraints)
     */
         home_display();
+        var wiki_answer = [];
+        wiki_answer[0] = response_json['map_status']['address']['result']['formatted_address'];
+        wiki_answer[1] = response_json['map_status']['address']['parser'];
+        wiki_answer[2] = response_json['map_status']['history'];
+        wiki_answer[3] = response_json['map_status']['map'];
         /*
           * redisplay question and
           * display map / address / history (wiki)
-       */
-       if (response_json["map_status"]["answer"]){
-            var wiki_answer = response_json["map_status"]["answer"]["history"];
-            command_value('address').text("l'adresse "+wiki_answer[0]+" se situe : "
-                + JSON.stringify(
-                response_json["map_status"]["answer"]["address"]
-                ["result"]["formatted_address"]
-                )
+        */
+        if (wiki_answer[0] != 'Vide'){
+            command_value('address').text(
+                "Voici les réponses que j'ai trouvé l'adresse se situe : "+
+                JSON.stringify(wiki_answer[0])
+            );    
+            command_value('map')[0].src = wiki_answer[3];
+        }else{
+            var texte = command_value('address').text(
+                'Concernant le  < '+ wiki_answer[1]+ " > Aucune Adresse n'a pas été Trouvé"
             );
-    
-            command_value('map')[0].src = response_json["map_status"]["display_map"];
-    
-            if (wiki_answer[0][2]){
-                var texte = command_value('history').text(JSON.stringify(wiki_answer[0][2]));
-            }else{
-                var texte = command_value('history').text("Aie aie aie, le \'WIKI\' est vide... !");
-            };
-            // Add wiki
-           
-        } else {
-            var texte = command_value('map').text("aucun adresse n'a pas été trouvé");
+        };
+        if (wiki_answer[2][0]){
+            var texte = command_value('history').text(JSON.stringify(wiki_answer[2][0]));
+        };
+        if (wiki_answer[2][1]){
+            var texte = command_value('history').text(JSON.stringify(wiki_answer[2][1]));
+        };
+        if (wiki_answer[2][2]){
+            var texte = command_value('history').text(JSON.stringify(wiki_answer[2][2]));
+        };
+        if (wiki_answer[2][3]){
+            var texte = command_value('history').text(JSON.stringify(wiki_answer[2][3]));
+        }else{
+            var texte = command_value('history').text("Aie aie aie, le \'WIKI\' est vide... !");
         };
     };
 

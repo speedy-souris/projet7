@@ -38,6 +38,7 @@ def main(question):
                 dataDiscussion.grandpy_response = discussion.answer('wait1')
                 dataDiscussion.grandpy_code = ''
             else:
+                dataDiscussion.display_data(44)
                 dataDiscussion.grandpy_response = discussion.answer('mannerless')
                 dataDiscussion.grandpy_code = 'mannerless'
                 if dataDiscussion.nb_incivility >= 3:
@@ -97,7 +98,6 @@ def main(question):
     
     if dataDiscussion.quotas:
         dataDiscussion.expiry_request()
-
     return dataDiscussion, display_response
 
 

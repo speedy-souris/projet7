@@ -39,19 +39,19 @@ class Data:
         self.data = self.data_access
         self.grandpy_response = ''
         self.grandpy_code = ''
+        # control of query expiration
+        try:
+            self.nb_incomprehension = self.read_incomprehension
+            self.quotas = self.read_quotas
+        except (AttributeError, TypeError):
+            self.initial_dataBase()
+            self.initial_attribute()
         self.civility = self.read_civility
         self.decency = self.read_decency
         self.comprehension = self.read_comprehension
         self.nb_request = self.read_counter
         self.nb_incivility = self.read_incivility
         self.nb_indecency = self.read_indecency
-        self.nb_incomprehension = self.read_incomprehension
-        # control of query expiration
-        try:
-            self.quotas = self.read_quotas
-        except AttributeError:
-            self.initial_attribute()
-            self.initial_dataBase()
 
 #---------------------- CALCULATION AND PROPERTY -----------------------
 
@@ -118,9 +118,9 @@ class Data:
     @property
     def data_access(self):
         """
-            method for data_dataion to the data database
-                - keys["status_prod"] = False ==> data database in local
-                - keys["status_prod"] = True ==> data database in online
+            method for data_connection to the database
+                - keys["status_prod"] = False ==> data in local
+                - keys["status_prod"] = True ==> data in online
         """
         if not self.keys['status_prod']:
             return redis.Redis(
@@ -146,7 +146,7 @@ class Data:
     def expiry(self, data, value):
         """
             expiration
-            of the counter variable in data database
+            of the counter variable in database
             (after 24 hours)
         """
         self.data.expire(data, value)
@@ -154,9 +154,15 @@ class Data:
 
     def reading(self, data):
         """
-            reading data in data database
+            reading data in database
         """
         return self.data.get(data)
+
+    def deleting(self):
+        """
+            deleting all data
+        """
+        return self.data.flushall()
 
                     #----------------------------
                     
@@ -302,6 +308,7 @@ class Data:
                 - write_counter()        ==> default initialization
                                              of counter value
         """
+        self.deleting()
         self.write_civility(False)
         self.write_quotas(False)
         self.write_decency(False)
@@ -309,7 +316,6 @@ class Data:
         self.write_counter(0)
         self.write_incivility(0)
         self.write_indecency(0)
-        self.write_incomprehension(0)
 
     def initial_attribute(self):
         """
@@ -358,7 +364,7 @@ class Data:
                     grandpy_response (grandpy's response)
                 ]
         """
-        print(f'N° de ligne = {ligne}')
+        print(f'\nN° de ligne = {ligne}')
         print(f'Valeur de quotas = {self.quotas}')
         print(f'Valeur de civility = {self.civility}')
         print(f'valeur de decency = {self.decency}')
@@ -367,7 +373,7 @@ class Data:
         print(f'Nombre d\'incivility = {self.nb_incivility}')
         print(f'Nombre d\'indecency = {self.nb_indecency}')
         print(f'Nombre d\'incomprehension = {self.nb_incomprehension}')
-        print(f'Réponse de grandpy = {self.grandpy_response}')
+        print(f'Réponse de grandpy = {self.grandpy_response}\n')
 
     def reset_behavior(self):
         """
