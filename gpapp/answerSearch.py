@@ -77,7 +77,7 @@ class Research:
                     )[3][0]
                     
             elif self.history_data(self.map_status['address']['parser'])[3][0] != '':
-                value = self.history_data(self.map_status['address']['parser'])[3[0]
+                value = self.history_data(self.map_status['address']['parser'])[3][0]
 
             else:
                 value = ''
