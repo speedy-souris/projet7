@@ -3,7 +3,7 @@
 
 import time
 from flask import Flask, render_template
-from .chatData import Data
+from .chatData import BehaviorDatabase
 from .main import main
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ def init():
     """
         Initialization of the dataRedis
     """
-    data = Data()
+    data = BehaviorDatabase()
     data.initial_dataBase()
     return 'DataRedis initialized'
     

@@ -186,4 +186,5 @@ class Question:
             'comprehension': self.user_comprehension,
             'parser': self.parser
         }
+        print(f'\nquestion retour user = {user_response[check]()}')
         return user_response[check]()

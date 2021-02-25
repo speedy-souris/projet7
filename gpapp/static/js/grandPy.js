@@ -193,8 +193,9 @@ $(document).ready(function(){
                 'Concernant le  < '+ wiki_answer[1]+ " > Aucune Adresse n'a pas été Trouvé"
             );
         };
-        if (wiki_answer[2][0]){
+        if (wiki_answer[2][0][0]){
             var texte = command_value('history').text(JSON.stringify(wiki_answer[2][0]));
+        /*
         };
         if (wiki_answer[2][1]){
             var texte = command_value('history').text(JSON.stringify(wiki_answer[2][1]));
@@ -204,6 +205,7 @@ $(document).ready(function(){
         };
         if (wiki_answer[2][3]){
             var texte = command_value('history').text(JSON.stringify(wiki_answer[2][3]));
+        */
         }else{
             var texte = command_value('history').text("Aie aie aie, le \'WIKI\' est vide... !");
         };

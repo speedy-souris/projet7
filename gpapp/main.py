@@ -4,12 +4,14 @@
 import os
 import inspect
 
-from .chat import Chat
-from .chatData import Data
-from .user import Question
-from .grandpyRobot import Answer
-from .answerSearch import Research
 from .debug import Debugging
+from .chatData import BehaviorData
+from .chatData import BehaviorDatabase
+from .grandpyRobot import Answer
+from .user import Question
+from .chatData import Chat
+from .answerSearch import Research
+
 
 
 # script execution
@@ -21,11 +23,12 @@ def main(question):
     """
     # awaits the courtesy of the user
     debug = Debugging()
-    dataDiscussion = Data()
+    dataDiscussion = BehaviorData()
+    dataDB = BehaviorDatabase()
     grandpy = Answer()
     user = Question(question, dataDiscussion)
     discussion = Chat(user, grandpy)
-    research = Research(discussion, dataDiscussion)
+    research = Research(discussion)
 
     dataDiscussion.reset_behavior()
     discussion.question('comprehension')
@@ -34,7 +37,7 @@ def main(question):
         if dataDiscussion.decency and not dataDiscussion.civility:
             discussion.question('civility')
             if dataDiscussion.civility:
-                dataDiscussion.initial_value()
+                dataDiscussion.reset_behavior()
                 dataDiscussion.grandpy_response = discussion.answer('wait1')
                 dataDiscussion.grandpy_code = ''
             else:
@@ -94,10 +97,11 @@ def main(question):
         dataDiscussion.nb_request += 1
 
     display_response = research.get_map()
-    dataDiscussion.update_dataBase()
-    
+    dataDB.update_dataBase()
+
     if dataDiscussion.quotas:
-        dataDiscussion.expiry_request()
+        dataDB.expiry_request()
+
     return dataDiscussion, display_response
 
 

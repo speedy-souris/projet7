@@ -1,15 +1,10 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-import inspect
-
-
-# response organization
 class Answer:
     """
         organization of the grandpy's answer
     """
-
     def answer_returned(self):
         """
             response returned by grandpy for the courteous user

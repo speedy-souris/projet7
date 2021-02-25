@@ -3,29 +3,11 @@
 
 import os
 import redis
+from .answerSearch import KeyManagement 
 
-
-# Initialization data chat
-class Data:
+class BehaviorDatabase:
     """
-    default variables data
-            - quotas           ==> initialisation of quotas attribut
-            - nb_indecency     ==> number of user indecency
-            - nb_request       ==> number of user requests
-            - data_data_data()  ==> initialization of the data_dataion method
-                                   to the data database
-            - initial_status() ==> initialization of data values
-                                   from the data database
-            - civility
-            - decency
-            - comprehension
-    API Private Key and Constants Management :
-        local (development) / external (production)
-            keys()
-                - key_value['map']         ==> KEY_API_MAP / HEROKU_KEY_API_MAP
-                - key_value['staticMap']   ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
-                - key_value['status_prod'] ==> True / False
-    Management for initializing configuration database data
+        Management for initializing configuration database data
         - data_data_data() ==> data_dataion initialization for the data database
         - writing()       ==> writing of data value for the data database
         - expiry()        ==> data value expiration times for the data database
@@ -33,27 +15,12 @@ class Data:
     """
     def __init__(self):
         """
-            data chat initialization constructor
+            database initialization 
         """
-        self.key_value = {}
+        self.statusProd = KeyManagement().keys['status_prod']
         self.data = self.data_access
-        self.grandpy_response = ''
-        self.grandpy_code = ''
-        # control of query expiration
-        try:
-            self.nb_incomprehension = self.read_incomprehension
-            self.quotas = self.read_quotas
-        except (AttributeError, TypeError):
-            self.initial_dataBase()
-            self.initial_attribute()
-        self.civility = self.read_civility
-        self.decency = self.read_decency
-        self.comprehension = self.read_comprehension
-        self.nb_request = self.read_counter
-        self.nb_incivility = self.read_incivility
-        self.nb_indecency = self.read_indecency
 
-#---------------------- CALCULATION AND PROPERTY -----------------------
+    #---------------------- CALCULATION AND PROPERTY -------------------
 
     @staticmethod
     def bool_convers(value):
@@ -85,35 +52,7 @@ class Data:
         """
         return int(value)
 
-    # keys for Google APIs in environment variables
-    @property
-    def keys(self):
-        """
-            management of environment variables
-            local and online
-                - key_value["map"]         ==> =|
-                - key_value["staticMap"]   ==> =|- private keys for Google APIs
-                                                  (local or online)
-                - key_value["status_prod"] ==> boolean for data database
-                                              data_dataion method
-        """
-        # keys for local use (Dev)
-        if os.environ.get('HEROKU_KEY_API_MAP') is None:
-            self.key_value = {
-                'map': os.getenv('KEY_API_MAP'),
-                'staticMap': os.getenv('KEY_API_STATIC_MAP'),
-                'status_prod': False
-            }
-        # keys for online use (Prod)
-        else:
-            self.key_value = {
-                'map': os.getenv('HEROKU_KEY_API_MAP'),
-                'staticMap': os.getenv('HEROKU_KEY_API_STATIC_MAP'),
-                'status_prod': True
-            }
-        return self.key_value
-
-#---------------------- ACCESS CHAT DATABASE ---------------------------
+    #---------------------- ACCESS CHAT DATABASE -----------------------
 
     @property
     def data_access(self):
@@ -122,7 +61,7 @@ class Data:
                 - keys["status_prod"] = False ==> data in local
                 - keys["status_prod"] = True ==> data in online
         """
-        if not self.keys['status_prod']:
+        if not self.statusProd:
             return redis.Redis(
                 host='localhost',
                 port=6379,
@@ -134,8 +73,8 @@ class Data:
                 port=6379,
                 db=1
            )
-           
-#----------------------- ACCESS CHAT DATA ------------------------------
+
+    #----------------------- ACCESS CHAT DATA --------------------------
 
     def writing(self, data, value):
         """
@@ -291,7 +230,7 @@ class Data:
         """
         return self.str_int(self.reading('nb_incomprehension'))
 
-#----------------- GENERAL PROCESSING OF CHAT DATA ---------------------
+    #----------------- GENERAL PROCESSING OF CHAT DATA -----------------
 
     def initial_dataBase(self):
         """ creation and initialization by default of data values
@@ -317,27 +256,6 @@ class Data:
         self.write_incivility(0)
         self.write_indecency(0)
 
-    def initial_attribute(self):
-        """
-            Initialization all values
-        """
-        self.civility = False
-        self.quotas = False
-        self.decency = False
-        self.comprehension = False
-        self.nb_request = 0
-        self.nb_incivility = 0
-        self.nb_indecency = 0
-        self.nb_incomprehension = 0
-
-    def initial_value(self):
-        """
-            Initialization of counter values
-        """
-        self.nb_incivility = 0
-        self.nb_indecency = 0
-        self.nb_incomprehension = 0
-
     def update_dataBase(self):
         """
             update for database data
@@ -354,6 +272,55 @@ class Data:
         self.write_incivility(self.nb_incivility)
         self.write_indecency(self.nb_indecency)
         self.write_incomprehension(self.nb_incomprehension)
+
+# Initialization data chat
+class BehaviorData:
+    """
+    default variables data
+            - quotas           ==> initialisation of quotas attribut
+            - nb_indecency     ==> number of user indecency
+            - nb_request       ==> number of user requests
+            - data_data_data()  ==> initialization of the data_dataion method
+                                   to the data database
+            - initial_status() ==> initialization of data values
+                                   from the data database
+            - civility
+            - decency
+            - comprehension
+    """
+    def __init__(self):
+        """
+            data chat initialization 
+        """
+        self.behaviorDB = BehaviorDatabase()
+        self.grandpy_response = ''
+        self.grandpy_code = ''
+        # control of query expiration
+        try:
+            self.nb_incomprehension = self.behaviorDB.read_incomprehension
+            self.quotas = self.behaviorDB.read_quotas
+        except (AttributeError, TypeError):
+            self.behaviorDB.initial_dataBase()
+            self.initial_attribute()
+        self.civility = self.behaviorDB.read_civility
+        self.decency = self.behaviorDB.read_decency
+        self.comprehension = self.behaviorDB.read_comprehension
+        self.nb_request = self.behaviorDB.read_counter
+        self.nb_incivility = self.behaviorDB.read_incivility
+        self.nb_indecency = self.behaviorDB.read_indecency
+
+    def initial_attribute(self):
+        """
+            Initialization all values
+        """
+        self.civility = False
+        self.quotas = False
+        self.decency = False
+        self.comprehension = False
+        self.nb_request = 0
+        self.nb_incivility = 0
+        self.nb_indecency = 0
+        self.nb_incomprehension = 0
 
     def display_data(self, ligne='Inconnu'):
         """
@@ -390,6 +357,28 @@ class Data:
         self.quotas = True
         self.grandpy_code = 'exhausted'
         self.display_data()
+
+# chat organization
+class Chat:
+    """
+        object management user and grandpy chat
+    """
+    def __init__(self, user, grandpy):
+        """
+            Initialization
+                - user object
+                - grandpy objet
+        """
+        self.user = user
+        self.grandpy = grandpy
+
+    #-------------------- user behavior --------------------------------
+    def question(self, check):
+        return self.user.message(check)
+
+    #------------------- grandpy robot behavior ------------------------
+    def answer(self, stage):
+        return self.grandpy.message(stage)
 
 if __name__ == '__main__':
     pass

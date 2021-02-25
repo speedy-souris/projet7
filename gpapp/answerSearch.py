@@ -1,34 +1,75 @@
 #coding:utf-8
 #!/usr/bin/env python
 
+import os
 import json
 import urllib.request, urllib.parse
+from . import googlemapsapi
 
+class KeyManagement:
+    """
+        API Private Key and Constants Management :
+        local (development) / external (production)
+            keys()
+                - key_value['map']         ==> KEY_API_MAP / HEROKU_KEY_API_MAP
+                - key_value['staticMap']   ==> KEY_API_STATIC_MAP / HEROKU_KEY_API_STATIC_MAP
+                - key_value['status_prod'] ==> True / False
+    """
+    def __init__(self):
+        """
+            API Key initialization 
+        """
+        self.key_value = {}
+
+    @property
+    def keys(self):
+        """
+            management of environment variables
+            local and online
+                - key_value["map"]         ==> =|
+                - key_value["staticMap"]   ==> =|- private keys for Google APIs
+                                                  (local or online)
+                - key_value["status_prod"] ==> boolean for data database
+                                              data_dataion method
+        """
+        # keys for local use (Dev)
+        if os.environ.get('HEROKU_KEY_API_MAP') is None:
+            self.key_value = {
+                'map': os.getenv('KEY_API_MAP'),
+                'staticMap': os.getenv('KEY_API_STATIC_MAP'),
+                'status_prod': False
+            }
+        # keys for online use (Prod)
+        else:
+            self.key_value = {
+                'map': os.getenv('HEROKU_KEY_API_MAP'),
+                'staticMap': os.getenv('HEROKU_KEY_API_STATIC_MAP'),
+                'status_prod': True
+            }
+        return self.key_value
 
 class Research:
     """
         class for managing the internal API process
         Google Map and wikimedia
     """
-    def __init__(self, user, dataDiscussion):
-        """Constructor of processing"""
+    def __init__(self, user):
+        """
+            Initialization
+                objet user
+                objet datadiscussion
+        """
         self.user = user
-        self.dataDiscussion = dataDiscussion
+        # ~ self.dataDiscussion = dataDiscussion
         self.map_status = {}
+        self.keyManagement = KeyManagement()
+        self.keyMap = self.keyManagement.keys['map']
+        self.keyStatic = self.keyManagement.keys['staticMap']
 
-    def history_data(self, value):
-        """
-            returns a value for the wikipedia API
-        """
-        print(f'value ={self.get_history(value)}\n')
-        return self.get_history(value)
-        
-    #================================
     # address coordinate calculation
-    #================================
     def map_coordinates(self):
         """
-            calculating the coordinates of the question asked to granbpy
+            calculating the coordinates of the question asked to grandpy
             Vars :
                 - parser_answer
                 - place_id_dict
@@ -38,11 +79,11 @@ class Research:
         """
         
         # keyword isolation for question
+        
         question = self.user.question('parser')
+        print(f"\nquestion map_coordinates = {self.user.question(question)}\n")
         parse_answer = urllib.parse.quote(question)
-        place_id_dict = self.get_place_id_list(
-            address=parse_answer
-        )
+        place_id_dict = googlemapsapi.get_place_id_list(parse_answer, self.keyMap)
         # creation and test public key api google map
         try:
             place_id = place_id_dict['candidates'][0]['place_id']
@@ -50,139 +91,67 @@ class Research:
             self.map_status = {
                 'address': {
                     'result': {
-                        'formatted_address': 'Vide',
+                        'formatted_address': '',
                         'geometry': {'location': {'lat': 0, 'lng': 0}}
                     },
-                    'parser': question
-                },
-                'map': 'Vide',
-                'history': ''
+                    'parser' : question
+                }
             }
         else:
-            self.map_status = {
-                'address': self.get_address(place_id),
-                'map': 'Vide'
-            }
+            self.map_status['address'] = googlemapsapi.get_address(
+                place_id, self.KeyMap
+            )
             self.map_status['address']['parser'] = question
-
-        finally:
-            history_value = [
-                self.history_data(
-                    self.map_status['address']['result']['formatted_address']
-                )[3][0],
-                history_parser = self.history_data(
-                    self.map_status['address']['parser']
-                )[3][0]
-            ]
-
-            if history_address != '':
-                value = history_address
-
-            elif history_parser != '':
-                value = history_parser
-
-            else:
-                value = ''
-
-            self.map_status['history'] = value
         return self.map_status
 
-    #===================================
-    # place_id search on Google Map API
-    #===================================
-    def get_place_id_list(self, address):
+    # API return value
+    def get_map(self):
         """
-            Google map API place_id search function
+            return value of APIS Google Map and Wiki Media
         """
-        key = self.dataDiscussion.keys['map']
-        # environment variable
-        # replacing space by "% 20" in the string of characters
-        address_encode = urllib.parse.quote(str(address))
-        place_id = urllib.request.urlopen(
-            'https://maps.googleapis.com/maps/api/place/findplacefromtext/'\
-                f'json?input={address_encode}&inputtype=textquery&key={key}'
-        )
-        result = json.loads(place_id.read().decode('utf8'))
-        return result
+        location_map = self.map_coordinates()
+        # ~ self.map_status['map'] = googlemapsapi.get_static(
+            # ~ location_map, self.keyStatic
+        # ~ )
+        # ~ self.map_status['history'] = self.get_history(location_map)
+        return self.map_status
 
-    #===========================
-    # address on Google Map API
-    #===========================
-    def get_address(self, place_id):
-        """
-            Google map API address search with place_id function
-            Result OK
-            {
-                'html_attributions': [],
-                'result': {
-                    'formatted_address': '10 Quai de la Charente, 75019 Paris, France',
-                    'geometry': {
-                        'location': {'lat': 48.8975156, 'lng': 2.3833993},
-                        'viewport': {
-                            'northeast': {'lat': 48.89886618029151, 'lng': 2.384755530291502},
-                            'southwest': {'lat': 48.89616821970851, 'lng': 2.382057569708498}}}},
-                'status': 'OK'
-            }
-            Invalid API Key
-            {
-               "error_message" : "The provided API key is invalid.",
-               "html_attributions" : [],
-               "status" : "REQUEST_DENIED"
-            }
-            Invalid Place_id
-            {
-               "html_attributions" : [],
-               "status" : "INVALID_REQUEST"
-            }
-        """
-        key = self.dataDiscussion.keys['map'] # environment variable
-        address_found = urllib.request.urlopen(
-            'https://maps.googleapis.com/maps/api/place/details/'\
-                f'json?placeid={place_id}&fields=formatted_address,geometry&key={key}'
-        )
-        result = json.loads(address_found.read().decode('utf8'))
-        return result
-
-    #=================================
+class WikimediaApi:
+    """
+        Wikimedia API management
+    """
     # history search on wikimedia API
-    #=================================
     def get_history(self, search_history):
         """
             wikipedia API (Wikimedia) history search
         """
         # replacing space by "% 20" in the string of characters
-        history_encode = urllib.parse.quote(search_history)
-        print(f'\n(get_history)search_history = {history_encode}\n')
+        history_encode = urllib.parse.quote(
+            search_history['address']['result']['formatted_address']
+        )
+        # display history
         history_found = urllib.request.urlopen(
             'https://fr.wikipedia.org/w/api.php?action=opensearch&search='\
             f'{history_encode}&format=json'
         )
         result = json.loads(history_found.read().decode('utf8'))
-        print(f'result_history = {result}\n')
-        return result
-
-    #=========================================
-    # map display in the Google Map Satic API
-    #=========================================
-    def get_map(self):
-        """
-            function of displaying the geolocation of the address
-            asked to grandpy on the map of the Google Map Static API
-        """
-        key = self.dataDiscussion.keys['staticMap']  # environment variable
-        location_map = self.map_coordinates()
-        # adress display
+        print(f'\nresult = {result[3]}\n')
+        if result[3] != []:
+            return result
         # replacing space by "% 20" in the string of characters
-        formatting_address = urllib.parse.quote(
-            location_map['address']['result']['formatted_address']
+        history_encode = urllib.parse.quote(
+            search_history['address']['parser']
         )
-        # longitude and latitude display
-        localization =\
-            location_map['address']['result']['geometry']['location']
-        # display map
-        display_map = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f'{formatting_address}'\
-            '&zoom=18.5&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{localization['lat']},{localization['lng']}&key={key}"
-        self.map_status['map'] = display_map
-        return self.map_status
+        # display history
+        history_found = urllib.request.urlopen(
+            'https://fr.wikipedia.org/w/api.php?action=opensearch&search='\
+            f'{history_encode}&format=json'
+        )
+        result = json.loads(history_found.read().decode('utf8'))
+        if result[3] != []:
+            return result[3]
+        else:
+            return ['',[], [], []]
+
+if __name__ == '__main__':
+    pass
