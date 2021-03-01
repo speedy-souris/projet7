@@ -119,4 +119,4 @@ def get_static(address, key_value):
 
 
 if __name__ == '__main__':
-    print(get_static('openClassRooms', 'AIzaSyCLNsMCYGtXdHfjbJMDRGWqY2pZkYRidbY'))
+    pass
