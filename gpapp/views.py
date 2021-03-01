@@ -3,7 +3,7 @@
 
 import time
 from flask import Flask, render_template
-from .chatData import BehaviorDatabase
+from .chatdata import BehaviorDatabase
 from .main import main
 
 app = Flask(__name__)

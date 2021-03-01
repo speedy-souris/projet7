@@ -2,7 +2,6 @@
 #!/usr/bin/env python
 
 import os
-import inspect
 
 # question organization
 class Question:
@@ -162,7 +161,7 @@ class Question:
         self.dataDiscussion.comprehension = result
 
     # parser
-    def parser(self):
+    def parser(self, list_question=''):
         """
             function that cuts the string of characters (question asked to GrandPy)
             into a word list then delete all unnecessary words to keep only

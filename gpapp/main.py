@@ -1,17 +1,34 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-import os
-import inspect
-
-from .debug import Debugging
-from .chatData import BehaviorData
-from .chatData import BehaviorDatabase
-from .grandpyRobot import Answer
+from .chatdata import BehaviorData
+from .chatdata import BehaviorDatabase
+from .grandpyrobot import Answer
 from .user import Question
-from .chatData import Chat
-from .answerSearch import Research
+from .chatdata import Chat
+from .answersearch import Research
 
+def checkout_comprehension(discussion):
+    """
+        check the understanding of the question
+    """
+    dataDiscussion.reset_behavior()
+    comprehension = discussion.question('comprehension')
+    return comprenhension
+
+def checkout_dencency(discussion):
+    """
+        check the decency of the question
+    """
+    decency = discussion.question('decency')
+    return decency
+
+def checkout_civility(discussion):
+    """
+        check the civility of the question
+    """
+    decency = discussion.question('decency')
+    return decency
 
 
 # script execution
@@ -22,15 +39,13 @@ def main(question):
         and without coarseness
     """
     # awaits the courtesy of the user
-    debug = Debugging()
     dataDiscussion = BehaviorData()
-    dataDB = BehaviorDatabase()
     grandpy = Answer()
     user = Question(question, dataDiscussion)
     discussion = Chat(user, grandpy)
+    dataDB = BehaviorDatabase()
     research = Research(discussion)
 
-    dataDiscussion.reset_behavior()
     discussion.question('comprehension')
     if dataDiscussion.comprehension:
         discussion.question('decency')
@@ -106,11 +121,5 @@ def main(question):
 
 
 if __name__ == '__main__':
-
-    # ~ var_debug = input("Tapez 'd' pour passer en debogage ... !")
-    # ~ if var_debug == 'd':
-        # ~ os.environ['DEBUG'] = 'True'
-    # ~ os.system('clear')
-    # ~ main('bonjour')
     pass
 
