@@ -221,11 +221,18 @@ class TestApiGoogle:
         """
         api_key = KeyManagement()
         map_key = api_key.keys['map']
-        demand = googlemapsapi.get_static('openClassRooms', map_key)
-        result_static = """
-            The Google Maps Platform server rejected your request.
-            The provided API key is invalid.
-        """
+        address = 
+        demand = googlemapsapi.get_static(address, map_key)
+        result_static = {
+            'address':{
+                'result': {
+                    'formatted_address': '10 Quai de la Charente, 75019 Paris, France',
+                    'geometry': {
+                        'location': {'lat': 48.8975156, 'lng': 2.3833993}
+                    }
+                }
+            }
+        }
         def mockreturn(request):
             """
                 Mock function on place_id object
