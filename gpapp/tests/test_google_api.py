@@ -221,15 +221,23 @@ class TestApiGoogle:
         """
         api_key = KeyManagement()
         map_key = api_key.keys['map']
-        address = 
-        demand = googlemapsapi.get_static(address, map_key)
-        result_static = {
-            'address':{
+        address = {
+            'address': {
                 'result': {
-                    'formatted_address': '10 Quai de la Charente, 75019 Paris, France',
+                    'formatted_address': '10QuaidelaCharente,75019Paris,France',
                     'geometry': {
                         'location': {'lat': 48.8975156, 'lng': 2.3833993}
                     }
+                }
+            }
+        }
+        demand = googlemapsapi.get_static(address, map_key)
+        result_static = {
+            'html_attributions': [],
+            'result': {
+                'formatted_address': '10 Quai de la Charente, 75019 Paris, France',
+                'geometry': {
+                    'location': {'lat': 48.8975156, 'lng': 2.3833993}
                 }
             }
         }

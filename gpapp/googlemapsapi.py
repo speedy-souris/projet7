@@ -106,7 +106,6 @@ def get_static(address, key_value):
     """
         Display of the static map at the user's request
     """
-    
     display_address = address['address']['result']['formatted_address']
     # longitude and latitude display
     localization =\
