@@ -114,7 +114,8 @@ def get_static(address, key_value):
     display_map = f'{URL}{STATIC_MAP}{POSITION}{display_address}{GET_ZOOM}'\
         f"{GET_SIZE}{TYPE_GET_MAP}{GET_MARKER}{localization['lat']},"\
         f"{localization['lng']}{KEY_GET_PARAM}{key_value}"
-    return display_map
+
+    return display_map 
 
 
 if __name__ == '__main__':
