@@ -6,6 +6,7 @@ import json
 import urllib.request, urllib.parse
 from . import googlemapsapi
 
+
 class KeyManagement:
     """
         API Private Key and Constants Management :
@@ -77,11 +78,8 @@ class Research:
             creation of api google map coordinate address display setting
             and wikipedia address history display setting
         """
-        
         # keyword isolation for question
-        
         question = self.user.question('parser')
-        print(f"\nquestion map_coordinates = {self.user.question(question)}\n")
         parse_answer = urllib.parse.quote(question)
         place_id_dict = googlemapsapi.get_place_id_list(parse_answer, self.keyMap)
         # creation and test public key api google map
@@ -110,49 +108,12 @@ class Research:
             return value of APIS Google Map and Wiki Media
         """
         location_map = self.map_coordinates()
-        # ~ self.map_status['map'] = googlemapsapi.get_static(
-            # ~ location_map, self.keyStatic
-        # ~ )
+        self.map_status['map'] = googlemapsapi.get_static(
+            location_map, self.keyStatic
+        )
         # ~ self.map_status['history'] = self.get_history(location_map)
         return self.map_status
 
-class WikimediaApi:
-    """
-        Wikimedia API management
-    """
-    # history search on wikimedia API
-    def get_history(self, search_history):
-        """
-            wikipedia API (Wikimedia) history search
-        """
-        # replacing space by "% 20" in the string of characters
-        history_encode = urllib.parse.quote(
-            search_history['address']['result']['formatted_address']
-        )
-        # display history
-        history_found = urllib.request.urlopen(
-            'https://fr.wikipedia.org/w/api.php?action=opensearch&search='\
-            f'{history_encode}&format=json'
-        )
-        result = json.loads(history_found.read().decode('utf8'))
-        print(f'\nresult = {result[3]}\n')
-        if result[3] != []:
-            return result
-        # replacing space by "% 20" in the string of characters
-        history_encode = urllib.parse.quote(
-            search_history['address']['parser']
-        )
-        # display history
-        history_found = urllib.request.urlopen(
-            'https://fr.wikipedia.org/w/api.php?action=opensearch&search='\
-            f'{history_encode}&format=json'
-        )
-        result = json.loads(history_found.read().decode('utf8'))
-        if result[3] != []:
-            return result[3]
-        else:
-            return ['',[], [], []]
 
 if __name__ == '__main__':
     pass
-    

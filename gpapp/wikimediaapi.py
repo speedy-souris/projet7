@@ -5,31 +5,43 @@ import urllib.request
 import json
 
 
-# ~ # WikiMedia APi test on search
-    # ~ def test_search_wiki(self, monkeypatch):
-        # ~ """
-            # ~ A.P.I wikipedia test function (wikimedia) that returns a file
-            # ~ Json containing the history of the requested address
-        # ~ """
-        # ~ demand = script.DataParameter("bonjour")
-        # ~ resul_history = [
-            # ~ [
-                # ~ """Riche d'un long passé artistique, ce secteur de Paris (France)
-                # ~ dominé par la Basilique du Sacré-Cœur a toujours été le symbole
-                # ~ d'un mode de vie bohème où, de Picasso à Modigliani, de nombreux
-                # ~ artistes trouvèrent refuge."""
-            # ~ ]
-        # ~ ]
+URL = 'https://fr.wikipedia.org/w/api.php?'
+ACTION = 'action='
+LIST = 'list=search'
+SRSEARCH = 'srsearch'
+QUERY = 'query'
+SEARCH = 'opensearch&search='
+FORMAT = '&format=json'
 
-        # ~ def mockreturn(request):
-            # ~ """
-                # ~ Mock function on history search
-            # ~ """
-
-            # ~ return BytesIO(json.dumps(resul_history).encode())
-
-        # ~ monkeypatch.setattr(
-            # ~ urllib.request, 'urlopen',mockreturn
-        # ~ )
-
-        # ~ assert demand.get_history("montmartre") == resul_history
+# history search on wikimedia API
+def get_history(self, search_history):
+    """
+        wikipedia API (Wikimedia) history search
+    """
+    # replacing space by "% 20" in the string of characters
+    history_encode = urllib.parse.quote(
+        search_history['address']['result']['formatted_address']
+    )
+    # display history
+    history_found = urllib.request.urlopen(
+        'https://fr.wikipedia.org/w/api.php?action=opensearch&search='\
+        f'{history_encode}&format=json'
+    )
+    result = json.loads(history_found.read().decode('utf8'))
+    print(f'\nresult = {result[3]}\n')
+    if result[3] != []:
+        return result
+    # replacing space by "% 20" in the string of characters
+    history_encode = urllib.parse.quote(
+        search_history['address']['parser']
+    )
+    # display history
+    history_found = urllib.request.urlopen(
+        'https://fr.wikipedia.org/w/api.php?action=opensearch&search='\
+        f'{history_encode}&format=json'
+    )
+    result = json.loads(history_found.read().decode('utf8'))
+    if result[3] != []:
+        return result[3]
+    else:
+        return ['',[], [], []]

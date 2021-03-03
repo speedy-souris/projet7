@@ -1,13 +1,25 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-from .. import googlemapsapi
-from ..answersearch import KeyManagement
 import urllib.request
 from io import BytesIO
 import json
+from .. import googlemapsapi
+from ..answersearch import KeyManagement
 
-# Google API test
+API_KEY = KeyManagement()
+MAP_KEY = API_KEY.keys['map']
+STATIC_KEY= API_KEY.keys['staticMap']
+BAD_KEY = 0
+
+def mock(result):
+    def mockreturn(request):
+        """
+            Mock function on api object
+        """
+        return BytesIO(json.dumps(result).encode())
+    return mockreturn
+
 class TestApiGoogle:
     """
         management of APi parameters test 
@@ -18,93 +30,42 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a file
             Json containing the reference ID of the address asked
         """
-        api_key = KeyManagement()
-        map_key = api_key.keys['map']
-        demand = googlemapsapi.get_place_id_list('openClassRooms', map_key)
-        result_place_id = {
+        demand1 = googlemapsapi.get_place_id_list('openClassRooms', MAP_KEY)
+        demand2 = googlemapsapi.get_place_id_list('openClassRooms', BAD_KEY)
+        demand3 = googlemapsapi.get_place_id_list('openClassRooms', STATIC_KEY)
+        demand4 = googlemapsapi.get_place_id_list('rueopenClassRooms', MAP_KEY)
+        result_place_id1 = {
             'candidates': [{
                 'place_id': 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
             }],
             'status' : 'OK'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_place_id).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_place_id
-
-    # google map API test on place id location with a bad key
-    def test_geolocal_bad_key(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a file
-            Json containing the reference ID of the address asked
-            with a bad key
-        """
-        api_key = KeyManagement()
-        map_key = 0
-        demand = googlemapsapi.get_place_id_list('openClassRooms', map_key)
-        result_place_id = {
+        result_place_id2 = {
             'candidates' : [],
             'error_message' : 'The provided API key is invalid.',
             'status' : 'REQUEST_DENIED'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_place_id).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_place_id
-
-    # google map API test on place id location with a key not allowed
-    def test_geolocal_not_authorized(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a file
-            Json containing the reference ID of the address asked
-            with a key not allowed
-        """
-        api_key = KeyManagement()
-        map_key = api_key.keys['staticMap']
-        demand = googlemapsapi.get_place_id_list('openClassRooms', map_key)
-        result_place_id = {
+        result_place_id3 = {
             'candidates' : [],
             'error_message' : 'This API key is not authorized to use this service or API.',
             'status' : 'REQUEST_DENIED'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_place_id).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_place_id
-
-    # google map API test on place id location
-    def test_geolocal_bad_request(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a file
-            Json containing the reference ID of the bad address asked
-        """
-        api_key = KeyManagement()
-        map_key = api_key.keys['map']
-        demand = googlemapsapi.get_place_id_list('rueopenClassRooms', map_key)
-        result_place_id = {
+        result_place_id4 = {
             'candidates': [],
             'status' : 'ZERO_RESULTS'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_place_id).encode())
-
+        mockreturn = mock('result_place_id1')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_place_id
+        assert demand1 == result_place_id1
+        mockreturn = mock('result_place_id2')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand2 == result_place_id2
+        mockreturn = mock('result_place_id3')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand3 == result_place_id3
+        mockreturn = mock('result_place_id4')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand4 == result_place_id4
 
     # google map API test on address location
     def test_geolocal_address(self, monkeypatch):
@@ -112,11 +73,13 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a file
             Json containing the reference of the requested address
         """
-        api_key = KeyManagement()
-        map_key = api_key.keys['map']
-        place_id = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
-        demand = googlemapsapi.get_address(place_id, map_key)
-        result_address = {
+        place_id1 = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
+        place_id2 = 'c8'
+        demand1 = googlemapsapi.get_address(place_id1, MAP_KEY)
+        demand2 = googlemapsapi.get_address(place_id1, BAD_KEY)
+        demand3 = googlemapsapi.get_address(place_id1, STATIC_KEY)
+        demand4 = googlemapsapi.get_address(place_id2, MAP_KEY)
+        result_address1 = {
             'html_attributions': [],
             'result': {
                 'formatted_address': '10 Quai de la Charente, 75019 Paris, France',
@@ -130,88 +93,32 @@ class TestApiGoogle:
             },
             'status': 'OK'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_address).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen',mockreturn)
-        assert demand == result_address
-
-    # google map API test on address location with bad key
-    def test_geolocal_bad_address(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a file
-            Json containing the reference of the requested address
-            with bad key
-        """
-        api_key = KeyManagement()
-        map_key = 0
-        place_id = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
-        demand = googlemapsapi.get_address(place_id, map_key)
-        result_address = {
+        result_address2 = {
             'error_message' : 'The provided API key is invalid.',
            'html_attributions' : [],
            'status' : 'REQUEST_DENIED'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_address).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen',mockreturn)
-        assert demand == result_address
-
-    # google map API test on address location with key not allowed
-    def test_geolocal_address_not_authorized(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a file
-            Json containing the reference of the requested address
-            with key not allowed
-        """
-        api_key = KeyManagement()
-        map_key = api_key.keys['staticMap']
-        place_id = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
-        demand = googlemapsapi.get_address(place_id, map_key)
-        result_address = {
+        result_address3 = {
             'error_message' : 'This API key is not authorized to use this service or API.',
            'html_attributions' : [],
            'status' : 'REQUEST_DENIED'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_address).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen',mockreturn)
-        assert demand == result_address
-
-    # google map API test on address location with bad place_id
-    def test_geolocal_invalid(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a file
-            Json containing the reference of the requested address
-            with bad place_id
-        """
-        api_key = KeyManagement()
-        map_key = api_key.keys['map']
-        place_id = 'c8'
-        demand = googlemapsapi.get_address(place_id, map_key)
-        result_address = {
+        result_address4 = {
             'html_attributions': [],
             'status': 'INVALID_REQUEST'
         }
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_address).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen',mockreturn)
-        assert demand == result_address
+        mockreturn = mock('result_address1')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand1 == result_address1
+        mockreturn = mock('result_address2')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand2 == result_address2
+        mockreturn = mock('result_address3')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand3 == result_address3
+        mockreturn = mock('result_address4')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand4 == result_address4
 
     # google map API test on map static
     def test_geolocal_static(self, monkeypatch):
@@ -219,9 +126,7 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a image static
             containing the reference ID of the address asked
         """
-        api_key = KeyManagement()
-        map_key = api_key.keys['staticMap']
-        address = {
+        address1 = {
             'address': {
                 'result': {
                     'formatted_address': '10QuaidelaCharente,75019Paris,France',
@@ -231,101 +136,7 @@ class TestApiGoogle:
                 }
             }
         }
-        demand = googlemapsapi.get_static(address, map_key)
-        result_static = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address['address']['result']['formatted_address']}&zoom=18.5"\
-            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address['address']['result']['geometry']['location']['lat']},"\
-            f"{address['address']['result']['geometry']['location']['lng']}"\
-            f'&key={map_key}'
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_static).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_static
-
-    # google map API test on map static with bad key
-    def test_geolocal_bad_static(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a image static
-            containing the reference ID of the address asked
-            with bad key
-        """
-        api_key = KeyManagement()
-        map_key = 0
-        address = {
-            'address': {
-                'result': {
-                    'formatted_address': '10QuaidelaCharente,75019Paris,France',
-                    'geometry': {
-                        'location': {'lat': 48.8975156, 'lng': 2.3833993}
-                    }
-                }
-            }
-        }
-        demand = googlemapsapi.get_static(address, map_key)
-        result_static = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address['address']['result']['formatted_address']}&zoom=18.5"\
-            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address['address']['result']['geometry']['location']['lat']},"\
-            f"{address['address']['result']['geometry']['location']['lng']}"\
-            f'&key={map_key}'
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_static).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_static
-
-    # google map API test on map static no authorized
-    def test_geolocal_notauthorized_static(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a image static
-            containing the reference ID of the address asked
-            with key not authorized
-        """
-        api_key = KeyManagement()
-        map_key = api_key.keys['map']
-        address = {
-            'address': {
-                'result': {
-                    'formatted_address': '10QuaidelaCharente,75019Paris,France',
-                    'geometry': {
-                        'location': {'lat': 48.8975156, 'lng': 2.3833993}
-                    }
-                }
-            }
-        }
-        demand = googlemapsapi.get_static(address, map_key)
-        result_static = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address['address']['result']['formatted_address']}&zoom=18.5"\
-            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address['address']['result']['geometry']['location']['lat']},"\
-            f"{address['address']['result']['geometry']['location']['lng']}"\
-            f'&key={map_key}'
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_static).encode())
-
-        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_static
-
-    # google map API test on map no static
-    def test_geolocal_no_static(self, monkeypatch):
-        """
-            Google Map A.P.I test function that returns a image static
-            containing the reference ID of the bad address asked
-        """
-        api_key = KeyManagement()
-        map_key = api_key.keys['staticMap']
-        address = {
+        address2 = {
             'address': {
                 'result': {
                     'formatted_address': 'rueopenClassRooms',
@@ -335,21 +146,47 @@ class TestApiGoogle:
                 }
             }
         }
-        demand = googlemapsapi.get_static(address, map_key)
-        result_static = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address['address']['result']['formatted_address']}&zoom=18.5"\
+        demand1 = googlemapsapi.get_static(address1, STATIC_KEY)
+        demand2 = googlemapsapi.get_static(address1, BAD_KEY)
+        demand3 = googlemapsapi.get_static(address1, MAP_KEY)
+        demand4 = googlemapsapi.get_static(address2, STATIC_KEY)
+        result_static1 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
+            f"{address1['address']['result']['formatted_address']}&zoom=18.5"\
             f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address['address']['result']['geometry']['location']['lat']},"\
-            f"{address['address']['result']['geometry']['location']['lng']}"\
-            f'&key={map_key}'
-        def mockreturn(request):
-            """
-                Mock function on place_id object
-            """
-            return BytesIO(json.dumps(result_static).encode())
+            f"{address1['address']['result']['geometry']['location']['lat']},"\
+            f"{address1['address']['result']['geometry']['location']['lng']}"\
+            f'&key={STATIC_KEY}'
+        result_static2 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
+            f"{address1['address']['result']['formatted_address']}&zoom=18.5"\
+            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
+            f"{address1['address']['result']['geometry']['location']['lat']},"\
+            f"{address1['address']['result']['geometry']['location']['lng']}"\
+            f'&key={BAD_KEY}'
+        result_static3 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
+            f"{address1['address']['result']['formatted_address']}&zoom=18.5"\
+            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
+            f"{address2['address']['result']['geometry']['location']['lat']},"\
+            f"{address1['address']['result']['geometry']['location']['lng']}"\
+            f'&key={MAP_KEY}'
+        result_static4 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
+            f"{address2['address']['result']['formatted_address']}&zoom=18.5"\
+            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
+            f"{address2['address']['result']['geometry']['location']['lat']},"\
+            f"{address2['address']['result']['geometry']['location']['lng']}"\
+            f'&key={STATIC_KEY}'
 
+        mockreturn = mock('result_static1')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand == result_static
+        assert demand1 == result_static1
+        mockreturn = mock('result_static2')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand2 == result_static2
+        mockreturn = mock('result_static3')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand3 == result_static3
+        mockreturn = mock('result_static4')
+        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        assert demand4 == result_static4
 
 
 if __name__ == "__main__":

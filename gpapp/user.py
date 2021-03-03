@@ -129,6 +129,7 @@ class Question:
             ]
         )
         self.dataDiscussion.civility = result
+        return result
 
     def user_decency(self):
         """
@@ -143,6 +144,7 @@ class Question:
             ]
         )
         self.dataDiscussion.decency = result
+        return result
 
     def user_comprehension(self):
         """
@@ -159,6 +161,7 @@ class Question:
             ]
         )
         self.dataDiscussion.comprehension = result
+        return result
 
     # parser
     def parser(self, list_question=''):

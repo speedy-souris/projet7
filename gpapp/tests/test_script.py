@@ -2,12 +2,20 @@
 #!/usr/bin/env python
 
 from ..user import Question
+from ..chatdata import BehaviorData
+
+
+USER_REQUEST = 'connais tu openClassRooms'
+DATADISCUSSION = BehaviorData()
+QUESTION = Question(USER_REQUEST, DATADISCUSSION)
 
 class TestUserQuestion:
     """
          management of test user's question
+         user behavior management
+            - Politeness
+            - Comprehension
     """
-    # user question parser test
     def test_parser(self):
         """
             Test function on the separation of the character string (question asked
@@ -15,72 +23,35 @@ class TestUserQuestion:
             removing unnecessary words in order to keep the keywords for the
             search (location history & geographic coordinates)
         """
-        user_request = 'connais tu openClassRooms'
-        question = Question(user_request, None)
-        demand = question.parser(user_request)
+        demand = QUESTION.parser(USER_REQUEST)
         # question asked to grandPy
         result_parsed = 'openClassRooms'
         assert demand == result_parsed
 
-# ~ class TestBehaviour:
-    # ~ """
-        # ~ user behavior management
-            # ~ - Politeness
-            # ~ - Comprehension
-    # ~ """
+    def test_civility(self):
+        """
+            civility function test
+        """
+        demand = QUESTION.user_civility()
+        assert demand == DATADISCUSSION.civility
+        other_demand = Question('bonjour', DATADISCUSSION).user_civility()
+        assert other_demand == DATADISCUSSION.civility
 
-    # ~ # Civility test
-    # ~ def test_civility(self):
-        # ~ """
-            # ~ civility function test
-        # ~ """
-        # ~ # only one value on redis for civility : do not mix conversation object
-        # ~ demand = script.DataParameter("montmartre")
-        # ~ script.DataParameter("montmartre").civility()
-        # ~ assert False == demand.read_civility
-        # ~ other_demand = script.DataParameter("bonjour")
-        # ~ script.DataParameter("bonjour").civility()
-        # ~ assert True == other_demand.read_civility
+    def test_decency(self):
+        """
+            decency function test
+        """
+        demand = QUESTION.user_decency()
+        assert demand == DATADISCUSSION.decency
+        other_demand = Question('fossile', DATADISCUSSION).user_decency()
+        assert other_demand == DATADISCUSSION.decency
 
-    # ~ # decency test
-    # ~ def test_decency(self):
-        # ~ """
-            # ~ decency function test
-        # ~ """
-        # ~ # only one value on redis for decency : do not mix conversation object
-        # ~ demand = script.DataParameter("montmartre")
-        # ~ script.DataParameter("montmartre").decency()
-        # ~ assert True == demand.read_decency
-        # ~ other_demand = script.DataParameter("fossile")
-        # ~ script.DataParameter("fossile").decency()
-        # ~ assert False == other_demand.read_decency
-
-    # ~ # Convertion of boolean Test
-    # ~ def test_bool_to_string(self):
-        # ~ """
-            # ~ convert a boolean to string
-        # ~ """
-        # ~ assert script.bool_convers(False) == "0"
-        # ~ assert script.bool_convers(True) == "1"
-
-    # ~ def test_string_to_boolean(self):
-        # ~ """
-            # ~ convert a string to boolean
-        # ~ """
-        # ~ assert script.str_convers(b"0") == False
-        # ~ assert script.str_convers(b"1") == True
-        # ~ assert script.str_convers(b"") == False
-
-    # ~ def test_comprehension(self):
-        # ~ """
-            # ~ comprehension function test
-        # ~ """
-        # ~ pass
-        # ~ assert script.Behaviour.comprehension("bonjour grandpy") == True
-
-    # ~ # end of counterSession test
-    # ~ def test_counterSession(self):
-        # ~ """
-            # ~ end of session function test by request counter
-        # ~ """
-        # ~ assert script.Behaviour.counter_session("mont saint-michel", 10) == True
+    def test_comprehension(self):
+        """
+            comprehension function test
+        """
+        demand = QUESTION.user_comprehension()
+        assert demand == DATADISCUSSION.comprehension
+        other_demand =\
+            Question('cvccc', DATADISCUSSION).user_comprehension()
+        assert other_demand == DATADISCUSSION.comprehension
