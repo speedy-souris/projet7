@@ -18,7 +18,7 @@ class BehaviorDatabase:
             database initialization 
         """
         self.statusProd = KeyManagement().get_keys['status_prod']
-        self.data = self.data_access
+        self.data = self.get_data_access
 
     #---------------------- CALCULATION AND PROPERTY -------------------
 
@@ -55,7 +55,7 @@ class BehaviorDatabase:
     #---------------------- ACCESS CHAT DATABASE -----------------------
 
     @property
-    def data_access(self):
+    def get_data_access(self):
         """
             method for data_connection to the database
                 - keys["status_prod"] = False ==> data in local
@@ -232,7 +232,7 @@ class BehaviorDatabase:
 
     #----------------- GENERAL PROCESSING OF CHAT DATA -----------------
 
-    def initial_dataBase(self):
+    def get_initial_dataBase(self):
         """ creation and initialization by default of data values
             for the data database
     
@@ -256,7 +256,7 @@ class BehaviorDatabase:
         self.write_incivility(0)
         self.write_indecency(0)
 
-    def update_dataBase(self):
+    def get_update_dataBase(self):
         """
             update for database data
                 - Args Value ==> [
@@ -300,8 +300,8 @@ class BehaviorData:
             self.nb_incomprehension = self.behaviorDB.read_incomprehension
             self.quotas = self.behaviorDB.read_quotas
         except (AttributeError, TypeError):
-            self.behaviorDB.initial_dataBase()
-            self.initial_attribute()
+            self.behaviorDB.get_initial_dataBase()
+            self.get_initial_attribute()
         self.civility = self.behaviorDB.read_civility
         self.decency = self.behaviorDB.read_decency
         self.comprehension = self.behaviorDB.read_comprehension
@@ -309,7 +309,7 @@ class BehaviorData:
         self.nb_incivility = self.behaviorDB.read_incivility
         self.nb_indecency = self.behaviorDB.read_indecency
 
-    def initial_attribute(self):
+    def get_initial_attribute(self):
         """
             Initialization all values
         """
@@ -322,7 +322,7 @@ class BehaviorData:
         self.nb_indecency = 0
         self.nb_incomprehension = 0
 
-    def display_data(self, ligne='Inconnu'):
+    def get_display_data(self, ligne='Inconnu'):
         """
             display of data values in the question
                 - Args Value ==> [
@@ -342,7 +342,7 @@ class BehaviorData:
         print(f'Nombre d\'incomprehension = {self.nb_incomprehension}')
         print(f'Réponse de grandpy = {self.grandpy_response}\n')
 
-    def reset_behavior(self):
+    def get_reset_behavior(self):
         """
             initialisation behavior parameters:
                 - comprehension --|
@@ -353,10 +353,10 @@ class BehaviorData:
         self.comprehension = False
 
     # Expiration data of request
-    def expiration_data(self):
+    def get_expiration_data(self):
         self.quotas = True
         self.grandpy_code = 'exhausted'
-        self.display_data()
+        self.get_display_data()
 
 # chat organization
 class Chat:

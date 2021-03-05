@@ -12,22 +12,22 @@ def checkout_comprehension(discussion):
     """
         check the understanding of the question
     """
-    dataDiscussion.reset_behavior()
-    comprehension = discussion.question('comprehension')
+    dataDiscussion.get_reset_behavior()
+    comprehension = discussion.get_question('comprehension')
     return comprenhension
 
 def checkout_dencency(discussion):
     """
         check the decency of the question
     """
-    decency = discussion.question('decency')
+    decency = discussion.get_question('decency')
     return decency
 
 def checkout_civility(discussion):
     """
         check the civility of the question
     """
-    decency = discussion.question('decency')
+    decency = discussion.get_question('decency')
     return decency
 
 
@@ -52,7 +52,7 @@ def main(question):
         if dataDiscussion.decency and not dataDiscussion.civility:
             discussion.get_question('civility')
             if dataDiscussion.civility:
-                dataDiscussion.reset_behavior()
+                dataDiscussion.get_reset_behavior()
                 dataDiscussion.grandpy_response = discussion.get_answer('wait1')
                 dataDiscussion.grandpy_code = ''
             else:

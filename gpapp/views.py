@@ -25,7 +25,7 @@ def init():
         Initialization of the dataRedis
     """
     data = BehaviorDatabase()
-    data.initial_dataBase()
+    data.get_initial_dataBase()
     return 'DataRedis initialized'
     
 # Initialization of general parameters
