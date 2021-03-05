@@ -6,22 +6,23 @@ import json
 
 def api_data():
     data = {
-        'url' = 'https://maps.googleapis.com/maps/api/',
-        'json' = 'json',
-        'key_get_param' = 'key=',
-        'find_place_text' = 'place/findplacefromtext/',
-        'input_address' = 'input=',
-        'type_get_input' = 'inputtype=textquery',
-        'detail' = 'place/details/',
-        'place_id' = 'placeid=',
-        'get_fields' = 'fields=formatted_address,geometry',
-        'static_map' = 'staticmap',
-        'position' = 'center=',
-        'get_zoom' = 'zoom=18.5',
-        'get_zoom' = 'size=600x300',
-        'type_get_map' = 'maptype=roadmap',
-        'get_marker' = 'markers=color:red%7Clabel:A%7C'
+        'url': 'https://maps.googleapis.com/maps/api/',
+        'json': 'json',
+        'key_get_param': 'key=',
+        'find_place_text': 'place/findplacefromtext/',
+        'input_address': 'input=',
+        'type_get_input': 'inputtype=textquery',
+        'detail': 'place/details/',
+        'place_id': 'placeid=',
+        'get_fields': 'fields=formatted_address,geometry',
+        'static_map': 'staticmap',
+        'position': 'center=',
+        'get_zoom': 'zoom=18.5',
+        'get_size': 'size=600x300',
+        'type_get_map': 'maptype=roadmap',
+        'get_marker': 'markers=color:red%7Clabel:A%7C'
     }
+    return data
 
 # place_id search on Google Map API
 def get_place_id_list(address, key_value):
@@ -119,9 +120,9 @@ def get_static(address, key_value):
         address['address']['result']['geometry']['location']
     # ~ # display map
     display_map = f"{data['url']}{data['static_map']}?{data['position']}"\
-    f"{display_address}&{data['get_zoom']}&{GET_SIZE}&{TYPE_GET_MAP}"\
-    f"&{GET_MARKER}{localization['lat']},{localization['lng']}&{KEY_GET_PARAM}"\
-    f'{key_value}'
+    f"{display_address}&{data['get_zoom']}&{data['get_size']}"\
+    f"&{data['type_get_map']}&{data['get_marker']}{localization['lat']},"\
+    f"{localization['lng']}&{data['key_get_param']}{key_value}"
 
     return display_map 
 
