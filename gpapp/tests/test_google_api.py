@@ -8,7 +8,7 @@ from .. import googlemapsapi
 from ..answersearch import KeyManagement
 
 
-def api_data():
+def get_api_data():
     api_key = KeyManagement()
     data  = {
         'map_key': api_key.keys['map'],
@@ -16,23 +16,24 @@ def api_data():
         'bad_key': 0,
         'url': 'https://maps.googleapis.com/maps/api/staticmap',
         'position': 'center=',
-        'zoom': 'zoom=18.5',
-        'size': 'size=600x300',
-        'type': 'maptype=roadmap',
-        'marker': 'markers=color:red%7Clabel:A%7C',
-        'key': 'key='
+        'get_zoom': 'zoom=18.5',
+        'get_size': 'size=600x300',
+        'type_get_map': 'maptype=roadmap',
+        'get_marker': 'markers=color:red%7Clabel:A%7C',
+        'key_get_param': 'key='
     }
     return data
 
 def get_url_static(address, key):
-    data = api_data()
+    data = get_api_data()
     url_static =\
         f"{data['url']}?{data['position']}"\
         f"{address['address']['result']['formatted_address']}"\
-        f"&{data['zoom']}&{data['size']}&{data['type']}&{data['marker']}"\
+        f"&{data['get_zoom']}&{data['get_size']}&{data['type_get_map']}"\
+        f"&{data['get_marker']}"\
         f"{address['address']['result']['geometry']['location']['lat']},"\
         f"{address['address']['result']['geometry']['location']['lng']}&"\
-        f"{data['key']}{key}"
+        f"{data['key_get_param']}{key}"
     return url_static
     
 def get_mockreturn(result):
@@ -53,7 +54,7 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a file
             Json containing the reference ID of the address asked
         """
-        data = api_data()
+        data = get_api_data()
         demand1 = googlemapsapi.get_place_id_list(
             'openClassRooms', data['map_key']
         )
@@ -105,7 +106,7 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a file
             Json containing the reference of the requested address
         """
-        data = api_data()
+        data = get_api_data()
         place_id1 = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
         place_id2 = 'c8'
         
@@ -164,7 +165,7 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a image static
             containing the reference ID of the address asked
         """
-        data = api_data()
+        data = get_api_data()
         address1 = {
             'address': {
                 'result': {

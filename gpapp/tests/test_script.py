@@ -5,7 +5,7 @@ from ..user import Question
 from ..chatdata import BehaviorData
 
 
-def script_data():
+def get_script_data():
     dataDiscussion = BehaviorData()
     user_request = 'connais tu openClassRooms'
     data = {
@@ -29,7 +29,7 @@ class TestUserQuestion:
             removing unnecessary words in order to keep the keywords for the
             search (location history & geographic coordinates)
         """
-        data = script_data()
+        data = get_script_data()
         demand = data['question'].parser(data['user_request'])
         # question asked to grandPy
         result_parsed = 'openClassRooms'
@@ -39,7 +39,7 @@ class TestUserQuestion:
         """
             civility function test
         """
-        data = script_data()
+        data = get_script_data()
         demand = data['question'].user_civility()
         assert demand == data['dataDiscussion'].civility
         other_demand = Question('bonjour', data['dataDiscussion']).user_civility()
@@ -49,7 +49,7 @@ class TestUserQuestion:
         """
             decency function test
         """
-        data = script_data()
+        data = get_script_data()
         demand = data['question'].user_decency()
         assert demand == data['dataDiscussion'].decency
         other_demand = Question('fossile', data['dataDiscussion']).user_decency()
@@ -59,7 +59,7 @@ class TestUserQuestion:
         """
             comprehension function test
         """
-        data = script_data()
+        data = get_script_data()
         demand = data['question'].user_comprehension()
         assert demand == data['dataDiscussion'].comprehension
         other_demand =\

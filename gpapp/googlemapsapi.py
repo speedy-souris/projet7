@@ -4,7 +4,7 @@
 import urllib.request
 import json
 
-def api_data():
+def get_api_data():
     data = {
         'url': 'https://maps.googleapis.com/maps/api/',
         'json': 'json',
@@ -56,7 +56,7 @@ def get_place_id_list(address, key_value):
        "status" : "ZERO_RESULTS"
     }
     """
-    data = api_data()
+    data = get_api_data()
     place_id = urllib.request.urlopen(
         f"{data['url']}{data['find_place_text']}{data['json']}?"\
         f"{data['input_address']}{address}&{data['type_get_input']}"\
@@ -100,7 +100,7 @@ def get_address(place_id, key_value):
            "status" : "INVALID_REQUEST"
         }
     """
-    data = api_data()
+    data = get_api_data()
     address_found = urllib.request.urlopen(
         f"{data['url']}{data['detail']}{data['json']}?{data['place_id']}"\
         f"{place_id}&{data['get_fields']}&{data['key_get_param']}{key_value}"
@@ -113,7 +113,7 @@ def get_static(address, key_value):
     """
         Display of the static map at the user's request
     """
-    data = api_data()
+    data = get_api_data()
     display_address = address['address']['result']['formatted_address']
     # longitude and latitude display
     localization =\
