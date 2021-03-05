@@ -58,7 +58,7 @@ def answer_gp(reflection, question):
             'address': dataDiscussion[1].get('address', ''),
             'map': dataDiscussion[1].get('map', ''),
             'history': dataDiscussion[1].get('history', '')
-        }        
+        }
     }
     return data_send
 

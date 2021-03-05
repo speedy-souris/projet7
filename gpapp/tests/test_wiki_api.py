@@ -6,10 +6,7 @@ from io import BytesIO
 import json
 from .. import wikimediaapi
 
-
-
-
-def mock(result):
+def get_mockreturn(result):
     def mockreturn(request):
         """
             Mock function on api object
@@ -26,28 +23,38 @@ class TestApiWikiMedia:
             A.P.I wikipedia test function (wikimedia) that returns a file
             Json containing the history of the requested address
         """
-        demand = wikimediaapi.get_history('openClassRooms')
-        result_history = [
-            [
-                """
-                OpenClassrooms est un site web de formation en ligne
-                qui propose à ses membres des cours certifiants
-                et des parcours débouchant sur des métiers en croissance.
-                Ses contenus sont réalisés en interne, par des écoles,
-                des universités, des entreprises partenaires comme Microsoft
-                ou IBM, ou historiquement par des bénévoles.
-                Jusqu'en 2018, n'importe quel membre du site pouvait être auteur,
-                via un outil nommé « interface de rédaction » puis « Course Lab ».
-                De nombreux cours sont issus de la communauté,
-                mais ne sont plus mis en avant. Initialement orientée
-                autour de la programmation informatique, la plate-forme
-                couvre depuis 2013 des thématiques plus larges tels que
-                le marketing, l'entrepreneuriat et les sciences.
-                """
-            ]
-        ]
-
-        mockreturn = mock('result_history')
+        demand = wikimediaapi.get_history('OpenClassrooms')
+        result_history = {
+            'batchcomplete': True,
+            'query': {
+                'pages': [
+                    {
+                        'pageid': 4338589,
+                        'ns': 0,
+                        'title': 'OpenClassrooms',
+                        'extract': f'OpenClassrooms est un site web de formation '\
+                                   f'en ligne qui propose à ses membres des cours '\
+                                   f'certifiants et des parcours débouchant sur '\
+                                   f'des métiers en croissance. Ses contenus sont '\
+                                   f'réalisés en interne, par des écoles, des '\
+                                   f'universités, des entreprises partenaires '\
+                                   f'comme Microsoft ou IBM, ou historiquement '\
+                                   f"par des bénévoles. Jusqu'en 2018, n'importe "\
+                                   f'quel membre du site pouvait être auteur, via '\
+                                   f'un outil nommé « interface de rédaction » '\
+                                   f'puis « Course Lab ». De nombreux cours sont '\
+                                   f'issus de la communauté, mais ne sont plus '\
+                                   f'mis en avant. Initialement orientée autour '\
+                                   f'de la programmation informatique, la '\
+                                   f'plate-forme couvre depuis 2013 des '\
+                                   f'thématiques plus larges tels que le '\
+                                   f"marketing, l'entrepreneuriat et les "\
+                                   f'sciences.'
+                    }
+                ]
+            }
+        }
+        mockreturn = get_mockreturn('result_history')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
-        assert demand.get_history("montmartre") == resul_history
+        assert demand == result_history
 

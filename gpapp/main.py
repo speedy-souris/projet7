@@ -3,7 +3,7 @@
 
 from .chatdata import BehaviorData
 from .chatdata import BehaviorDatabase
-from .grandpyrobot import Answer
+from . import grandpyrobot
 from .user import Question
 from .chatdata import Chat
 from .answersearch import Research
@@ -40,38 +40,38 @@ def main(question):
     """
     # awaits the courtesy of the user
     dataDiscussion = BehaviorData()
-    grandpy = Answer()
+    grandpy = grandpyrobot
     user = Question(question, dataDiscussion)
     discussion = Chat(user, grandpy)
     dataDB = BehaviorDatabase()
     research = Research(discussion)
 
-    discussion.question('comprehension')
+    discussion.get_question('comprehension')
     if dataDiscussion.comprehension:
-        discussion.question('decency')
+        discussion.get_question('decency')
         if dataDiscussion.decency and not dataDiscussion.civility:
-            discussion.question('civility')
+            discussion.get_question('civility')
             if dataDiscussion.civility:
                 dataDiscussion.reset_behavior()
-                dataDiscussion.grandpy_response = discussion.answer('wait1')
+                dataDiscussion.grandpy_response = discussion.get_answer('wait1')
                 dataDiscussion.grandpy_code = ''
             else:
                 dataDiscussion.display_data(44)
-                dataDiscussion.grandpy_response = discussion.answer('mannerless')
+                dataDiscussion.grandpy_response = discussion.get_answer('mannerless')
                 dataDiscussion.grandpy_code = 'mannerless'
                 if dataDiscussion.nb_incivility >= 3:
                     dataDiscussion.nb_incility = 3
                 else:
                     dataDiscussion.nb_incivility += 1
         elif not dataDiscussion.decency:
-            dataDiscussion.grandpy_response = discussion.answer('disrespectful')
+            dataDiscussion.grandpy_response = discussion.get_answer('disrespectful')
             dataDiscussion.grandpy_code = 'disrespectful'
             if dataDiscussion.nb_indecency >= 3:
                 dataDiscussion.nb_indecency = 3
             else:
                 dataDiscussion.nb_indecency += 1
         else:
-            dataDiscussion.grandpy_response = discussion.answer('response')
+            dataDiscussion.grandpy_response = discussion.get_answer('response')
             if dataDiscussion.nb_request >= 10:
                 dataDiscussion.nb_request = 10
             else:
@@ -87,25 +87,25 @@ def main(question):
         dataDiscussion.nb_incomprehension += 1
 
     if dataDiscussion.nb_indecency >= 3:
-        dataDiscussion.grandpy_response = discussion.answer('indecency_limit')
+        dataDiscussion.grandpy_response = discussion.get_answer('indecency_limit')
         dataDiscussion.expiration_data()
 
     if dataDiscussion.nb_incomprehension >= 3:
         dataDiscussion.grandpy_response =\
-            discussion.answer('incomprehension_limit')
+            discussion.get_answer('incomprehension_limit')
         dataDiscussion.expiration_data()
 
     if dataDiscussion.nb_incivility >= 3:
-        dataDiscussion.grandpy_response = discussion.answer('incivility_limit')
+        dataDiscussion.grandpy_response = discussion.get_answer('incivility_limit')
         dataDiscussion.expiration_data()
     if dataDiscussion.nb_request >= 10:
-        dataDiscussion.grandpy_response = discussion.answer('wait1')
+        dataDiscussion.grandpy_response = discussion.get_answer('wait1')
         dataDiscussion.expiration_data()
 
     if dataDiscussion.nb_request > 0 and dataDiscussion.nb_request != 5\
         and dataDiscussion.decency and dataDiscussion.nb_request < 10\
         and dataDiscussion.comprehension:
-        dataDiscussion.grandpy_response = discussion.answer('response')
+        dataDiscussion.grandpy_response = discussion.get_answer('response')
         dataDiscussion.grandpy_code = 'response'
         
     elif dataDiscussion.nb_request == 5:

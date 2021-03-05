@@ -4,7 +4,7 @@
 import os
 import json
 import urllib.request, urllib.parse
-from . import googlemapsapi
+from . import googlemapsapi, wikimediaapi
 
 
 class KeyManagement:
@@ -23,7 +23,7 @@ class KeyManagement:
         self.key_value = {}
 
     @property
-    def keys(self):
+    def get_keys(self):
         """
             management of environment variables
             local and online
@@ -64,8 +64,8 @@ class Research:
         # ~ self.dataDiscussion = dataDiscussion
         self.map_status = {}
         self.keyManagement = KeyManagement()
-        self.keyMap = self.keyManagement.keys['map']
-        self.keyStatic = self.keyManagement.keys['staticMap']
+        self.keyMap = self.keyManagement.get_keys['map']
+        self.keyStatic = self.keyManagement.get_keys['staticMap']
 
     # address coordinate calculation
     def map_coordinates(self):
@@ -99,7 +99,7 @@ class Research:
             self.map_status['address'] = googlemapsapi.get_address(
                 place_id, self.KeyMap
             )
-            self.map_status['address']['parser'] = question
+            self.map_status['address']['parser'] = parse_answer
         return self.map_status
 
     # API return value
@@ -111,7 +111,7 @@ class Research:
         self.map_status['map'] = googlemapsapi.get_static(
             location_map, self.keyStatic
         )
-        # ~ self.map_status['history'] = self.get_history(location_map)
+        self.map_status['history'] = wikimediaapi.get_history(location_map)
         return self.map_status
 
 

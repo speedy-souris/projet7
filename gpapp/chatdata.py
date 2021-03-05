@@ -17,7 +17,7 @@ class BehaviorDatabase:
         """
             database initialization 
         """
-        self.statusProd = KeyManagement().keys['status_prod']
+        self.statusProd = KeyManagement().get_keys['status_prod']
         self.data = self.data_access
 
     #---------------------- CALCULATION AND PROPERTY -------------------
@@ -373,12 +373,12 @@ class Chat:
         self.grandpy = grandpy
 
     #-------------------- user behavior --------------------------------
-    def question(self, check):
-        return self.user.message(check)
+    def get_question(self, check):
+        return self.user.get_user_question(check)
 
     #------------------- grandpy robot behavior ------------------------
-    def answer(self, stage):
-        return self.grandpy.message(stage)
+    def get_answer(self, stage):
+        return self.grandpy.get_response_grandpy(stage)
 
 if __name__ == '__main__':
     pass

@@ -11,8 +11,8 @@ from ..answersearch import KeyManagement
 def get_api_data():
     api_key = KeyManagement()
     data  = {
-        'map_key': api_key.keys['map'],
-        'static_key': api_key.keys['staticMap'],
+        'map_key': api_key.get_keys['map'],
+        'static_key': api_key.get_keys['staticMap'],
         'bad_key': 0,
         'url': 'https://maps.googleapis.com/maps/api/staticmap',
         'position': 'center=',

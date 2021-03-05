@@ -181,7 +181,7 @@ class Question:
         
 #------------------------ Response User --------------------------------
 
-    def message(self, check):
+    def get_user_question(self, check):
         user_response = {
             'civility': self.user_civility,
             'decency': self.user_decency,
