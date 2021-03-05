@@ -7,12 +7,35 @@ import json
 from .. import googlemapsapi
 from ..answersearch import KeyManagement
 
-API_KEY = KeyManagement()
-MAP_KEY = API_KEY.keys['map']
-STATIC_KEY= API_KEY.keys['staticMap']
-BAD_KEY = 0
 
-def mock(result):
+def api_data():
+    api_key = KeyManagement()
+    data  = {
+        'map_key': api_key.keys['map'],
+        'static_key': api_key.keys['staticMap'],
+        'bad_key': 0,
+        'url': 'https://maps.googleapis.com/maps/api/staticmap',
+        'position': 'center=',
+        'zoom': 'zoom=18.5',
+        'size': 'size=600x300',
+        'type': 'maptype=roadmap',
+        'marker': 'markers=color:red%7Clabel:A%7C',
+        'key': 'key='
+    }
+    return data
+
+def get_url_static(address, key):
+    data = api_data()
+    url_static =\
+        f"{data['url']}?{data['position']}"\
+        f"{address['address']['result']['formatted_address']}"\
+        f"&{data['zoom']}&{data['size']}&{data['type']}&{data['marker']}"\
+        f"{address['address']['result']['geometry']['location']['lat']},"\
+        f"{address['address']['result']['geometry']['location']['lng']}&"\
+        f"{data['key']}{key}"
+    return url_static
+    
+def get_mockreturn(result):
     def mockreturn(request):
         """
             Mock function on api object
@@ -30,10 +53,19 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a file
             Json containing the reference ID of the address asked
         """
-        demand1 = googlemapsapi.get_place_id_list('openClassRooms', MAP_KEY)
-        demand2 = googlemapsapi.get_place_id_list('openClassRooms', BAD_KEY)
-        demand3 = googlemapsapi.get_place_id_list('openClassRooms', STATIC_KEY)
-        demand4 = googlemapsapi.get_place_id_list('rueopenClassRooms', MAP_KEY)
+        data = api_data()
+        demand1 = googlemapsapi.get_place_id_list(
+            'openClassRooms', data['map_key']
+        )
+        demand2 = googlemapsapi.get_place_id_list(
+            'openClassRooms', data['bad_key']
+        )
+        demand3 = googlemapsapi.get_place_id_list(
+        'openClassRooms', data['static_key']
+        )
+        demand4 = googlemapsapi.get_place_id_list(
+        'rueopenClassRooms', data['map_key']
+        )
         result_place_id1 = {
             'candidates': [{
                 'place_id': 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
@@ -54,16 +86,16 @@ class TestApiGoogle:
             'candidates': [],
             'status' : 'ZERO_RESULTS'
         }
-        mockreturn = mock('result_place_id1')
+        mockreturn = get_mockreturn('result_place_id1')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand1 == result_place_id1
-        mockreturn = mock('result_place_id2')
+        mockreturn = get_mockreturn('result_place_id2')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand2 == result_place_id2
-        mockreturn = mock('result_place_id3')
+        mockreturn = get_mockreturn('result_place_id3')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand3 == result_place_id3
-        mockreturn = mock('result_place_id4')
+        mockreturn = get_mockreturn('result_place_id4')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand4 == result_place_id4
 
@@ -73,12 +105,15 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a file
             Json containing the reference of the requested address
         """
+        data = api_data()
         place_id1 = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
         place_id2 = 'c8'
-        demand1 = googlemapsapi.get_address(place_id1, MAP_KEY)
-        demand2 = googlemapsapi.get_address(place_id1, BAD_KEY)
-        demand3 = googlemapsapi.get_address(place_id1, STATIC_KEY)
-        demand4 = googlemapsapi.get_address(place_id2, MAP_KEY)
+        
+        demand1 = googlemapsapi.get_address(place_id1, data['map_key'])
+        demand2 = googlemapsapi.get_address(place_id1, data['bad_key'])
+        demand3 = googlemapsapi.get_address(place_id1, data['static_key'])
+        demand4 = googlemapsapi.get_address(place_id2, data['map_key'])
+
         result_address1 = {
             'html_attributions': [],
             'result': {
@@ -107,16 +142,19 @@ class TestApiGoogle:
             'html_attributions': [],
             'status': 'INVALID_REQUEST'
         }
-        mockreturn = mock('result_address1')
+        mockreturn = get_mockreturn('result_address1')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand1 == result_address1
-        mockreturn = mock('result_address2')
+        
+        mockreturn = get_mockreturn('result_address2')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand2 == result_address2
-        mockreturn = mock('result_address3')
+
+        mockreturn = get_mockreturn('result_address3')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand3 == result_address3
-        mockreturn = mock('result_address4')
+
+        mockreturn = get_mockreturn('result_address4')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand4 == result_address4
 
@@ -126,6 +164,7 @@ class TestApiGoogle:
             Google Map A.P.I test function that returns a image static
             containing the reference ID of the address asked
         """
+        data = api_data()
         address1 = {
             'address': {
                 'result': {
@@ -146,45 +185,26 @@ class TestApiGoogle:
                 }
             }
         }
-        demand1 = googlemapsapi.get_static(address1, STATIC_KEY)
-        demand2 = googlemapsapi.get_static(address1, BAD_KEY)
-        demand3 = googlemapsapi.get_static(address1, MAP_KEY)
-        demand4 = googlemapsapi.get_static(address2, STATIC_KEY)
-        result_static1 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address1['address']['result']['formatted_address']}&zoom=18.5"\
-            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address1['address']['result']['geometry']['location']['lat']},"\
-            f"{address1['address']['result']['geometry']['location']['lng']}"\
-            f'&key={STATIC_KEY}'
-        result_static2 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address1['address']['result']['formatted_address']}&zoom=18.5"\
-            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address1['address']['result']['geometry']['location']['lat']},"\
-            f"{address1['address']['result']['geometry']['location']['lng']}"\
-            f'&key={BAD_KEY}'
-        result_static3 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address1['address']['result']['formatted_address']}&zoom=18.5"\
-            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address2['address']['result']['geometry']['location']['lat']},"\
-            f"{address1['address']['result']['geometry']['location']['lng']}"\
-            f'&key={MAP_KEY}'
-        result_static4 = 'https://maps.googleapis.com/maps/api/staticmap?center='\
-            f"{address2['address']['result']['formatted_address']}&zoom=18.5"\
-            f'&size=600x300&maptype=roadmap&markers=color:red%7Clabel:A%7C'\
-            f"{address2['address']['result']['geometry']['location']['lat']},"\
-            f"{address2['address']['result']['geometry']['location']['lng']}"\
-            f'&key={STATIC_KEY}'
+        demand1 = googlemapsapi.get_static(address1, data['static_key'])
+        demand2 = googlemapsapi.get_static(address1, data['bad_key'])
+        demand3 = googlemapsapi.get_static(address1, data['map_key'])
+        demand4 = googlemapsapi.get_static(address2, data['static_key'])
 
-        mockreturn = mock('result_static1')
+        result_static1 = get_url_static(address1, data['static_key'])
+        result_static2 = get_url_static(address1, data['bad_key'])
+        result_static3 = get_url_static(address1, data['map_key'])
+        result_static4 = get_url_static(address2, data['static_key'])
+
+        mockreturn = get_mockreturn('result_static1')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand1 == result_static1
-        mockreturn = mock('result_static2')
+        mockreturn = get_mockreturn('result_static2')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand2 == result_static2
-        mockreturn = mock('result_static3')
+        mockreturn = get_mockreturn('result_static3')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand3 == result_static3
-        mockreturn = mock('result_static4')
+        mockreturn = get_mockreturn('result_static4')
         monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
         assert demand4 == result_static4
 
