@@ -79,7 +79,7 @@ class Research:
             and wikipedia address history display setting
         """
         # keyword isolation for question
-        question = self.user.question('parser')
+        question = self.user.get_question('parser')
         parse_answer = urllib.parse.quote(question)
         place_id_dict = googlemapsapi.get_place_id_list(parse_answer, self.keyMap)
         # creation and test public key api google map

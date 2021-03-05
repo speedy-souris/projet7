@@ -1,7 +1,7 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-def get_response_grandpy(self, stage):
+def get_response_grandpy(stage):
     gp_message = {
         'incomprehension':\
             "Ha, Je ne comprends pas, essaye d'être plus précis ... !",
