@@ -12,12 +12,12 @@ def get_requests():
 
 def get_api_title(lat, lng):
     data = {
-        "format": "json",
-        "list": "geosearch",
-        "gscoord": f"{lat}|{lng}",
-        "gslimit": "10",
-        "gsradius": "10000",
-        "action": "query"
+        'format': 'json',
+        'list': 'geosearch',
+        'gscoord': f'{lat}|{lng}',
+        'gslimit': '10',
+        'gsradius': '10000',
+        'action': 'query'
     }
     return data
     
