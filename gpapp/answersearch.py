@@ -2,8 +2,7 @@
 #!/usr/bin/env python
 
 import os
-import json
-import urllib.request, urllib.parse
+import urllib.parse
 from . import googlemapsapi, wikimediaapi
 
 
@@ -81,7 +80,7 @@ class Research:
         # keyword isolation for question
         question = self.user.get_question('parser')
         parse_answer = urllib.parse.quote(question)
-        place_id_dict = googlemapsapi.get_place_id_list(parse_answer, self.keyMap)
+        place_id_dict = googlemapsapi.get_url_placeid(parse_answer, self.keyMap)
         # creation and test public key api google map
         try:
             place_id = place_id_dict['candidates'][0]['place_id']
@@ -96,7 +95,7 @@ class Research:
                 }
             }
         else:
-            self.map_status['address'] = googlemapsapi.get_address(
+            self.map_status['address'] = googlemapsapi.get_url_address(
                 place_id, self.KeyMap
             )
             self.map_status['address']['parser'] = parse_answer
@@ -108,10 +107,10 @@ class Research:
             return value of APIS Google Map and Wiki Media
         """
         location_map = self.map_coordinates()
-        self.map_status['map'] = googlemapsapi.get_static(
+        self.map_status['map'] = googlemapsapi.get_url_static(
             location_map, self.keyStatic
         )
-        self.map_status['history'] = wikimediaapi.get_history(location_map)
+        # ~ self.map_status['history'] = wikimediaapi.get_history(location_map)
         return self.map_status
 
 

@@ -1,52 +1,49 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-import urllib.request
-import json
+import requests
 
-def get_api_data():
+
+def get_requests():
+    request = {
+        'url1': 'https://maps.googleapis.com/maps/api/place/findplacefromtext/',
+        'url2': 'https://maps.googleapis.com/maps/api/place/details/',
+        'url3': 'https://maps.googleapis.com/maps/api/staticmap',
+        'session': requests.Session()
+    }
+    return request
+
+def get_api_data_placeid(title, key_api):
     data = {
-        'url': 'https://maps.googleapis.com/maps/api/',
-        'json': 'json',
-        'key_get_param': 'key=',
-        'find_place_text': 'place/findplacefromtext/',
-        'input_address': 'input=',
-        'type_get_input': 'inputtype=textquery',
-        'detail': 'place/details/',
-        'place_id': 'placeid=',
-        'get_fields': 'fields=formatted_address,geometry',
-        'static_map': 'staticmap',
-        'position': 'center=',
-        'get_zoom': 'zoom=18.5',
-        'get_size': 'size=600x300',
-        'type_get_map': 'maptype=roadmap',
-        'get_marker': 'markers=color:red%7Clabel:A%7C'
+        'format': 'json',
+        'key': f'{key_api}',
+        'input': f'{title}',
+        'inputtype': 'textquery'
+    }
+    return data
+
+def get_api_data_address(placeid, key_api):
+    data = {
+        'format': 'json',
+        'key': f'{key_api}',
+        'placeid': f'{placeid}',
+        'fields': 'formatted_address,geometry',
+    }
+    return data
+
+def get_api_data_static(address, localization, key_api):
+    data = {
+        'key': f'{key_api}'
+        'center': f"{address['address']['result']['formatted_address']}",
+        'zoom': '18.5',
+        'size': '600x300',
+        'maptype': 'roadmap',
+        'markers': f"color:red%7Clabel:A%7C{localization['lat']},\
+                   {localisation['lng']}"
     }
     return data
 
 def get_url_placeid(address, key_api):
-    data = get_api_data()
-    url = f"{data['url']}{data['find_place_text']}{data['json']}?"\
-        f"{data['input_address']}{address}&{data['type_get_input']}"\
-        f"&{data['key_get_param']}{key_api}"
-    return url
-
-def get_url_address(placeid, key_api):
-    data = get_api_data()
-    url = f"{data['url']}{data['detail']}{data['json']}?{data['place_id']}"\
-        f"{placeid}&{data['get_fields']}&{data['key_get_param']}{key_api}"
-    return url
-
-def get_url_static(address, localization, key_api):
-    data = get_api_data()
-    url = f"{data['url']}{data['static_map']}?{data['position']}"\
-        f"{address}&{data['get_zoom']}&{data['get_size']}"\
-        f"&{data['type_get_map']}&{data['get_marker']}{localization['lat']},"\
-        f"{localization['lng']}&{data['key_get_param']}{key_api}"
-    return url
-
-# place_id search on Google Map API
-def get_place_id_list(address, key_value):
     """
         Google map API place_id search function
     
@@ -77,15 +74,15 @@ def get_place_id_list(address, key_value):
        "status" : "ZERO_RESULTS"
     }
     """
-    place_id = urllib.request.urlopen(
-        get_url_placeid(address, key_value)
-    )
-    result = json.loads(place_id.read().decode('utf8'))
-    
-    return result
+    data = get_api_data_placeid(address, key_api)
+    request_data = get_requests()
+    url_api = request_data['url1']
+    request = request_data['session']
+    placeid_found = request.get(url=url_api, params=data)
+    url_placeid = placeid_found.json()
+    return url_placeid
 
-# address on Google Map API
-def get_address(place_id, key_value):
+def get_url_address(placeid, key_api):
     """
         Google map API address search with place_id function
         Result OK
@@ -118,25 +115,27 @@ def get_address(place_id, key_value):
            "status" : "INVALID_REQUEST"
         }
     """
-    address_found = urllib.request.urlopen(
-        get_url_address(place_id, key_value)
-    )
-    result = json.loads(address_found.read().decode('utf8'))
-    return result
+    data = get_api_data_address(placeid, key_api)
+    request_data = get_requests()
+    url_api = request_data['url2']
+    request = request_data['session']
+    address_found = request.get(url=url_api, params=data)
+    url_address = address_found.json()
+    return url_address
 
-# map static search on Google Map API
-def get_static(address, key_value):
+def get_url_static(address, key_api):
     """
         Display of the static map at the user's request
     """
-    display_address = address['address']['result']['formatted_address']
-    # longitude and latitude display
-    localization =\
-        address['address']['result']['geometry']['location']
-    # ~ # display map
-    display_map = get_url_static(display_address, localization, key_value)
-
-    return display_map 
+    address_data = address['address']['result']['formatted_address']
+    localization = address['address']['result']['geometry']['location']
+    data = get_api_data_static(address_data, localization, key_api)
+    request_data = get_requests()
+    url_api = request_data['url3']
+    request = request_data['session']
+    static_found = request.get(url=url_api, params=data)
+    url_static = static_found.json()
+    return url_static
 
 
 if __name__ == '__main__':
