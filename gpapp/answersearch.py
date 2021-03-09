@@ -3,7 +3,9 @@
 
 import os
 import urllib.parse
-from . import googlemapsapi, wikimediaapi
+
+from .googlemapsapi import ApiGoogleMaps
+from .wikimediaapi import ApiWikiMedia
 
 
 class KeyManagement:
@@ -57,17 +59,26 @@ class Research:
         """
             Initialization
                 objet user
-                objet datadiscussion
+                objet google map api
+                objet key api google
         """
         self.user = user
-        # ~ self.dataDiscussion = dataDiscussion
+        self.api_google = ApiGoogleMaps()
+        self.api_wiki = ApiWikiMedia()
         self.map_status = {}
         self.keyManagement = KeyManagement()
         self.keyMap = self.keyManagement.get_keys['map']
         self.keyStatic = self.keyManagement.get_keys['staticMap']
 
+    def import_params(self):
+        params = {
+            'api_google': self.api_google,
+            'api_wiki': self.api_wiki
+        }
+        return params
+
     # address coordinate calculation
-    def map_coordinates(self):
+    def map_coordinates(self, api_google):
         """
             calculating the coordinates of the question asked to grandpy
             Vars :
@@ -77,10 +88,12 @@ class Research:
             creation of api google map coordinate address display setting
             and wikipedia address history display setting
         """
+        user_question = self.user.get_question('parser')
+        api_key = self.keyMap
+        
         # keyword isolation for question
-        question = self.user.get_question('parser')
-        parse_answer = urllib.parse.quote(question)
-        place_id_dict = googlemapsapi.get_url_placeid(parse_answer, self.keyMap)
+        parse_answer = urllib.parse.quote(user_question)
+        place_id_dict = api_google.get_url_placeid(parse_answer, api_key)
         # creation and test public key api google map
         try:
             place_id = place_id_dict['candidates'][0]['place_id']
@@ -91,27 +104,35 @@ class Research:
                         'formatted_address': '',
                         'geometry': {'location': {'lat': 0, 'lng': 0}}
                     },
-                    'parser' : question
+                    'parser' : user_question
                 }
             }
         else:
-            self.map_status['address'] = googlemapsapi.get_url_address(
-                place_id, self.KeyMap
+            self.map_status['address'] = api_google.get_url_address(
+                place_id, api_key
             )
             self.map_status['address']['parser'] = parse_answer
-        return self.map_status
+
+        map_status = self.map_status
+        return map_status
 
     # API return value
-    def get_map(self):
+    def get_map_status(self):
         """
             return value of APIS Google Map and Wiki Media
         """
-        location_map = self.map_coordinates()
-        self.map_status['map'] = googlemapsapi.get_url_static(
+        choice_api = self.import_params()
+        api_google = choice_api['api_google']
+        api_wiki = choice_api['api_wiki']
+
+        location_map = self.map_coordinates(api_google)
+        self.map_status['map'] = api_google.get_url_static(
             location_map, self.keyStatic
         )
-        # ~ self.map_status['history'] = wikimediaapi.get_history(location_map)
-        return self.map_status
+        # ~ self.map_status['history'] = api_wiki.get_history(location_map)
+
+        map_status = self.map_status
+        return map_status
 
 
 if __name__ == '__main__':

@@ -3,58 +3,59 @@
 
 import requests
 
+
 class ApiGoogleMaps:
     """
-
+        management of Google APIs settings
     """
     def __init__(self):
-        self.url_api = ''
-        self.url_params = ''
+        self.url_api1 =\
+            'https://maps.googleapis.com/maps/api/place/findplacefromtext/'
+        self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/'
+        self.url_api3 = 'https://maps.googleapis.com/maps/api/staticmap'
+        self.request = requests.Session()
 
     @staticmethod
-    def get_api_urls():
-        urls = {
-            'url1': 'https://maps.googleapis.com/maps/api/place/findplacefromtext/',
-            'url2': 'https://maps.googleapis.com/maps/api/place/details/',
-            'url3': 'https://maps.googleapis.com/maps/api/staticmap'
-        }
-        return urls
-
-    @staticmethod
-    def get_api_data_placeid(title, key_api):
+    def get_data_placeid_api(title, key_api):
         data = {
             'format': 'json',
-            'key': key_api,
-            'input': title,
+            'key': f'{key_api}',
+            'input': f'{title}',
             'inputtype': 'textquery'
         }
         return data
 
     @staticmethod
-    def get_api_data_address(placeid, key_api):
+    def get_data_address_api(placeid, key_api):
         data = {
             'format': 'json',
-            'key': key_api,
-            'placeid': placeid,
+            'key': f'{key_api}',
+            'placeid': f'{placeid}',
             'fields': 'formatted_address,geometry',
         }
         return data
 
     @staticmethod
-    def get_api_data_static(address, localization, key_api):
+    def get_data_static_api(address, localization, key_api):
         markers_data = f"color:red%7Clabel:A%7C{localization['lat']},\
                        {localisation['lng']}"
         data = {
-            'key': key_api,
-            'center': address['address']['result']['formatted_address'],
+            'key': f'{key_api}',
+            'center': f"{address['address']['result']['formatted_address']}",
             'zoom': '18.5',
             'size': '600x300',
             'maptype': 'roadmap',
-            'markers': markers_data
+            'markers': f'{markers_data}'
         }
         return data
-    
-    def get_url_placeid(self, address, key_api):
+
+    def get_url_json(self, params, url):
+        request = self.request.get(url=url, params=params)
+        url = request.json()
+        print(f'\nrequest.text = {request.text}\n')
+        return url
+
+    def get_url_placeid_api(self, address, key_api):
         """
             Google map API place_id search function
         
@@ -85,15 +86,11 @@ class ApiGoogleMaps:
            "status" : "ZERO_RESULTS"
         }
         """
-        self.url_params = self.get_api_data_placeid(address, key_api)
-        urls_api = self.get_api_urls()
-        self.url_api = urls_api['url1']
-        request = requests.get(self.url_api, self.url_params)
-        url_placeid = request.json()
-        print(request)
-        return request.json()
+        params = self.get_data_placeid_api(address, key_api)
+        placeid_url = self.get_url_json(params, self.url_api1)
+        return placeid_url
     
-    def get_url_address(self, placeid, key_api):
+    def get_url_address_api(self, placeid, key_api):
         """
             Google map API address search with place_id function
             Result OK
@@ -126,33 +123,28 @@ class ApiGoogleMaps:
                "status" : "INVALID_REQUEST"
             }
         """
-        self.url_params = self.get_api_data_address(placeid, key_api)
-        urls_api = self.get_api_urls()
-        self.url_api = urls_api['url2']
-        request = requests.get(self.url_api, self.url_params)
-        url_address = request.json()
-        return url_address
+        params = self.get_data_address_api(placeid, key_api)
+        address_url = self.get_url_json(params, self.url_api2)
+        return address_url
     
-    def get_url_static(self, address, key_api):
+    def get_url_static_api(self, address, key_api):
         """
             Display of the static map at the user's request
         """
         address_data = address['address']['result']['formatted_address']
         localization = address['address']['result']['geometry']['location']
-        self.url_params = self.get_api_data_static(
+        params = self.get_data_static_api(
             address_data, localization, key_api
         )
-        urls_api = self.get_api_urls()
-        self.url_api = urls_api['url3']
-        request = requests.get(self.url_api, self.url_params)
-        url_static = request.json()
-        return url_static
+        static_url = self.get_url_json(params, self.url_api3)
+        return static_url
 
 
 if __name__ == '__main__':
-    from answersearch import KeyManagement
+    # ~ from answersearch import KeyManagement
 
-    keys_api = KeyManagement()
-    key_map = keys_api.get_keys['map']
-    api_google = ApiGoogleMaps()
-    api_google.get_url_placeid('OpenClassrooms', key_map)
+    # ~ keys_api = KeyManagement()
+    # ~ key_map = keys_api.get_keys['map']
+    # ~ api_google = ApiGoogleMaps()
+    # ~ api_google.get_url_placeid('OpenClassrooms', key_map)
+    pass
