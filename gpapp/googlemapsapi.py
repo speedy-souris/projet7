@@ -51,8 +51,8 @@ class ApiGoogleMaps:
 
     def get_url_json(self, params, url):
         request = self.request.get(url=url, params=params)
+        print(f'\nResquest.text = {request.text}')
         url = request.json()
-        print(f'\nrequest.text = {request.text}\n')
         return url
 
     def get_url_placeid_api(self, address, key_api):
