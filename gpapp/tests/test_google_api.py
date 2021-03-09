@@ -7,18 +7,6 @@ from ..googlemapsapi import ApiGoogleMaps
 from ..answersearch import KeyManagement
 
 
-def get_mockreturn(result):
-    def mock_get(url, params):
-        """
-            Mock function on api object
-        """
-        class JsonResponse:
-            @staticmethod
-            def json():
-                return result
-        return JsonResponse()
-    return mock_get
-
 class TestParamsImport:
     """
         configuration of imported modules
@@ -44,6 +32,22 @@ class TestParamsImport:
         }
         return params
 
+IMPORT_PARAMS = TestParamsImport()
+GOOGLE_KEY = IMPORT_PARAMS.keys_api
+GOOGLE_MAP = IMPORT_PARAMS.api_google
+
+def get_mockreturn(result):
+    def mock_get(url, params):
+        """
+            Mock function on api object
+        """
+        class JsonResponse:
+            @staticmethod
+            def json():
+                return result
+        return JsonResponse()
+    return mock_get
+
 # ~ def get_api_data_static(address, localization, key_api):
     # ~ data  = {
         # ~ 'center': f"{address['address']['result']['formatted_address']}",
@@ -65,26 +69,22 @@ class TestParamsImport:
     # ~ url_api = request_data['url']
     # ~ return url_static
 
-
-
-# google map API test on place id location
 def test_geolocal_id(monkeypatch):
     """
         Google Map A.P.I test function that returns a file
         Json containing the reference ID of the address asked
     """
-    import_params = TestParamsImport()
-    demand1 = import_params.api_google.get_url_placeid_api(
-        'openClassRooms', import_params.keys_api['map_key']
+    demand1 = GOOGLE_MAP.get_url_placeid_api(
+        'openClassRooms', GOOGLE_KEY['map_key']
     )
-    demand2 = import_params.api_google.get_url_placeid_api(
-        'openClassRooms', import_params.keys_api['bad_key']
+    demand2 = GOOGLE_MAP.get_url_placeid_api(
+        'openClassRooms', GOOGLE_KEY['bad_key']
     )
-    demand3 = import_params.api_google.get_url_placeid_api(
-    'openClassRooms', import_params.keys_api['static_key']
+    demand3 = GOOGLE_MAP.get_url_placeid_api(
+    'openClassRooms', GOOGLE_KEY['static_key']
     )
-    demand4 = import_params.api_google.get_url_placeid_api(
-    'rueopenClassRooms', import_params.keys_api['map_key']
+    demand4 = GOOGLE_MAP.get_url_placeid_api(
+    'rueopenClassRooms', GOOGLE_KEY['map_key']
     )
     result_place_id1 = {
         'candidates': [{
@@ -123,27 +123,25 @@ def test_geolocal_id(monkeypatch):
     monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand4 == result_place_id4
 
-# google map API test on address location
 def test_geolocal_address(monkeypatch):
     """
         Google Map A.P.I test function that returns a file
         Json containing the reference of the requested address
     """
-    import_params = TestParamsImport()
     place_id1 = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
     place_id2 = 'c8'
 
-    demand1 = import_params.api_google.get_url_address_api(
-        place_id1, import_params.keys_api['map_key']
+    demand1 = GOOGLE_MAP.get_url_address_api(
+        place_id1, GOOGLE_KEY['map_key']
     )
-    demand2 = import_params.api_google.get_url_address_api(
-        place_id1, import_params.keys_api['bad_key']
+    demand2 = GOOGLE_MAP.get_url_address_api(
+        place_id1, GOOGLE_KEY['bad_key']
     )
-    demand3 = import_params.api_google.get_url_address_api(
-        place_id1, import_params.keys_api['static_key']
+    demand3 = GOOGLE_MAP.get_url_address_api(
+        place_id1, GOOGLE_KEY['static_key']
     )
-    demand4 = import_params.api_google.get_url_address_api(
-        place_id2, import_params.keys_api['map_key']
+    demand4 = GOOGLE_MAP.get_url_address_api(
+        place_id2, GOOGLE_KEY['map_key']
     )
 
     result_address1 = {

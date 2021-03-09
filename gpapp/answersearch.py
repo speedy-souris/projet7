@@ -5,7 +5,7 @@ import os
 import urllib.parse
 
 from .googlemapsapi import ApiGoogleMaps
-# ~ from .wikimediaapi import ApiWikiMedia
+from .wikimediaapi import ApiWikiMedia
 
 
 class KeyManagement:
@@ -78,7 +78,7 @@ class Research:
         return params
 
     # address coordinate calculation
-    def map_coordinates(self, api_google):
+    def map_coordinates(self, googleMap):
         """
             calculating the coordinates of the question asked to grandpy
             Vars :
@@ -89,11 +89,11 @@ class Research:
             and wikipedia address history display setting
         """
         user_question = self.user.get_question('parser')
-        api_key = self.keyMap
+        googleMap_key = self.keyMap
         
         # keyword isolation for question
         parse_answer = urllib.parse.quote(user_question)
-        place_id_dict = api_google.get_url_placeid(parse_answer, api_key)
+        place_id_dict = api_google.get_url_placeid(parse_answer, googleMap_key)
         # creation and test public key api google map
         try:
             place_id = place_id_dict['candidates'][0]['place_id']
@@ -108,8 +108,8 @@ class Research:
                 }
             }
         else:
-            self.map_status['address'] = api_google.get_url_address(
-                place_id, api_key
+            self.map_status['address'] = googleMap.get_url_address(
+                place_id, google_key
             )
             self.map_status['address']['parser'] = parse_answer
 
@@ -122,14 +122,15 @@ class Research:
             return value of APIS Google Map and Wiki Media
         """
         choice_api = self.import_params()
-        api_google = choice_api['api_google']
-        api_wiki = choice_api['api_wiki']
+        googleMap = choice_api['api_google']
+        wikiMedia = choice_api['api_wiki']
+        googleMapStatic_key = self.keyStatic
 
-        location_map = self.map_coordinates(api_google)
-        self.map_status['map'] = api_google.get_url_static(
-            location_map, self.keyStatic
+        location_map = self.map_coordinates(googleMap)
+        self.map_status['map'] = googleMap.get_url_static(
+            location_map, googleMapStatic_key
         )
-        # ~ self.map_status['history'] = api_wiki.get_history(location_map)
+        # ~ self.map_status['history'] = wikiMedia.get_history(location_map)
 
         map_status = self.map_status
         return map_status

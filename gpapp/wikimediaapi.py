@@ -10,7 +10,7 @@ class ApiWikiMedia:
     """
     def __init__(self):
         self.url_api = 'https://fr.wikipedia.org/w/api.php'
-        self.request = requests.Session()
+        self.request = requests
 
     @staticmethod
     def get_localization_data(lat, lng):
@@ -74,41 +74,6 @@ class ApiWikiMedia:
         address_url = self.get_url_json(params)
         return address_url
 
-    # ~ # history search on wikimedia API
-    # ~ def get_history(search_history):
-        # ~ """
-            # ~ wikipedia API (Wikimedia) history search
-            # ~ {
-                # ~ "batchcomplete": True,
-                # ~ "query": {
-                    # ~ "pages": [
-                        # ~ {
-                            # ~ "pageid": 4338589,
-                            # ~ "ns": 0,
-                            # ~ "title": "OpenClassrooms",
-                            # ~ "extract": "OpenClassrooms est un site web de formation..."
-                        # ~ }
-                    # ~ ]
-                # ~ }
-            # ~ }
-        # ~ """
-        # ~ # display history
-        # ~ history_found = urllib.request.urlopen(get_url(search_history))
-        # ~ result = json.loads(history_found.read().decode('utf8'))
-        
-        # ~ if result['query']['pages'][0]['extract'] != '':
-            # ~ return result
-        # ~ # replacing space by "% 20" in the string of characters
-        # ~ history_encode = urllib.parse.quote(
-            # ~ search_history['address']['parser']
-        # ~ )
-        # display history
-        # ~ history_found = urllib.request.urlopen(get_url(history_encode))
-        # ~ result = json.loads(history_found.read().decode('utf8'))
-        # ~ if result[3] != []:
-            # ~ return result[3]
-        # ~ else:
-            # ~ return ['',[], [], []]
 
 if __name__ == '__main__':
     pass

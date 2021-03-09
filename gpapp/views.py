@@ -2,12 +2,13 @@
 #!/usr/bin/env python
 
 import time
+
 from flask import Flask, render_template
 from .chatdata import BehaviorDatabase
 from .main import main
 
-app = Flask(__name__)
 
+app = Flask(__name__)
 
 # main function for displaying answers
 @app.route('/')
