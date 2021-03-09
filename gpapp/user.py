@@ -1,9 +1,6 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-import os
-
-# question organization
 class Question:
     """
         organization of the user's question
@@ -163,7 +160,6 @@ class Question:
         self.dataDiscussion.comprehension = result
         return result
 
-    # parser
     def parser(self, list_question=''):
         """
             function that cuts the string of characters (question asked to GrandPy)

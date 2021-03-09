@@ -3,7 +3,9 @@
 
 import os
 import redis
+
 from .answersearch import KeyManagement 
+
 
 class BehaviorDatabase:
     """
