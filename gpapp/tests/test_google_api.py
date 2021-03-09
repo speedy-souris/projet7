@@ -1,21 +1,23 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-# ~ import requests
+import requests
+
 from ..googlemapsapi import ApiGoogleMaps
 from ..answersearch import KeyManagement
 
 
-def mockreturn(result):
-    def mock(url, params):
+def get_mockreturn(result):
+    def mock_get(url, params):
         """
             Mock function on api object
         """
         class JsonResponse:
-            def json(self):
+            @staticmethod
+            def json():
                 return result
         return JsonResponse()
-    return mock
+    return mock_get
 
 class TestParamsImport:
     """
@@ -105,20 +107,20 @@ def test_geolocal_id(monkeypatch):
         'status' : 'ZERO_RESULTS'
     }
 
-    mockreturn = mockreturn('result_place_id1')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_place_id1')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand1 == result_place_id1
 
-    mockreturn = mockreturn('result_place_id2')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_place_id2')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand2 == result_place_id2
 
-    mockreturn = mockreturn('result_place_id3')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_place_id3')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand3 == result_place_id3
 
-    mockreturn = mockreturn('result_place_id4')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_place_id4')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand4 == result_place_id4
 
 # google map API test on address location
@@ -172,20 +174,20 @@ def test_geolocal_address(monkeypatch):
         'html_attributions': [],
         'status': 'INVALID_REQUEST'
     }
-    mockreturn = mockreturn('result_address1')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_address1')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand1 == result_address1
     
-    mockreturn = mockreturn('result_address2')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_address2')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand2 == result_address2
 
-    mockreturn = mockreturn('result_address3')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_address3')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand3 == result_address3
 
-    mockreturn = mockreturn('result_address4')
-    monkeypatch.setattr(requests.get, mockreturn)
+    mockreturn = get_mockreturn('result_address4')
+    monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand4 == result_address4
 
     # google map API test on map static

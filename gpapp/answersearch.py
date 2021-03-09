@@ -5,7 +5,7 @@ import os
 import urllib.parse
 
 from .googlemapsapi import ApiGoogleMaps
-from .wikimediaapi import ApiWikiMedia
+# ~ from .wikimediaapi import ApiWikiMedia
 
 
 class KeyManagement:

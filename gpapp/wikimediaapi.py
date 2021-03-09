@@ -111,7 +111,4 @@ class ApiWikiMedia:
             # ~ return ['',[], [], []]
 
 if __name__ == '__main__':
-    # ~ api_wiki = ApiWikiMedia()
-    # ~ address = api_wiki.get_page_url('OpenClassrooms')
-    # ~ print(address['query']['pages'][0]['extract'])
     pass

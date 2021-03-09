@@ -10,15 +10,14 @@ class ApiGoogleMaps:
     """
     def __init__(self):
         self.url_api1 =\
-            'https://maps.googleapis.com/maps/api/place/findplacefromtext/'
-        self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/'
+            'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
+        self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/json'
         self.url_api3 = 'https://maps.googleapis.com/maps/api/staticmap'
-        self.request = requests.Session()
+        self.request = requests
 
     @staticmethod
     def get_data_placeid_api(title, key_api):
         data = {
-            'format': 'json',
             'key': f'{key_api}',
             'input': f'{title}',
             'inputtype': 'textquery'
@@ -28,7 +27,6 @@ class ApiGoogleMaps:
     @staticmethod
     def get_data_address_api(placeid, key_api):
         data = {
-            'format': 'json',
             'key': f'{key_api}',
             'placeid': f'{placeid}',
             'fields': 'formatted_address,geometry',
@@ -50,8 +48,7 @@ class ApiGoogleMaps:
         return data
 
     def get_url_json(self, params, url):
-        request = self.request.get(url=url, params=params)
-        print(f'\nResquest.text = {request.text}')
+        request = self.request.get(url, params=params)
         url = request.json()
         return url
 
@@ -141,10 +138,4 @@ class ApiGoogleMaps:
 
 
 if __name__ == '__main__':
-    # ~ from answersearch import KeyManagement
-
-    # ~ keys_api = KeyManagement()
-    # ~ key_map = keys_api.get_keys['map']
-    # ~ api_google = ApiGoogleMaps()
-    # ~ api_google.get_url_placeid('OpenClassrooms', key_map)
     pass
