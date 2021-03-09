@@ -1,19 +1,33 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-import urllib.request
-from io import BytesIO
-import json
-from .. import wikimediaapi
+import requests
+
+from ..wikimediaapi import ApiWikiMedia
+
+
+class TestParamsImport:
+    """
+        configuration of imported modules
+    """
+    def __init__(self):
+        self.api_wiki = ApiWikiMedia()
+
+PARAMS = TestParamsImport()
+WIKIMEDIA = PARAMS.api_wiki
 
 def get_mockreturn(result):
-    def mockreturn(request):
+    def mock_get(url, params):
         """
             Mock function on api object
         """
-        return BytesIO(json.dumps(result).encode())
-    return mockreturn
- 
+        class JsonResponse:
+            @staticmethod
+            def json():
+                return result
+        return JsonResponse()
+    return mock_get
+
 class TestApiWikiMedia:
     """
         management of APi parameters test 
@@ -23,7 +37,7 @@ class TestApiWikiMedia:
             A.P.I wikipedia test function (wikimedia) that returns a file
             Json containing the history of the requested address
         """
-        demand = wikimediaapi.get_history('OpenClassrooms')
+        demand = WIKIMEDIA.get_page_url('OpenClassrooms')
         result_history = {
             'batchcomplete': True,
             'query': {
@@ -55,6 +69,6 @@ class TestApiWikiMedia:
             }
         }
         mockreturn = get_mockreturn('result_history')
-        monkeypatch.setattr(urllib.request, 'urlopen', mockreturn)
+        monkeypatch.setattr(requests, 'get', mockreturn)
         assert demand == result_history
 
