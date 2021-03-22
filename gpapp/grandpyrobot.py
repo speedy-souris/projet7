@@ -2,6 +2,9 @@
 #!/usr/bin/env python
 
 def get_response_grandpy(stage):
+    """
+        grandpy's message for each user behavior
+    """
     gp_message = {
         'incomprehension':\
             "Ha, Je ne comprends pas, essaye d'être plus précis ... !",
@@ -19,7 +22,3 @@ def get_response_grandpy(stage):
         'wait1': "Bonjour Mon petit, en quoi puis-je t'aider ?"
     }
     return gp_message[stage]
-
-    
-
-

@@ -1,35 +1,33 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-from .chatdata import BehaviorData
-from .chatdata import BehaviorDatabase
-from . import grandpyrobot
-from .user import Question
-from .chatdata import Chat
-from .answersearch import Research
+import chatdata
+import grandpyrobot
+import user
+import answersearch
 
-def checkout_comprehension(discussion):
-    """
-        check the understanding of the question
-    """
-    dataDiscussion.get_reset_behavior()
-    comprehension = discussion.get_question('comprehension')
-    return comprenhension
 
-def checkout_dencency(discussion):
-    """
-        check the decency of the question
-    """
-    decency = discussion.get_question('decency')
-    return decency
+# ~ def checkout_comprehension(discussion):
+    # ~ """
+        # ~ check the understanding of the question
+    # ~ """
+    # ~ data_discussion.get_reset_behavior()
+    # ~ comprehension = discussion.get_question('comprehension')
+    # ~ return comprenhension
 
-def checkout_civility(discussion):
-    """
-        check the civility of the question
-    """
-    decency = discussion.get_question('decency')
-    return decency
+# ~ def checkout_dencency(discussion):
+    # ~ """
+        # ~ check the decency of the question
+    # ~ """
+    # ~ decency = discussion.get_question('decency')
+    # ~ return decency
 
+# ~ def checkout_civility(discussion):
+    # ~ """
+        # ~ check the civility of the question
+    # ~ """
+    # ~ decency = discussion.get_question('decency')
+    # ~ return decency
 
 # script execution
 def main(question):
@@ -39,87 +37,87 @@ def main(question):
         and without coarseness
     """
     # awaits the courtesy of the user
-    dataDiscussion = BehaviorData()
+    _chatdata = chatdata
+    data_discussion = _chatdata.BehaviorData()
     grandpy = grandpyrobot
-    user = Question(question, dataDiscussion)
-    discussion = Chat(user, grandpy)
-    dataDB = BehaviorDatabase()
-    research = Research(discussion)
+    _user = user.Question(question, data_discussion)
+    discussion = _chatdata.Chat(_user, grandpy)
+    data_db = _chatdata.BehaviorDatabase()
+    research = answersearch.get_from_map_status(discussion, question)
 
     discussion.get_question('comprehension')
-    if dataDiscussion.comprehension:
+    if data_discussion.comprehension:
         discussion.get_question('decency')
-        if dataDiscussion.decency and not dataDiscussion.civility:
+        if data_discussion.decency and not data_discussion.civility:
             discussion.get_question('civility')
-            if dataDiscussion.civility:
-                dataDiscussion.get_reset_behavior()
-                dataDiscussion.grandpy_response = discussion.get_answer('wait1')
-                dataDiscussion.grandpy_code = ''
+            if data_discussion.civility:
+                data_discussion.get_reset_behavior()
+                data_discussion.grandpy_response = discussion.get_answer('wait1')
+                data_discussion.grandpy_code = ''
             else:
-                dataDiscussion.display_data(44)
-                dataDiscussion.grandpy_response = discussion.get_answer('mannerless')
-                dataDiscussion.grandpy_code = 'mannerless'
-                if dataDiscussion.nb_incivility >= 3:
-                    dataDiscussion.nb_incility = 3
+                data_discussion.get_display_data(44)
+                data_discussion.grandpy_response = discussion.get_answer('mannerless')
+                data_discussion.grandpy_code = 'mannerless'
+                if data_discussion.nb_incivility >= 3:
+                    data_discussion.nb_incility = 3
                 else:
-                    dataDiscussion.nb_incivility += 1
-        elif not dataDiscussion.decency:
-            dataDiscussion.grandpy_response = discussion.get_answer('disrespectful')
-            dataDiscussion.grandpy_code = 'disrespectful'
-            if dataDiscussion.nb_indecency >= 3:
-                dataDiscussion.nb_indecency = 3
+                    data_discussion.nb_incivility += 1
+        elif not data_discussion.decency:
+            data_discussion.grandpy_response = discussion.get_answer('disrespectful')
+            data_discussion.grandpy_code = 'disrespectful'
+            if data_discussion.nb_indecency >= 3:
+                data_discussion.nb_indecency = 3
             else:
-                dataDiscussion.nb_indecency += 1
+                data_discussion.nb_indecency += 1
         else:
-            dataDiscussion.grandpy_response = discussion.get_answer('response')
-            if dataDiscussion.nb_request >= 10:
-                dataDiscussion.nb_request = 10
+            data_discussion.grandpy_response = discussion.get_answer('response')
+            if data_discussion.nb_request >= 10:
+                data_discussion.nb_request = 10
             else:
-                dataDiscussion.nb_request += 1
-            if dataDiscussion.nb_request == 5:
-                dataDiscussion.grandpy_code = 'tired'
+                data_discussion.nb_request += 1
+            if data_discussion.nb_request == 5:
+                data_discussion.grandpy_code = 'tired'
             else:
-                dataDiscussion.grandpy_code = 'response'
+                data_discussion.grandpy_code = 'response'
     else:
-        dataDiscussion.grandpy_response =\
-            discussion.answer('incomprehension')
-        dataDiscussion.grandpy_code = 'incomprehension'
-        dataDiscussion.nb_incomprehension += 1
+        data_discussion.grandpy_response =\
+            discussion.get_answer('incomprehension')
+        data_discussion.grandpy_code = 'incomprehension'
+        data_discussion.nb_incomprehension += 1
 
-    if dataDiscussion.nb_indecency >= 3:
-        dataDiscussion.grandpy_response = discussion.get_answer('indecency_limit')
-        dataDiscussion.expiration_data()
+    if data_discussion.nb_indecency >= 3:
+        data_discussion.grandpy_response = discussion.get_answer('indecency_limit')
+        data_discussion.expiration_data()
 
-    if dataDiscussion.nb_incomprehension >= 3:
-        dataDiscussion.grandpy_response =\
+    if data_discussion.nb_incomprehension >= 3:
+        data_discussion.grandpy_response =\
             discussion.get_answer('incomprehension_limit')
-        dataDiscussion.expiration_data()
+        data_discussion.expiration_data()
 
-    if dataDiscussion.nb_incivility >= 3:
-        dataDiscussion.grandpy_response = discussion.get_answer('incivility_limit')
-        dataDiscussion.expiration_data()
-    if dataDiscussion.nb_request >= 10:
-        dataDiscussion.grandpy_response = discussion.get_answer('wait1')
-        dataDiscussion.expiration_data()
+    if data_discussion.nb_incivility >= 3:
+        data_discussion.grandpy_response = discussion.get_answer('incivility_limit')
+        data_discussion.expiration_data()
+    if data_discussion.nb_request >= 10:
+        data_discussion.grandpy_response = discussion.get_answer('wait1')
+        data_discussion.expiration_data()
 
-    if dataDiscussion.nb_request > 0 and dataDiscussion.nb_request != 5\
-        and dataDiscussion.decency and dataDiscussion.nb_request < 10\
-        and dataDiscussion.comprehension:
-        dataDiscussion.grandpy_response = discussion.get_answer('response')
-        dataDiscussion.grandpy_code = 'response'
-        
-    elif dataDiscussion.nb_request == 5:
-        dataDiscussion.nb_request += 1
+    if data_discussion.nb_request > 0 and data_discussion.nb_request != 5\
+        and data_discussion.decency and data_discussion.nb_request < 10\
+        and data_discussion.comprehension:
+        data_discussion.grandpy_response = discussion.get_answer('response')
+        data_discussion.grandpy_code = 'response'
 
-    display_response = research.get_map()
-    dataDB.update_dataBase()
+    elif data_discussion.nb_request == 5:
+        data_discussion.nb_request += 1
 
-    if dataDiscussion.quotas:
-        dataDB.expiry_request()
+    display_response = research.get_from_map_status()
+    data_db.get_update_dataBase()
 
-    return dataDiscussion, display_response
+    if data_discussion.quotas:
+        data_db.expiry_request()
+
+    return data_discussion, display_response
 
 
 if __name__ == '__main__':
     pass
-

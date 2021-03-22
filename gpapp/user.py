@@ -33,9 +33,9 @@ class Question:
         'autre','autrefois','autrement','autres','autrui','aux','auxquelles',
         'auxquels','avaient','avais','avait','avant','avec','avoir','avons','ayant',
         'b','bah','bas','basee','bat','beau','beaucoup','bien','bigre','bonjour',
-        'bonjour grandpy','bonjour grandPy\, comment vas tu','bonsoir grandpy','boum',
-        'bravo','brrr','c','car','ce','ceci','cela','celle','celle-ci','celle-là',
-        'celles','celles-ci','celles-là','celui','celui-ci','celui-là','cent',
+        'bonjour grandpy','comment vas tu','bonsoir grandpy','boum', 'bravo','brrr',
+        'c','car','ce','ceci','cela','celle','celle-ci','celle-là', 'celles',
+        'celles-ci','celles-là','celui','celui-ci','celui-là','cent',
         'centenaire senille','cependant','certain','certaine','certaines','certains',
         'certes','ces','cet','cette','ceux','ceux-ci','ceux-là','chacun','chacune',
         'chaque','cher','chers','chez','chiche','chut','chère','chères','ci','cinq',
@@ -103,13 +103,13 @@ class Question:
         ]
     )
 #---------------- constructor ------------------------------------------
-    def __init__(self, question, dataDiscussion):
+    def __init__(self, question, data_discussion):
         """
             constructor
                 organization of the user's question
         """
         self.question = question
-        self.dataDiscussion = dataDiscussion
+        self.data_discussion = data_discussion
 
 #----------------- user behavior check ---------------------------------
 
@@ -125,7 +125,7 @@ class Question:
             w for w in user_answer if w.lower() in self.DONNEE_CIVILITY
             ]
         )
-        self.dataDiscussion.civility = result
+        self.data_discussion.civility = result
         return result
 
     def user_decency(self):
@@ -140,7 +140,7 @@ class Question:
             w for w in user_answer if w.lower() not in self.INDECENCY_LIST
             ]
         )
-        self.dataDiscussion.decency = result
+        self.data_discussion.decency = result
         return result
 
     def user_comprehension(self):
@@ -157,7 +157,7 @@ class Question:
                 or w.lower() in self.UNNECESSARY_LIST
             ]
         )
-        self.dataDiscussion.comprehension = result
+        self.data_discussion.comprehension = result
         return result
 
     def parser(self, list_question=''):
@@ -174,7 +174,7 @@ class Question:
         ]
         message = ' '.join(result)
         return message
-        
+
 #------------------------ Response User --------------------------------
 
     def get_user_question(self, check):

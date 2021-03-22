@@ -1,0 +1,137 @@
+#coding:utf-8
+#!/usr/bin/env python
+"""
+    API internal data processing module
+"""
+import os
+import requests
+
+
+class ApiGoogleMaps:
+    """
+        management of Google APIs settings
+    """
+    def __init__(self):
+        self.url_api1 =\
+            'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
+        self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/json'
+        self.url_api3 = 'https://maps.googleapis.com/maps/api/staticmap'
+        self.key_value = {}
+        self.keymap = self.get_keys['map']
+        self.keystatic = self.get_keys['staticMap']
+
+    @property
+    def get_keys(self):
+        """
+            management of environment variables
+            local and online
+                - key_value["map"]         ==> =|
+                - key_value["staticMap"]   ==> =|- private keys for Google APIs
+                                                  (local or online)
+                - key_value["status_prod"] ==> boolean for data database
+                                              data_dataion method
+        """
+        # keys for local use (Dev)
+        if os.environ.get('HEROKU_KEY_API_MAP') is None:
+            self.key_value = {
+                'map': os.getenv('KEY_API_MAP'),
+                'staticMap': os.getenv('KEY_API_STATIC_MAP'),
+                'status_prod': False
+            }
+        # keys for online use (Prod)
+        else:
+            self.key_value = {
+                'map': os.getenv('HEROKU_KEY_API_MAP'),
+                'staticMap': os.getenv('HEROKU_KEY_API_STATIC_MAP'),
+                'status_prod': True
+            }
+        return self.key_value
+
+    def get_from_data_placeid_api(self, title):
+        """
+            determining placeid for the address found
+        """
+        key = self.keymap
+        data = {
+            'input': f'{title}',
+            'inputtype': 'textquery',
+            'key': f'{key}'
+        }
+        return data
+
+    def get_from_data_address_api(self, placeid):
+        """
+            determining the localized address for the found placeid
+        """
+        key = self.keymap
+        data = {
+            'placeid': f'{placeid}',
+            'fields': 'formatted_address,geometry',
+            'key': f'{key}'
+        }
+        return data
+
+    def get_from_data_static_api(self, address, localization):
+        """
+            determination of the static map for the address found
+        """
+        key = self.keystatic
+        markers_data =\
+            f"color:red|label:A|{localization['lat']},"\
+            f"{localization['lng']}"
+        data = {
+            'center': f'{address}',
+            'zoom': '18.5',
+            'size': '600x300',
+            'maptype': 'roadmap',
+            'markers': f'{markers_data}',
+            'key': f'{key}'
+        }
+        return data
+
+class ApiWikiMedia:
+    """
+        management of wikimedia APIs settings
+    """
+    def __init__(self):
+        self.url_api = 'https://fr.wikipedia.org/w/api.php'
+
+    @staticmethod
+    def get_from_localization_data_api(lat, lng):
+        """
+            data for wiki page localization url
+        """
+        data = {
+            'action': 'query',
+            'list': 'geosearch',
+            'gscoord': f'{lat}|{lng}',
+            'gslimit': '10',
+            'gsradius': '10000',
+            'format': 'json'
+        }
+        return data
+
+    @staticmethod
+    def get_from_page_data_api(title):
+        """
+            data for wiki page content url
+        """
+        data = {
+            'action': 'query',
+            'titles': f'{title}',
+            'prop': 'extracts',
+            'formatversion': '2',
+            'exsentences': '5',
+            'exlimit': '1',
+            'explaintext': '1',
+            'format': 'json'
+        }
+        return data
+
+def get_from_url_json(url, params):
+    """
+        conversion of the address found in JSON format
+    """
+    request = requests.get(url, params=params)
+    url = request.json()
+    return url

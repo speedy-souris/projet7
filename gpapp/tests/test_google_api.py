@@ -3,24 +3,24 @@
 
 import requests
 
-from ..googlemapsapi import ApiGoogleMaps
-from ..answersearch import KeyManagement
+from ..apis.dataapi import ApiGoogleMaps
+from ..apis.answersearch import KeyManagement
 
 
-class TestParamsImport:
+class TestParamsImport(KeyManagement):
     """
         configuration of imported modules
     """
     def __init__(self):
+        super().__init__()
         self.params = self.test_import_params()
         self.keys_api = self.params['keys_api_value']
         self.api_google = self.params['api_module']
 
     def test_api_keys(self):
-        api_key = KeyManagement()
         keys_api_Google_map = {
-            'map_key': api_key.get_keys['map'],
-            'static_key': api_key.get_keys['staticMap'],
+            'map_key': self.get_keys['map'],
+            'static_key': self.get_keys['staticMap'],
             'bad_key': 0
         }
         return keys_api_Google_map
@@ -48,42 +48,21 @@ def get_mockreturn(result):
         return JsonResponse()
     return mock_get
 
-# ~ def get_api_data_static(address, localization, key_api):
-    # ~ data  = {
-        # ~ 'center': f"{address['address']['result']['formatted_address']}",
-        # ~ 'zoom': '18.5',
-        # ~ 'size': '600x300',
-        # ~ 'maptype': 'roadmap',
-        # ~ 'markers': f"color:red%7Clabel:A%7C{localization['lat']},\
-                   # ~ {localisation['lng']}",
-        # ~ 'key': f'{key_api}'
-    # ~ }
-    # ~ return data
-
-# ~ def get_url_static(address, key_api):
-    # ~ address_data = address['address']['result']['formatted_address']
-    # ~ localization = address['address']['result']['geometry']['location']
-    
-    # ~ data = get_api_data_static(address_data, localization, key_api)
-    
-    # ~ url_api = request_data['url']
-    # ~ return url_static
-
 def test_geolocal_id(monkeypatch):
     """
         Google Map A.P.I test function that returns a file
         Json containing the reference ID of the address asked
     """
-    demand1 = GOOGLE_MAP.get_url_placeid_api(
+    demand1 = GOOGLE_MAP.get_from_url_placeid_api(
         'openClassRooms', GOOGLE_KEY['map_key']
     )
-    demand2 = GOOGLE_MAP.get_url_placeid_api(
+    demand2 = GOOGLE_MAP.get_from_url_placeid_api(
         'openClassRooms', GOOGLE_KEY['bad_key']
     )
-    demand3 = GOOGLE_MAP.get_url_placeid_api(
+    demand3 = GOOGLE_MAP.get_from_url_placeid_api(
     'openClassRooms', GOOGLE_KEY['static_key']
     )
-    demand4 = GOOGLE_MAP.get_url_placeid_api(
+    demand4 = GOOGLE_MAP.get_from_url_placeid_api(
     'rueopenClassRooms', GOOGLE_KEY['map_key']
     )
     result_place_id1 = {
@@ -106,7 +85,6 @@ def test_geolocal_id(monkeypatch):
         'candidates': [],
         'status' : 'ZERO_RESULTS'
     }
-
     mockreturn = get_mockreturn('result_place_id1')
     monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand1 == result_place_id1
@@ -131,19 +109,18 @@ def test_geolocal_address(monkeypatch):
     place_id1 = 'ChIJIZX8lhRu5kcRGwYk8Ce3Vc8'
     place_id2 = 'c8'
 
-    demand1 = GOOGLE_MAP.get_url_address_api(
+    demand1 = GOOGLE_MAP.get_from_url_address_api(
         place_id1, GOOGLE_KEY['map_key']
     )
-    demand2 = GOOGLE_MAP.get_url_address_api(
+    demand2 = GOOGLE_MAP.get_from_url_address_api(
         place_id1, GOOGLE_KEY['bad_key']
     )
-    demand3 = GOOGLE_MAP.get_url_address_api(
+    demand3 = GOOGLE_MAP.get_from_url_address_api(
         place_id1, GOOGLE_KEY['static_key']
     )
-    demand4 = GOOGLE_MAP.get_url_address_api(
+    demand4 = GOOGLE_MAP.get_from_url_address_api(
         place_id2, GOOGLE_KEY['map_key']
     )
-
     result_address1 = {
         'html_attributions': [],
         'result': {
@@ -187,56 +164,6 @@ def test_geolocal_address(monkeypatch):
     mockreturn = get_mockreturn('result_address4')
     monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand4 == result_address4
-
-    # google map API test on map static
-    # ~ def test_geolocal_static(self, monkeypatch):
-        # ~ """
-            # ~ Google Map A.P.I test function that returns a image static
-            # ~ containing the reference ID of the address asked
-        # ~ """
-        # ~ data = get_requests()
-        # ~ address1 = {
-            # ~ 'address': {
-                # ~ 'result': {
-                    # ~ 'formatted_address': '10QuaidelaCharente,75019Paris,France',
-                    # ~ 'geometry': {
-                        # ~ 'location': {'lat': 48.8975156, 'lng': 2.3833993}
-                    # ~ }
-                # ~ }
-            # ~ }
-        # ~ }
-        # ~ address2 = {
-            # ~ 'address': {
-                # ~ 'result': {
-                    # ~ 'formatted_address': 'rueopenClassRooms',
-                    # ~ 'geometry': {
-                        # ~ 'location': {'lat': 48.8975156, 'lng': 2.3833993}
-                    # ~ }
-                # ~ }
-            # ~ }
-        # ~ }
-        # ~ demand1 = googlemapsapi.get_url_static(address1, data['static_key'])
-        # ~ demand2 = googlemapsapi.get_url_static(address1, data['bad_key'])
-        # ~ demand3 = googlemapsapi.get_url_static(address1, data['map_key'])
-        # ~ demand4 = googlemapsapi.get_url_static(address2, data['static_key'])
-
-        # ~ result_static1 = get_url_static(address1, data['static_key'])
-        # ~ result_static2 = get_url_static(address1, data['bad_key'])
-        # ~ result_static3 = get_url_static(address1, data['map_key'])
-        # ~ result_static4 = get_url_static(address2, data['static_key'])
-
-        # ~ mockreturn = get_mockreturn('result_static1')
-        # ~ monkeypatch.setattr(requests.get, mockreturn)
-        # ~ assert demand1 == result_static1
-        # ~ mockreturn = get_mockreturn('result_static2')
-        # ~ monkeypatch.setattr(requests.get, mockreturn)
-        # ~ assert demand2 == result_static2
-        # ~ mockreturn = get_mockreturn('result_static3')
-        # ~ monkeypatch.setattr(requests.get, mockreturn)
-        # ~ assert demand3 == result_static3
-        # ~ mockreturn = get_mockreturn('result_static4')
-        # ~ monkeypatch.setattr(requests.get, mockreturn)
-        # ~ assert demand4 == result_static4
 
 
 if __name__ == "__main__":

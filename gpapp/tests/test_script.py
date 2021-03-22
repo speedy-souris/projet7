@@ -3,6 +3,8 @@
 
 from ..user import Question
 from ..chatdata import BehaviorData
+from ..answersearch import Research
+from ..wikimediaapi import ApiWikiMedia
 
 
 def get_script_data():
@@ -65,3 +67,46 @@ class TestUserQuestion:
         other_demand =\
             Question('cvccc', data['dataDiscussion']).user_comprehension()
         assert other_demand == data['dataDiscussion'].comprehension
+
+class TestResearch:
+    """
+        management of test API research
+    """
+    RESEARCH = Research(user=None)
+    def test_address_conversion(self):
+        """
+            comma deletion, convert to lowercase, convert to list
+        """
+        research = self.RESEARCH
+        address = '10 Quai de la charente, 75019 Paris, France'
+        converted_result = [
+            '10','quai','de','la','charente','75019','paris','france'
+        ]
+        demand = research.get_from_address_conversion(address)
+        assert demand == converted_result
+
+    def test_common_list(self):
+        """
+            determine the address
+            of the common wikipedia page
+            with the googleMap address
+        """
+        research = self.RESEARCH
+        lst_wiki = [
+            ['Quai', 'de', 'la', 'Gironde'],
+            ['Parc', 'du', 'Pont', 'de', 'Flandre'],
+            ['Square', 'du', 'Quai-de-la-Gironde'],    
+            ['Avenue', 'Corentin-Cariou'],
+            ['Porte', 'de', 'la', 'Villette', '(métro', 'de', 'Paris)'],
+            ['Quai', 'de', 'la', 'Charente'],
+            ['Porte', 'de', 'la', 'Villette'],
+            ['Rue', 'Benjamin-Constant'],
+            ['Quai', 'du', 'Lot'],
+            ['Gare', 'du', 'pont', 'de', 'Flandre']
+        ]
+        lst_address = [
+            '10','quai','de','la','charente','75019','paris','france'
+        ]
+        demand = research.get_from_common_list_creation(lst_wiki, lst_address)
+        common_result = 'Quai de la Charente'
+        assert demand == common_result
