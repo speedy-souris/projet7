@@ -5,10 +5,10 @@
 """
 import redis
 
-import dataapi
+from .dataapi import ApiGoogleMaps
 
 
-class BehaviorDatabase:
+class BehaviorDatabase(ApiGoogleMaps):
     """
         Management for initializing configuration database data
           - get_data_access() ==> data initialization for the data database
@@ -16,11 +16,11 @@ class BehaviorDatabase:
           - str_convers()
           - int_convers()
     """
-    def __init__(self, api_google=dataapi.ApiGoogleMaps()):
+    def __init__(self):
         """
             database initialization
         """
-        self.status_prod = api_google.get_keys['status_prod']
+        super().__init__()
         self.data = self.get_data_access
 
     #---------------------- CALCULATION AND PROPERTY -------------------
@@ -67,7 +67,7 @@ class BehaviorDatabase:
                 - keys["status_prod"] = True ==> data in online
         """
         redis_connect = ''
-        if not self.status_prod:
+        if not self.get_keys['status_prod']:
             redis_connect = redis.Redis(
                 host='localhost',
                 port=6379,
@@ -91,9 +91,6 @@ class CreateBehaviorDataBase(BehaviorDatabase):
         - reading()  ==> read data value for the data database
         - deleting() ==> data erasure from the database
     """
-    def __init__(self):
-        super().__init__()
-
     def writing(self, data, value):
         """
             writing chat data to data database
@@ -122,6 +119,7 @@ class CreateBehaviorDataBase(BehaviorDatabase):
         return self.data.flushall()
 
                     #----------------------------
+
 class AccessBehaviorDataBase(CreateBehaviorDataBase):
     """
         access to redis data processing
@@ -297,7 +295,7 @@ class AccessBehaviorDataBase(CreateBehaviorDataBase):
         self.write_incomprehension(local_data.nb_incomprehension)
 
 # Initialization data chat
-class BehaviorData(AccessBehaviorDatabase):
+class BehaviorData(AccessBehaviorDataBase):
     """
         default variables data
             - quotas           ==> initialisation of quotas attribut
@@ -330,7 +328,7 @@ class BehaviorData(AccessBehaviorDatabase):
         self.comprehension = self.read_comprehension
         self.nb_request = self.read_counter
         self.nb_incivility = self.read_incivility
-        self.nb_indecency = self.read_indecency
+        self.nb_decency = self.read_indecency
 
     def get_initial_attribute(self):
         """
@@ -399,6 +397,7 @@ class Chat:
         self.grandpy = grandpy
 
     #-------------------- user behavior --------------------------------
+
     def get_question(self, check):
         """
             Processing user's questions
@@ -406,6 +405,7 @@ class Chat:
         return self.user.get_user_question(check)
 
     #------------------- grandpy robot behavior ------------------------
+
     def get_answer(self, stage):
         """
             Processing grandpy's responses

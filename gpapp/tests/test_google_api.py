@@ -1,13 +1,15 @@
 #coding:utf-8
 #!/usr/bin/env python
-
+"""
+    googleMap API test module
+"""
 import requests
 
-from ..apis.dataapi import ApiGoogleMaps
-from ..apis.answersearch import KeyManagement
+from dataapi import ApiGoogleMaps
+# ~ from dataapi import ApiGoogleMaps
 
 
-class TestParamsImport(KeyManagement):
+class TestParamsImport(ApiGoogleMaps):
     """
         configuration of imported modules
     """
@@ -18,14 +20,20 @@ class TestParamsImport(KeyManagement):
         self.api_google = self.params['api_module']
 
     def test_api_keys(self):
-        keys_api_Google_map = {
+        """
+            Api key value
+        """
+        keys_api_google_map = {
             'map_key': self.get_keys['map'],
             'static_key': self.get_keys['staticMap'],
             'bad_key': 0
         }
-        return keys_api_Google_map
+        return keys_api_google_map
 
     def test_import_params(self):
+        """
+            import parameter
+        """
         params = {
             'api_module': ApiGoogleMaps(),
             'keys_api_value': self.test_api_keys()
@@ -37,13 +45,22 @@ GOOGLE_KEY = IMPORT_PARAMS.keys_api
 GOOGLE_MAP = IMPORT_PARAMS.api_google
 
 def get_mockreturn(result):
+    """
+        mock template call
+    """
     def mock_get(url, params):
         """
             Mock function on api object
         """
         class JsonResponse:
+            """
+                mock result in JSON format
+            """
             @staticmethod
             def json():
+                """
+                    Json method
+                """
                 return result
         return JsonResponse()
     return mock_get
@@ -152,7 +169,7 @@ def test_geolocal_address(monkeypatch):
     mockreturn = get_mockreturn('result_address1')
     monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand1 == result_address1
-    
+
     mockreturn = get_mockreturn('result_address2')
     monkeypatch.setattr(requests, 'get', mockreturn)
     assert demand2 == result_address2

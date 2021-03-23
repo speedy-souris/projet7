@@ -12,13 +12,12 @@ class ApiGoogleMaps:
         management of Google APIs settings
     """
     def __init__(self):
+        self.request = requests
         self.url_api1 =\
             'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
         self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/json'
         self.url_api3 = 'https://maps.googleapis.com/maps/api/staticmap'
         self.key_value = {}
-        self.keymap = self.get_keys['map']
-        self.keystatic = self.get_keys['staticMap']
 
     @property
     def get_keys(self):
@@ -51,7 +50,7 @@ class ApiGoogleMaps:
         """
             determining placeid for the address found
         """
-        key = self.keymap
+        key = self.get_keys['map']
         data = {
             'input': f'{title}',
             'inputtype': 'textquery',
@@ -63,7 +62,7 @@ class ApiGoogleMaps:
         """
             determining the localized address for the found placeid
         """
-        key = self.keymap
+        key = self.get_keys['map']
         data = {
             'placeid': f'{placeid}',
             'fields': 'formatted_address,geometry',
@@ -75,7 +74,7 @@ class ApiGoogleMaps:
         """
             determination of the static map for the address found
         """
-        key = self.keystatic
+        key = self.get_keys['staticMap']
         markers_data =\
             f"color:red|label:A|{localization['lat']},"\
             f"{localization['lng']}"
@@ -132,6 +131,6 @@ def get_from_url_json(url, params):
     """
         conversion of the address found in JSON format
     """
-    request = requests.get(url, params=params)
+    request = requests.get(url=url, params=params)
     url = request.json()
     return url

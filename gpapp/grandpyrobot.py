@@ -1,6 +1,8 @@
 #coding:utf-8
 #!/usr/bin/env python
-
+"""
+    grandpy's response display module
+"""
 def get_response_grandpy(stage):
     """
         grandpy's message for each user behavior

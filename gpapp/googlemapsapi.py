@@ -1,15 +1,17 @@
 #coding:utf-8
 #!/usr/bin/env python
+"""
+    GoogleMap API module
+"""
+from .dataapi import ApiGoogleMaps, get_from_url_json
 
-import dataapi
 
-
-class GoogleMapAdressProcessing(dataapi.ApiGoogleMaps):
+class GoogleMapAdressProcessing(ApiGoogleMaps):
     """
         determining the location
         of the address user request
     """
-    def __init__(self, address=''):
+    def __init__(self, address):
         """
             Initialization
             objet key api google
@@ -18,7 +20,7 @@ class GoogleMapAdressProcessing(dataapi.ApiGoogleMaps):
         self.map_status = {}
         self.address = address
 
-    def get_from_url_placeid_api(self):
+    def get_from_url_placeid_api(self, address):
         """
             Google map API place_id search function
 
@@ -49,12 +51,11 @@ class GoogleMapAdressProcessing(dataapi.ApiGoogleMaps):
            "status" : "ZERO_RESULTS"
         }
         """
-        address = self.address
         params = self.get_from_data_placeid_api(address)
-        placeid_url = self.get_from_url_json(params, self.url_api1)
-        return self.get_from_url_address_api(placeid_url)
+        placeid_url = get_from_url_json(params, self.url_api1)
+        return placeid_url
 
-    def get_from_url_address_api(self, placeid):
+    def get_from_url_address_api(self):
         """
             Google map API address search with place_id function
             Result OK
@@ -87,8 +88,9 @@ class GoogleMapAdressProcessing(dataapi.ApiGoogleMaps):
                "status" : "INVALID_REQUEST"
             }
         """
+        placeid = self.get_from_url_placeid_api(self.address)
         params = self.get_from_data_address_api(placeid)
-        address_url = self.get_from_url_json(params, self.url_api2)
+        address_url = get_from_url_json(params, self.url_api2)
         return address_url
 
     def get_from_url_static_api(self, address):

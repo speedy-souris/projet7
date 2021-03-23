@@ -1,6 +1,8 @@
 #coding:utf-8
 #!/usr/bin/env python
-
+"""
+    user question management module
+"""
 class Question:
     """
         organization of the user's question
@@ -178,6 +180,9 @@ class Question:
 #------------------------ Response User --------------------------------
 
     def get_user_question(self, check):
+        """
+            check result of the user question
+        """
         user_response = {
             'civility': self.user_civility,
             'decency': self.user_decency,

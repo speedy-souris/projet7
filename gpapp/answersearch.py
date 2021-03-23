@@ -1,24 +1,21 @@
 #coding:utf-8
 #!/usr/bin/env python
-
+"""
+    API result module
+"""
 import urllib.parse
 
-import googlemapsapi
-import wikimediaapi
+from .googlemapsapi import GoogleMapAdressProcessing
+from .wikimediaapi import WikiMediaAddressProcessing
 
 class ReturnAllApis:
     """
         return of the googlemap and wikiMedia APIs algorithms
     """
     def __init__(self, user, address):
-        self.address = address
         self.user = user
-        self.result_map_address = googlemapsapi.googlemapAdressProcessing()
-        self.result_wiki_list = wikimediaapi.WikiMediaListAddressProcessing()
-        self.result_wiki_content =\
-            wikimediaapi.WikiMediaCommonAddressProcessing()
-        self.result_wiki_history =\
-            wikimediaapi.WikiMediaAddressHistoryProcessing()
+        self.result_map_address = GoogleMapAdressProcessing(address)
+        self.result_wiki_content = WikiMediaAddressProcessing(address)
 
     # address coordinate calculation
     def get_from_map_coordinates(self):
@@ -31,16 +28,16 @@ class ReturnAllApis:
             creation of api google map coordinate address display setting
         """
         _user = self.user.user
-        _googlemap = self.result_map_address
+        googlemap = self.result_map_address
         user_question = _user.get_question('parser')
         # keyword isolation for question
         parse_answer = urllib.parse.quote(user_question)
-        place_id_dict = _googlemap.get_from_url_placeid_api(parse_answer)
+        place_id_dict = googlemap.get_from_url_placeid_api(parse_answer)
         # creation and test public key api google map
         try:
-            place_id = place_id_dict['candidates'][0]['place_id']
+            place_id_dict['candidates'][0]['place_id']
         except IndexError:
-            _googlemap.map_status = {
+            googlemap.map_status = {
                 'address': {
                     'result': {
                         'formatted_address': '',
@@ -51,35 +48,32 @@ class ReturnAllApis:
                 'history': ''
             }
         else:
-            _googlemap.map_status['address'] =\
-                _googlemap.get_from_url_address_api(place_id)
-            _googlemap.map_status['address']['parser'] = parse_answer
-            _googlemap.map_status['history'] = ''
+            googlemap.map_status['address'] =\
+                googlemap.get_from_url_address_api()
+            googlemap.map_status['address']['parser'] = parse_answer
+            googlemap.map_status['history'] = ''
 
     def get_from_wiki_response(self):
         """
             wikimedia address history display setting
         """
-        latitude, longitude, address =\
-            self.result_wiki_list.latitude,\
-            self.result_wiki_list.longitude,\
-            self.address
-        list_address_page_wiki =\
-            self.result_wiki_list.get_from_address_list_creation()
-        wiki_common_address =\
-            self.result_common_content.get_from_common_list_creation()
-        wiki_page_content = self.result_wiki_history.get_from_page_url_api()
-        self.result_wiki_list['history'] = wiki_page_content
+        result_wiki_list = self.result_map_address.map_status
+        # ~ common_address_content =\
+            # ~ self.result_wiki_content.get_from_common_string_creation()
+        # ~ list_address_page_wiki =\
+        wiki_page_content = self.result_wiki_content.get_from_page_url_api()
+        result_wiki_list['history'] = wiki_page_content
+        return result_wiki_list
 
 # API return value
-def get_from_map_status(user):
+def get_from_map_status(user, question):
     """
         return value of APIS Google Map and Wiki Media
     """
-    coordinates = ReturnAllApis(user)
+    coordinates = ReturnAllApis(user, question)
     coordinates.get_from_map_coordinates()
     map_status = coordinates.get_from_wiki_response()
-    return map_status.result_list_wiki.map_status
+    return map_status
 
 
 if __name__ == '__main__':

@@ -1,11 +1,13 @@
 #coding:utf-8
 #!/usr/bin/env python
-
+"""
+    server / client link module
+"""
 import time
 
 from flask import Flask, render_template
-import chatdata
-import main
+from .chatdata import AccessBehaviorDataBase
+from . import main
 
 
 app = Flask(__name__)
@@ -25,8 +27,8 @@ def init():
     """
         Initialization of the dataRedis
     """
-    _chatdata = chatdata.BehaviorDatabase()
-    _chatdata.get_initial_database()
+    access_data = AccessBehaviorDataBase()
+    access_data.get_initial_database()
     return 'DataRedis initialized'
 
 # Initialization of general parameters
