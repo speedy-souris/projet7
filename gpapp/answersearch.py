@@ -5,7 +5,7 @@
 """
 import urllib.parse
 
-from .googlemapsapi import GoogleMapAdressProcessing
+from .googlemapsapi import GoogleMapsAddressProcessing
 from .wikimediaapi import WikiMediaAddressProcessing
 
 class ReturnAllApis:
@@ -14,8 +14,9 @@ class ReturnAllApis:
     """
     def __init__(self, user, address):
         self.user = user
-        self.result_map_address = GoogleMapAdressProcessing(address)
-        self.result_wiki_content = WikiMediaAddressProcessing(address)
+        self._address = urllib.parse.quote(address)
+        self.result_map_address = GoogleMapsAddressProcessing(self._address)
+        self.result_wiki_content = WikiMediaAddressProcessing(self._address)
 
     # address coordinate calculation
     def get_from_map_coordinates(self):
@@ -29,10 +30,8 @@ class ReturnAllApis:
         """
         _user = self.user.user
         googlemap = self.result_map_address
-        user_question = _user.get_question('parser')
-        # keyword isolation for question
-        parse_answer = urllib.parse.quote(user_question)
-        place_id_dict = googlemap.get_from_url_placeid_api(parse_answer)
+        user_question = _user.get_user_question('parser')
+        place_id_dict = googlemap.get_from_url_placeid_api()
         # creation and test public key api google map
         try:
             place_id_dict['candidates'][0]['place_id']
@@ -50,18 +49,19 @@ class ReturnAllApis:
         else:
             googlemap.map_status['address'] =\
                 googlemap.get_from_url_address_api()
-            googlemap.map_status['address']['parser'] = parse_answer
+            googlemap.map_status['address']['parser'] = user_question
             googlemap.map_status['history'] = ''
 
     def get_from_wiki_response(self):
         """
             wikimedia address history display setting
         """
+        wikimedia = self.result_wiki_content
         result_wiki_list = self.result_map_address.map_status
         # ~ common_address_content =\
             # ~ self.result_wiki_content.get_from_common_string_creation()
         # ~ list_address_page_wiki =\
-        wiki_page_content = self.result_wiki_content.get_from_page_url_api()
+        wiki_page_content = wikimedia.get_from_page_url_api()
         result_wiki_list['history'] = wiki_page_content
         return result_wiki_list
 

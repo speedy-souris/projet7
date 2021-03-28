@@ -6,17 +6,11 @@
 import os
 import requests
 
-
-class ApiGoogleMaps:
+class ApiDataConfig:
     """
-        management of Google APIs settings
+        API data configuration
     """
     def __init__(self):
-        self.request = requests
-        self.url_api1 =\
-            'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
-        self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/json'
-        self.url_api3 = 'https://maps.googleapis.com/maps/api/staticmap'
         self.key_value = {}
 
     @property
@@ -46,11 +40,31 @@ class ApiGoogleMaps:
             }
         return self.key_value
 
-    def get_from_data_placeid_api(self, title):
+    @staticmethod
+    def get_from_url_json(url, params):
+        """
+            conversion of the address found in JSON format
+        """
+        request = requests.get(url=url, params=params)
+        url = request.json()
+        return url
+
+class ApiGoogleMaps:
+    """
+        management of Google APIs settings
+    """
+    def __init__(self):
+        self.request = requests
+        self.url_api1 =\
+            'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
+        self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/json'
+        self.url_api3 = 'https://maps.googleapis.com/maps/api/staticmap'
+
+    @staticmethod
+    def get_from_data_placeid_api(title, key):
         """
             determining placeid for the address found
         """
-        key = self.get_keys['map']
         data = {
             'input': f'{title}',
             'inputtype': 'textquery',
@@ -58,11 +72,11 @@ class ApiGoogleMaps:
         }
         return data
 
-    def get_from_data_address_api(self, placeid):
+    @staticmethod
+    def get_from_data_address_api(placeid, key):
         """
             determining the localized address for the found placeid
         """
-        key = self.get_keys['map']
         data = {
             'placeid': f'{placeid}',
             'fields': 'formatted_address,geometry',
@@ -70,11 +84,11 @@ class ApiGoogleMaps:
         }
         return data
 
-    def get_from_data_static_api(self, address, localization):
+    @staticmethod
+    def get_from_data_static_api(address, localization, key):
         """
             determination of the static map for the address found
         """
-        key = self.get_keys['staticMap']
         markers_data =\
             f"color:red|label:A|{localization['lat']},"\
             f"{localization['lng']}"
@@ -126,11 +140,3 @@ class ApiWikiMedia:
             'format': 'json'
         }
         return data
-
-def get_from_url_json(url, params):
-    """
-        conversion of the address found in JSON format
-    """
-    request = requests.get(url=url, params=params)
-    url = request.json()
-    return url

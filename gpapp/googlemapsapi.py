@@ -3,10 +3,9 @@
 """
     GoogleMap API module
 """
-from .dataapi import ApiGoogleMaps, get_from_url_json
+from .dataapi import ApiGoogleMaps, ApiDataConfig
 
-
-class GoogleMapAdressProcessing(ApiGoogleMaps):
+class GoogleMapsAddressProcessing:
     """
         determining the location
         of the address user request
@@ -16,11 +15,12 @@ class GoogleMapAdressProcessing(ApiGoogleMaps):
             Initialization
             objet key api google
         """
-        super().__init__()
+        self.api_data = ApiGoogleMaps()
+        self.api_config = ApiDataConfig()
         self.map_status = {}
         self.address = address
 
-    def get_from_url_placeid_api(self, address):
+    def get_from_url_placeid_api(self, address, url):
         """
             Google map API place_id search function
 
@@ -51,8 +51,8 @@ class GoogleMapAdressProcessing(ApiGoogleMaps):
            "status" : "ZERO_RESULTS"
         }
         """
-        params = self.get_from_data_placeid_api(address)
-        placeid_url = get_from_url_json(params, self.url_api1)
+        params = self.api_data.get_from_data_placeid_api(address=address)
+        placeid_url = self.api_config.get_from_url_json(url=url, params=params)
         return placeid_url
 
     def get_from_url_address_api(self):
@@ -88,19 +88,23 @@ class GoogleMapAdressProcessing(ApiGoogleMaps):
                "status" : "INVALID_REQUEST"
             }
         """
-        placeid = self.get_from_url_placeid_api(self.address)
-        params = self.get_from_data_address_api(placeid)
-        address_url = get_from_url_json(params, self.url_api2)
+        placeid = self.get_from_url_placeid_api()
+        print(f'\nplaceid (googleMap) = {placeid}\n')
+        params = self.api_data.get_from_data_address_api(placeid)
+        print(f'params (googleMap) = {params}\n')
+        address_url = self.api_config.get_from_url_json(self.url_api2, params)
+        print(f'address (googleMap) = {address_url}')
         return address_url
 
     def get_from_url_static_api(self, address):
         """
             Display of the static map at the user's request
         """
-        address_data = address['address']['result']['formatted_address']
-        localization = address['address']['result']['geometry']['location']
-        params = self.get_from_data_static_api(address_data, localization)
-        static_url = self.request.get(self.url_api3, params=params)
+        address_data = address['result']['formatted_address']
+        localization = address['result']['geometry']['location']
+        params = self.api_data.get_from_data_static_api(address_data, localization)
+        static_address = self.request.get(self.url_api3, params=params)
+        static_url = static_address.json()
         return static_url
 
 

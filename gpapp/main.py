@@ -13,7 +13,7 @@ from . import answersearch
     # ~ """
         # ~ check the understanding of the question
     # ~ """
-    # ~ data_db.get_reset_behavior()
+    # ~ _data_db.get_reset_behavior()
     # ~ comprehension = discussion.get_question('comprehension')
     # ~ return comprenhension
 
@@ -39,88 +39,84 @@ def main(question):
         and without coarseness
     """
     # awaits the courtesy of the user
-    _behavior_data = BehaviorData()
+    _data_db  = BehaviorData()
     _access_database = AccessBehaviorDataBase()
-    grandpy = grandpyrobot
-    _user = user.Question(question, _behavior_data)
-    _chat = Chat(_user, grandpy)
-    discussion =_chat
-    data_db = _behavior_data
-    _map_status = answersearch.get_from_map_status(discussion, question)
-    research = _map_status
+    _user = user.Question(question, _data_db)
+    discussion = Chat(_user, grandpyrobot)
+    research = answersearch.get_from_map_status(discussion, question)
 
     discussion.get_question('comprehension')
-    if data_db.comprehension:
+    if _data_db.comprehension:
         discussion.get_question('decency')
-        if data_db.decency and not data_db.civility:
+        if _data_db.decency and not _data_db.civility:
             discussion.get_question('civility')
-            if data_db.civility:
-                data_db.get_reset_behavior()
-                data_db.grandpy_response = discussion.get_answer('wait1')
-                data_db.grandpy_code = ''
+            if _data_db.civility:
+                _data_db.get_reset_behavior()
+                _data_db.grandpy_response = discussion.get_answer('wait1')
+                _data_db.grandpy_code = ''
             else:
-                data_db.get_display_data(44)
-                data_db.grandpy_response = discussion.get_answer('mannerless')
-                data_db.grandpy_code = 'mannerless'
-                if data_db.nb_incivility >= 3:
-                    data_db.nb_incility = 3
+                _data_db.get_display_data(44)
+                _data_db.grandpy_response = discussion.get_answer('mannerless')
+                _data_db.grandpy_code = 'mannerless'
+                if _data_db.nb_incivility >= 3:
+                    _data_db.nb_incility = 3
                 else:
-                    data_db.nb_incivility += 1
-        elif not data_db.decency:
-            data_db.grandpy_response = discussion.get_answer('disrespectful')
-            data_db.grandpy_code = 'disrespectful'
-            if data_db.nb_indecency >= 3:
-                data_db.nb_indecency = 3
+                    _data_db.nb_incivility += 1
+        elif not _data_db.decency:
+            _data_db.grandpy_response = discussion.get_answer('disrespectful')
+            _data_db.grandpy_code = 'disrespectful'
+            if _data_db.nb_indecency >= 3:
+                _data_db.nb_indecency = 3
             else:
-                data_db.nb_indecency += 1
+                _data_db.nb_indecency += 1
         else:
-            data_db.grandpy_response = discussion.get_answer('response')
-            if data_db.nb_request >= 10:
-                data_db.nb_request = 10
+            _data_db.grandpy_response = discussion.get_answer('response')
+            if _data_db.nb_request >= 10:
+                _data_db.nb_request = 10
             else:
-                data_db.nb_request += 1
-            if data_db.nb_request == 5:
-                data_db.grandpy_code = 'tired'
+                _data_db.nb_request += 1
+            if _data_db.nb_request == 5:
+                _data_db.grandpy_code = 'tired'
             else:
-                data_db.grandpy_code = 'response'
+                _data_db.grandpy_code = 'response'
     else:
-        data_db.grandpy_response =\
+        _data_db.grandpy_response =\
             discussion.get_answer('incomprehension')
-        data_db.grandpy_code = 'incomprehension'
-        data_db.nb_incomprehension += 1
+        _data_db.grandpy_code = 'incomprehension'
+        _data_db.nb_incomprehension += 1
 
-    if data_db.nb_indecency >= 3:
-        data_db.grandpy_response = discussion.get_answer('indecency_limit')
-        data_db.get_expiration_data()
+    if _data_db.nb_indecency >= 3:
+        _data_db.grandpy_response = discussion.get_answer('indecency_limit')
+        _data_db.get_expiration_data()
 
-    if data_db.nb_incomprehension >= 3:
-        data_db.grandpy_response =\
+    if _data_db.nb_incomprehension >= 3:
+        _data_db.grandpy_response =\
             discussion.get_answer('incomprehension_limit')
-        data_db.get_expiration_data()
+        _data_db.get_expiration_data()
 
-    if data_db.nb_incivility >= 3:
-        data_db.grandpy_response = discussion.get_answer('incivility_limit')
-        data_db.get_expiration_data()
-    if data_db.nb_request >= 10:
-        data_db.grandpy_response = discussion.get_answer('wait1')
-        data_db.get_expiration_data()
+    if _data_db.nb_incivility >= 3:
+        _data_db.grandpy_response = discussion.get_answer('incivility_limit')
+        _data_db.get_expiration_data()
+    if _data_db.nb_request >= 10:
+        _data_db.grandpy_response = discussion.get_answer('wait1')
+        _data_db.get_expiration_data()
 
-    if data_db.nb_request > 0 and data_db.nb_request != 5\
-        and data_db.decency and data_db.nb_request < 10\
-        and data_db.comprehension:
-        data_db.grandpy_response = discussion.get_answer('response')
-        data_db.grandpy_code = 'response'
+    if _data_db.nb_request > 0 and _data_db.nb_request != 5\
+        and _data_db.decency and _data_db.nb_request < 10\
+        and _data_db.comprehension:
+        _data_db.grandpy_response = discussion.get_answer('response')
+        _data_db.grandpy_code = 'response'
 
-    elif data_db.nb_request == 5:
-        data_db.nb_request += 1
+    elif _data_db.nb_request == 5:
+        _data_db.nb_request += 1
 
     display_response = research
     _access_database.get_update_database()
 
-    if data_db.quotas:
-        data_db.expiry_request()
+    if _data_db.quotas:
+        _data_db.expiry_request()
 
-    return data_db, display_response
+    return _data_db, display_response
 
 
 if __name__ == '__main__':

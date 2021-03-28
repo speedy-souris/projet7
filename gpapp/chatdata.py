@@ -4,11 +4,10 @@
     internal conversation data processing module
 """
 import redis
+from .dataapi import ApiDataConfig
 
-from .dataapi import ApiGoogleMaps
 
-
-class BehaviorDatabase(ApiGoogleMaps):
+class BehaviorDatabase:
     """
         Management for initializing configuration database data
           - get_data_access() ==> data initialization for the data database
@@ -20,8 +19,9 @@ class BehaviorDatabase(ApiGoogleMaps):
         """
             database initialization
         """
-        super().__init__()
-        self.data = self.get_data_access
+        self._api_config = ApiDataConfig()
+        self.status_prod = self._api_config.get_keys['status_prod']
+        self.data = self.get_data_access()
 
     #---------------------- CALCULATION AND PROPERTY -------------------
 
@@ -41,7 +41,7 @@ class BehaviorDatabase(ApiGoogleMaps):
         """
             conversion from string to boolean
         """
-        value = value.decode("utf8")
+        value = value.decode('utf8')
         if value == '0':
             value = False
         elif value == '':
@@ -59,7 +59,6 @@ class BehaviorDatabase(ApiGoogleMaps):
 
     #---------------------- ACCESS CHAT database -----------------------
 
-    @property
     def get_data_access(self):
         """
             method for data_connection to the database
@@ -67,7 +66,7 @@ class BehaviorDatabase(ApiGoogleMaps):
                 - keys["status_prod"] = True ==> data in online
         """
         redis_connect = ''
-        if not self.get_keys['status_prod']:
+        if not self.status_prod:
             redis_connect = redis.Redis(
                 host='localhost',
                 port=6379,
@@ -81,7 +80,7 @@ class BehaviorDatabase(ApiGoogleMaps):
            )
         return redis_connect
 
-    #----------------------- ACCESS CHAT DATA --------------------------
+#----------------------- ACCESS CHAT DATA ------------------------------
 
 class CreateBehaviorDataBase(BehaviorDatabase):
     """
@@ -301,8 +300,6 @@ class BehaviorData(AccessBehaviorDataBase):
             - quotas           ==> initialisation of quotas attribut
             - nb_indecency     ==> number of user indecency
             - nb_request       ==> number of user requests
-            - data_data_data()  ==> initialization of the data_dataion method
-                                   to the data database
             - initial_status() ==> initialization of data values
                                    from the data database
             - civility

@@ -5,10 +5,10 @@
 """
 from copy import deepcopy
 
-from .dataapi import ApiWikiMedia, get_from_url_json
-from .googlemapsapi import GoogleMapAdressProcessing
+from . import dataapi
+from .googlemapsapi import GoogleMapsAddressProcessing
 
-class WikiMediaAddressProcessing(ApiWikiMedia):
+class WikiMediaAddressProcessing(dataapi.ApiWikiMedia):
     """
         creation of the address list of wikipedia pages
             - map_latitude
@@ -20,7 +20,8 @@ class WikiMediaAddressProcessing(ApiWikiMedia):
     """
     def __init__(self, address):
         super().__init__()
-        self.coordinates = GoogleMapAdressProcessing(address)
+        self.api_data = dataapi.ApiDataConfig()
+        self.coordinates = GoogleMapsAddressProcessing(address)
         self.map_address = self.coordinates.get_from_url_address_api()
 
     def get_from_address_list_creation(self):
@@ -30,12 +31,12 @@ class WikiMediaAddressProcessing(ApiWikiMedia):
                 - common_address ==> set of wikimedia page address lists
         """
         _latitude =\
-            self.map_address['address']['result']['geometry']['location']['latitude']
+            self.map_address['address']['result']['geometry']['location']['lat']
         _longitude =\
-            self.map_address['address']['result']['geometry']['location']['longitude']
+            self.map_address['address']['result']['geometry']['location']['lng']
         latitude, longitude = _latitude, _longitude
         params = self.get_from_localization_data_api(latitude, longitude)
-        address_url = get_from_url_json(params, self.url_api)
+        address_url = self.api_data.get_from_url_json(params, self.url_api)
         common_address = [
             address_url['query']['geosearch'][page]['title'].split(' ')\
             for page in range(len(address_url['query']['geosearch']))
@@ -48,6 +49,7 @@ class WikiMediaAddressProcessing(ApiWikiMedia):
             of the address found by googleMap
             into a list of words
         """
+        print(f'\naddress_conversion (wikiApi) = {self.map_address}')
         address = self.map_address['address']['result']['formatted_address']
         address_convert = address.lower().replace(',', '')
         converted_address_list = address_convert.split(' ')
@@ -61,21 +63,22 @@ class WikiMediaAddressProcessing(ApiWikiMedia):
                 - common_word    ==> common word list
                 - word           ==> common address
         """
+        # common_address_list = [... ['Quai', 'de', 'la', 'Gironde']...]
         common_address_list = self.get_from_address_list_creation()
+        # googlemap_address = ['10','quai', 'de', 'la', 'charente'...]
         googlemap_address = self.get_from_list_address_convertion()
-        common_address = []
-        common_word = []
+        common_addresses = [] # [...['quai', 'de', 'la', 'charente']...]
+        common_words = [] # [...'quai', 'charente'...]
         compared_content = ''
-        for index_list in common_address_list:
-            for index_word in common_address_list[index_list]:
-                if common_address_list[index_list][index_word].lower()\
-                    in googlemap_address:
-                    common_word.append(common_address_list[index_list][index_word])
-            common_address.append(deepcopy(common_word))
-            common_word = []
-        for i in common_address:
-            if common_word < common_address[i]:
-                compared_content = common_address[i]
+        for address_as_a_list in common_address_list:
+            for a_word in address_as_a_list:
+                if a_word.lower() in googlemap_address:
+                    common_words.append(a_word)
+            common_addresses.append(deepcopy(common_words))
+            common_words = []
+        for an_address_as_a_list in common_addresses:
+            if len(common_words )< len(an_address_as_a_list):
+                compared_content = an_address_as_a_list
         compared_content = ' '.join(compared_content)
         return compared_content
 
@@ -119,7 +122,7 @@ class WikiMediaAddressProcessing(ApiWikiMedia):
         """
         title = self.get_from_common_string_creation()
         params = self.get_from_page_data_api(title)
-        page_url = get_from_url_json(params, self.url_api)
+        page_url = self.api_data.get_from_url_json(params, self.url_api)
         try:
             page_url['query']['pages'][0]['extract'] != ''
         except KeyError:
