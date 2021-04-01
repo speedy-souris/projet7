@@ -2,7 +2,6 @@
 #!/usr/bin/env python
 
 import requests
-
 from ..user import Question
 from ..chatdata import BehaviorData
 

@@ -325,7 +325,7 @@ class BehaviorData(AccessBehaviorDataBase):
         self.comprehension = self.read_comprehension
         self.nb_request = self.read_counter
         self.nb_incivility = self.read_incivility
-        self.nb_decency = self.read_indecency
+        self.nb_indecency = self.read_indecency
 
     def get_initial_attribute(self):
         """

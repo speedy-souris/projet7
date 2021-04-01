@@ -4,11 +4,10 @@
     Wikimedia API module
 """
 from copy import deepcopy
+from .dataapi import ApiDataWikiMedia, ApiDataConfig
 
-from . import dataapi
-from .googlemapsapi import GoogleMapsAddressProcessing
 
-class WikiMediaAddressProcessing(dataapi.ApiWikiMedia):
+class WikiMediaAddressProcessing(ApiDataWikiMedia, ApiDataConfig):
     """
         creation of the address list of wikipedia pages
             - map_latitude
@@ -18,11 +17,21 @@ class WikiMediaAddressProcessing(dataapi.ApiWikiMedia):
             at the address found by googlemap API
         display of the history for the googlemap address found
     """
-    def __init__(self, address):
-        super().__init__()
-        self.api_data = dataapi.ApiDataConfig()
-        self.coordinates = GoogleMapsAddressProcessing(address)
-        self.map_address = self.coordinates.get_from_url_address_api()
+    def __init__(self, latitude, longitude):
+        ApiDataWikiMedia.__init__(self)
+        ApiDataConfig.__init__(self)
+        self.latitude = latitude
+        self.longitude = longitude
+
+    def get_from_pages_api(self):
+        """
+            creation of wiki pages
+        """
+        url_api = self.get_from_url_api()
+        params =\
+            self.get_from_localization_data_api(self.latitude, self.longitude)
+        result_pages = self.get_from_url_json(url_api['url_api_wiki'], params)
+        return result_pages
 
     def get_from_address_list_creation(self):
         """
@@ -30,18 +39,21 @@ class WikiMediaAddressProcessing(dataapi.ApiWikiMedia):
                 - pages_wiki ==> wikimedia page address list set
                 - common_address ==> set of wikimedia page address lists
         """
-        _latitude =\
-            self.map_address['address']['result']['geometry']['location']['lat']
-        _longitude =\
-            self.map_address['address']['result']['geometry']['location']['lng']
-        latitude, longitude = _latitude, _longitude
-        params = self.get_from_localization_data_api(latitude, longitude)
-        address_url = self.api_data.get_from_url_json(params, self.url_api)
+        address_url = self.get_from_pages_api()
         common_address = [
             address_url['query']['geosearch'][page]['title'].split(' ')\
             for page in range(len(address_url['query']['geosearch']))
         ]
         return common_address
+
+class ApiResultComparison:
+    """
+        Comparison of the result of the googleMaps API
+        with the result of the wikimedia API
+    """
+    def __init__(self, address_google, list_address_pages_wiki):
+        self.map_address = address_google
+        self.list_pages_wiki = list_address_pages_wiki
 
     def get_from_list_address_convertion(self):
         """
@@ -49,11 +61,8 @@ class WikiMediaAddressProcessing(dataapi.ApiWikiMedia):
             of the address found by googleMap
             into a list of words
         """
-        print(f'\naddress_conversion (wikiApi) = {self.map_address}')
-        address = self.map_address['address']['result']['formatted_address']
-        address_convert = address.lower().replace(',', '')
-        converted_address_list = address_convert.split(' ')
-        return converted_address_list
+        self.map_address = self.map_address.lower().replace(',', '')
+        self.map_address = self.map_address.split(' ')
 
     def get_from_common_string_creation(self):
         """
@@ -63,10 +72,11 @@ class WikiMediaAddressProcessing(dataapi.ApiWikiMedia):
                 - common_word    ==> common word list
                 - word           ==> common address
         """
+        self.get_from_list_address_convertion()
         # common_address_list = [... ['Quai', 'de', 'la', 'Gironde']...]
-        common_address_list = self.get_from_address_list_creation()
+        common_address_list = self.list_pages_wiki
         # googlemap_address = ['10','quai', 'de', 'la', 'charente'...]
-        googlemap_address = self.get_from_list_address_convertion()
+        googlemap_address = self.map_address
         common_addresses = [] # [...['quai', 'de', 'la', 'charente']...]
         common_words = [] # [...'quai', 'charente'...]
         compared_content = ''
@@ -82,60 +92,60 @@ class WikiMediaAddressProcessing(dataapi.ApiWikiMedia):
         compared_content = ' '.join(compared_content)
         return compared_content
 
-    def get_from_page_url_api(self):
-        """
-            wikipedia API (Wikimedia) history search
-            Result Ok
-            {
-                "batchcomplete": True,
-                "query": {
-                    "pages": [
-                        {
-                            "pageid": 4338589,
-                            "ns": 0,
-                            "title": "OpenClassrooms",
-                            "extract": "OpenClassrooms est un site web de formation..."
-                        }
-                    ]
-                }
-            }
-            wrong result
-            {
-                "batchcomplete": True,
-                "query": {
-                    "normalized": [
-                        {
-                            "fromencoded": False,
-                            "from": "rueOpenClassrooms",
-                            "to": "RueOpenClassrooms"
-                        }
-                    ],
-                    "pages": [
-                        {
-                            "ns": 0,
-                            "title": "RueOpenClassrooms",
-                            "missing": True
-                        }
-                    ]
-                }
-            }
-        """
-        title = self.get_from_common_string_creation()
-        params = self.get_from_page_data_api(title)
-        page_url = self.api_data.get_from_url_json(params, self.url_api)
-        try:
-            page_url['query']['pages'][0]['extract'] != ''
-        except KeyError:
-            page_url = {
-                'query': {
-                    'pages': [
-                        {
-                            'missing': True
-                        }
-                    ]
-                }
-            }
-        return page_url
+    # ~ def get_from_page_url_api(self):
+        # ~ """
+            # ~ wikipedia API (Wikimedia) history search
+            # ~ Result Ok
+            # ~ {
+                # ~ "batchcomplete": True,
+                # ~ "query": {
+                    # ~ "pages": [
+                        # ~ {
+                            # ~ "pageid": 4338589,
+                            # ~ "ns": 0,
+                            # ~ "title": "OpenClassrooms",
+                            # ~ "extract": "OpenClassrooms est un site web de formation..."
+                        # ~ }
+                    # ~ ]
+                # ~ }
+            # ~ }
+            # ~ wrong result
+            # ~ {
+                # ~ "batchcomplete": True,
+                # ~ "query": {
+                    # ~ "normalized": [
+                        # ~ {
+                            # ~ "fromencoded": False,
+                            # ~ "from": "rueOpenClassrooms",
+                            # ~ "to": "RueOpenClassrooms"
+                        # ~ }
+                    # ~ ],
+                    # ~ "pages": [
+                        # ~ {
+                            # ~ "ns": 0,
+                            # ~ "title": "RueOpenClassrooms",
+                            # ~ "missing": True
+                        # ~ }
+                    # ~ ]
+                # ~ }
+            # ~ }
+        # ~ """
+        # ~ title = self.get_from_common_string_creation()
+        # ~ params = self.get_from_page_data_api(title)
+        # ~ page_url = self.api_data.get_from_url_json(params, self.url_api)
+        # ~ try:
+            # ~ page_url['query']['pages'][0]['extract'] != ''
+        # ~ except KeyError:
+            # ~ page_url = {
+                # ~ 'query': {
+                    # ~ 'pages': [
+                        # ~ {
+                            # ~ 'missing': True
+                        # ~ }
+                    # ~ ]
+                # ~ }
+            # ~ }
+        # ~ return page_url
 
 
 if __name__ == '__main__':

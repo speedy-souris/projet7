@@ -6,6 +6,7 @@
 import os
 import requests
 
+
 class ApiDataConfig:
     """
         API data configuration
@@ -28,14 +29,14 @@ class ApiDataConfig:
         if os.environ.get('HEROKU_KEY_API_MAP') is None:
             self.key_value = {
                 'map': os.getenv('KEY_API_MAP'),
-                'staticMap': os.getenv('KEY_API_STATIC_MAP'),
+                'static_map': os.getenv('KEY_API_STATIC_MAP'),
                 'status_prod': False
             }
         # keys for online use (Prod)
         else:
             self.key_value = {
                 'map': os.getenv('HEROKU_KEY_API_MAP'),
-                'staticMap': os.getenv('HEROKU_KEY_API_STATIC_MAP'),
+                'static_map': os.getenv('HEROKU_KEY_API_STATIC_MAP'),
                 'status_prod': True
             }
         return self.key_value
@@ -45,21 +46,29 @@ class ApiDataConfig:
         """
             conversion of the address found in JSON format
         """
-        request = requests.get(url=url, params=params)
+        request = requests.get(url, params)
         url = request.json()
         return url
 
-class ApiGoogleMaps:
+    @staticmethod
+    def get_from_url_api():
+        """
+            creation of API urls
+        """
+        url = {
+            'url_api_wiki': 'https://fr.wikipedia.org/w/api.php',
+            'url_api_google1':\
+                'https://maps.googleapis.com/maps/api/place/findplacefromtext/json',
+            'url_api_google2':\
+                'https://maps.googleapis.com/maps/api/place/details/json',
+            'url_api_google3': 'https://maps.googleapis.com/maps/api/staticmap' 
+        }
+        return url
+
+class ApiDataGoogleMaps:
     """
         management of Google APIs settings
     """
-    def __init__(self):
-        self.request = requests
-        self.url_api1 =\
-            'https://maps.googleapis.com/maps/api/place/findplacefromtext/json'
-        self.url_api2 = 'https://maps.googleapis.com/maps/api/place/details/json'
-        self.url_api3 = 'https://maps.googleapis.com/maps/api/staticmap'
-
     @staticmethod
     def get_from_data_placeid_api(title, key):
         """
@@ -102,7 +111,7 @@ class ApiGoogleMaps:
         }
         return data
 
-class ApiWikiMedia:
+class ApiDataWikiMedia:
     """
         management of wikimedia APIs settings
     """

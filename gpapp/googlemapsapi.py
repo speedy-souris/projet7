@@ -3,24 +3,26 @@
 """
     GoogleMap API module
 """
-from .dataapi import ApiGoogleMaps, ApiDataConfig
+import requests
+from .dataapi import ApiDataGoogleMaps, ApiDataConfig
 
-class GoogleMapsAddressProcessing:
+
+class GoogleMapsAddressProcessing(ApiDataGoogleMaps, ApiDataConfig):
     """
         determining the location
         of the address user request
     """
-    def __init__(self, address):
+    def __init__(self):
         """
             Initialization
             objet key api google
         """
-        self.api_data = ApiGoogleMaps()
-        self.api_config = ApiDataConfig()
-        self.map_status = {}
-        self.address = address
+        ApiDataGoogleMaps.__init__(self)
+        ApiDataConfig.__init__(self)
+        self.url_api = self.get_from_url_api()
+        self.map_key = self.get_keys
 
-    def get_from_url_placeid_api(self, address, url):
+    def get_from_url_placeid_api(self, address):
         """
             Google map API place_id search function
 
@@ -51,11 +53,13 @@ class GoogleMapsAddressProcessing:
            "status" : "ZERO_RESULTS"
         }
         """
-        params = self.api_data.get_from_data_placeid_api(address=address)
-        placeid_url = self.api_config.get_from_url_json(url=url, params=params)
-        return placeid_url
+        map_key = self.map_key['map']
+        url_placeid_api = self.url_api['url_api_google1']
+        params = self.get_from_data_placeid_api(address, map_key)
+        result_placeid = self.get_from_url_json(url_placeid_api, params)
+        return result_placeid
 
-    def get_from_url_address_api(self):
+    def get_from_url_address_api(self, placeid):
         """
             Google map API address search with place_id function
             Result OK
@@ -88,25 +92,22 @@ class GoogleMapsAddressProcessing:
                "status" : "INVALID_REQUEST"
             }
         """
-        placeid = self.get_from_url_placeid_api()
-        print(f'\nplaceid (googleMap) = {placeid}\n')
-        params = self.api_data.get_from_data_address_api(placeid)
-        print(f'params (googleMap) = {params}\n')
-        address_url = self.api_config.get_from_url_json(self.url_api2, params)
-        print(f'address (googleMap) = {address_url}')
-        return address_url
+        map_key = self.map_key['map']
+        url_address_api = self.url_api['url_api_google2']
+        params = self.get_from_data_address_api(placeid, map_key)
+        result_address = self.get_from_url_json(url_address_api, params)
+        return result_address
 
-    def get_from_url_static_api(self, address):
+    def get_from_url_static_api(self, address, localization):
         """
             Display of the static map at the user's request
         """
-        address_data = address['result']['formatted_address']
-        localization = address['result']['geometry']['location']
-        params = self.api_data.get_from_data_static_api(address_data, localization)
-        static_address = self.request.get(self.url_api3, params=params)
-        static_url = static_address.json()
-        return static_url
-
+        static_key = self.map_key['static_map']
+        url_static_api = self.url_api['url_api_google3']
+        params =\
+            self.get_from_data_static_api(address, localization, static_key)
+        map_static = requests.get(url=url_static_api, params=params)
+        return map_static
 
 if __name__ == '__main__':
     pass
