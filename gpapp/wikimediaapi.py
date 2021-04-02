@@ -79,7 +79,7 @@ class ApiResultComparison:
         googlemap_address = self.map_address
         common_addresses = [] # [...['quai', 'de', 'la', 'charente']...]
         common_words = [] # [...'quai', 'charente'...]
-        compared_content = ''
+        compared_content = '' # 'quai de la charente'
         for address_as_a_list in common_address_list:
             for a_word in address_as_a_list:
                 if a_word.lower() in googlemap_address:
