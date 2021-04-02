@@ -87,65 +87,10 @@ class ApiResultComparison:
             common_addresses.append(deepcopy(common_words))
             common_words = []
         for an_address_as_a_list in common_addresses:
-            if len(common_words )< len(an_address_as_a_list):
+            if len(common_words)< len(an_address_as_a_list):
                 compared_content = an_address_as_a_list
         compared_content = ' '.join(compared_content)
         return compared_content
-
-    # ~ def get_from_page_url_api(self):
-        # ~ """
-            # ~ wikipedia API (Wikimedia) history search
-            # ~ Result Ok
-            # ~ {
-                # ~ "batchcomplete": True,
-                # ~ "query": {
-                    # ~ "pages": [
-                        # ~ {
-                            # ~ "pageid": 4338589,
-                            # ~ "ns": 0,
-                            # ~ "title": "OpenClassrooms",
-                            # ~ "extract": "OpenClassrooms est un site web de formation..."
-                        # ~ }
-                    # ~ ]
-                # ~ }
-            # ~ }
-            # ~ wrong result
-            # ~ {
-                # ~ "batchcomplete": True,
-                # ~ "query": {
-                    # ~ "normalized": [
-                        # ~ {
-                            # ~ "fromencoded": False,
-                            # ~ "from": "rueOpenClassrooms",
-                            # ~ "to": "RueOpenClassrooms"
-                        # ~ }
-                    # ~ ],
-                    # ~ "pages": [
-                        # ~ {
-                            # ~ "ns": 0,
-                            # ~ "title": "RueOpenClassrooms",
-                            # ~ "missing": True
-                        # ~ }
-                    # ~ ]
-                # ~ }
-            # ~ }
-        # ~ """
-        # ~ title = self.get_from_common_string_creation()
-        # ~ params = self.get_from_page_data_api(title)
-        # ~ page_url = self.api_data.get_from_url_json(params, self.url_api)
-        # ~ try:
-            # ~ page_url['query']['pages'][0]['extract'] != ''
-        # ~ except KeyError:
-            # ~ page_url = {
-                # ~ 'query': {
-                    # ~ 'pages': [
-                        # ~ {
-                            # ~ 'missing': True
-                        # ~ }
-                    # ~ ]
-                # ~ }
-            # ~ }
-        # ~ return page_url
 
 
 if __name__ == '__main__':
