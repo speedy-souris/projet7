@@ -179,6 +179,6 @@ class TestApiComparison:
             found the string common
             to the Google Maps API and the wikimedia API
         """
-        demand = self.api_comparison.get_from_common_string_creation()
+        demand = self.api_comparison.get_from_common_string_creation().lower()
         result_common_string = 'quai de la charente'
         assert demand == result_common_string

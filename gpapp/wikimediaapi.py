@@ -87,7 +87,7 @@ class ApiResultComparison:
             common_addresses.append(deepcopy(common_words))
             common_words = []
         for an_address_as_a_list in common_addresses:
-            if len(common_words)< len(an_address_as_a_list):
+            if len(compared_content)< len(an_address_as_a_list):
                 compared_content = an_address_as_a_list
         compared_content = ' '.join(compared_content)
         return compared_content
