@@ -4,7 +4,6 @@
     server / client link module
 """
 import time
-
 from flask import Flask, render_template
 from .chatdata import AccessBehaviorDataBase
 from . import main

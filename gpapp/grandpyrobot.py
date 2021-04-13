@@ -3,7 +3,7 @@
 """
     grandpy's response display module
 """
-def get_response_grandpy(stage):
+def get_response_grandpy(key_response):
     """
         grandpy's message for each user behavior
     """
@@ -23,4 +23,4 @@ def get_response_grandpy(stage):
         'wait2': 'As tu une nouvelle question a me demander ? ',
         'wait1': "Bonjour Mon petit, en quoi puis-je t'aider ?"
     }
-    return gp_message[stage]
+    return gp_message[key_response]

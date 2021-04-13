@@ -31,7 +31,7 @@ class ReturnAllApis:
                 - map_status
             creation of api google map coordinate address display setting
         """
-        user = self.user.user
+        user = self.user
         google_api = self.google_api.GoogleMapsAddressProcessing()
         user_question = user.get_user_question('parser')
         place_id_dict = google_api.get_from_url_placeid_api(self.address)

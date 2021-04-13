@@ -3,9 +3,11 @@
 """
     internal conversation data processing module
 """
+
 import redis
 from .dataapi import ApiDataConfig
-
+from .user import Question
+from . import grandpyrobot
 
 class BehaviorDatabase:
     """
@@ -26,32 +28,33 @@ class BehaviorDatabase:
     #---------------------- CALCULATION AND PROPERTY -------------------
 
     @staticmethod
-    def bool_convers(value):
+    def boolean_to_string_conversion(value):
         """
             conversion from boolean to string
         """
         if value :
-            value = '1'
+            value = 'True'
+        elif not value:
+            value = 'False'
         else:
-            value = '0'
+            value = 'False'
         return value
 
     @staticmethod
-    def str_convers(value):
+    def string_to_boolean_conversion(value):
         """
             conversion from string to boolean
         """
-        value = value.decode('utf8')
-        if value == '0':
+        if value == 'False':
             value = False
-        elif value == '':
-            value = False
-        else:
+        elif value == 'True':
             value = True
+        else:
+            value = False
         return value
 
     @staticmethod
-    def str_int(value):
+    def string_to_int_conversion(value):
         """
             conversion from string to integer
         """
@@ -109,6 +112,7 @@ class CreateBehaviorDataBase(BehaviorDatabase):
         """
             reading data in database
         """
+
         return self.data.get(data)
 
     def deleting(self):
@@ -125,130 +129,136 @@ class AccessBehaviorDataBase(CreateBehaviorDataBase):
         - reading
         - writing
     """
-    def write_civility(self, civility):
+    def write_user_civility(self, civility):
         """
             saving of civility configuration in data database
         """
-        self.writing('civility', self.bool_convers(civility))
+        self.writing('user_civility', self.boolean_to_string_conversion(civility))
 
     @property
-    def read_civility(self):
+    def read_user_civility(self):
         """
             reading of civility configuration in data database
         """
-        return self.str_convers(self.reading('civility'))
+        return self.string_to_boolean_conversion(self.reading('user_civility'))
 
                    #-----------------------------
 
-    def write_decency(self, decency):
+    def write_user_decency(self, decency):
         """
             saving of decency configuration in data database
         """
-        self.writing('decency', self.bool_convers(decency))
+        self.writing('user_decency', self.boolean_to_string_conversion(decency))
 
     @property
-    def read_decency(self):
+    def read_user_decency(self):
         """
             reading of decency configuration in data database
         """
-        return self.str_convers(self.reading('decency'))
+        return self.string_to_boolean_conversion(self.reading('user_decency'))
 
                     #-----------------------------
 
-    def write_comprehension(self, comprehension):
+    def write_user_comprehension(self, comprehension):
         """
             saving of comprehension configuration in data database
         """
-        self.writing('comprehension', self.bool_convers(comprehension))
+        self.writing(
+            'user_comprehension', self.boolean_to_string_conversion(comprehension)
+        )
 
     @property
-    def read_comprehension(self):
+    def read_user_comprehension(self):
         """
             reading of comprehension configuration in data database
         """
-        return self.str_convers(self.reading('comprehension'))
+        return self.string_to_boolean_conversion(
+            self.reading('user_comprehension')
+        )
 
                     #---------request limit--------------------
 
-    def write_quotas(self, quotas):
+    def write_user_request_quotas(self, quotas):
         """
             saving of quotas configuration in data database
         """
-        self.writing('quotas', self.bool_convers(quotas))
+        self.writing('request_quotas', self.boolean_to_string_conversion(quotas))
 
-    def expiry_request(self):
+    def expiry_user_request_quotas(self):
         """
             Expiration of the key quotas (limit of request) in data database
         """
-        self.expiry('quotas', 60)
+        self.expiry('request_quotas', 60)
 
     @property
-    def read_quotas(self):
+    def read_user_request_quotas(self):
         """
             reading of quotas configuration in data database
         """
-        return self.str_convers(self.reading('quotas'))
+        return self.string_to_boolean_conversion(self.reading('request_quotas'))
 
                         #-----------------------
 
-    def write_counter(self, value):
+    def write_counter_of_number_of_user_request(self, value):
         """
             modification of the value
             of the request counter in data database
         """
-        self.writing('nb_request', value)
+        self.writing('number_request', value)
 
     @property
-    def read_counter(self):
+    def read_counter_of_number_of_user_request(self):
         """
             reading of counter configuration in data database
         """
-        return self.str_int(self.reading('nb_request'))
+        return self.string_to_int_conversion(self.reading('number_request'))
 
                         #------------------------
 
-    def write_incivility(self, value):
+    def write_counter_of_number_of_user_incivility(self, value):
         """
             counter incivility in data database
         """
-        self.writing('nb_incivility', value)
+        self.writing('number_incivility', value)
 
     @property
-    def read_incivility(self):
+    def read_counter_of_number_of_user_incivility(self):
         """
             reading of incivility count in data database
         """
-        return self.str_int(self.reading('nb_incivility'))
+        return self.string_to_int_conversion(self.reading('number_incivility'))
 
                     #---------------------------
 
-    def write_indecency(self, value):
+    def write_counter_of_number_of_user_indecency(self, value):
         """
             counter indecency in data database
         """
-        self.writing('nb_indecency', value)
+        self.writing('number_indecency', value)
 
     @property
-    def read_indecency(self):
+    def read_counter_of_number_of_user_indecency(self):
         """
             reading of indecency count in data database
         """
-        return self.str_int(self.reading('nb_indecency'))
+        return self.string_to_int_conversion(self.reading('number_indecency'))
 
                     #--------------------------
 
-    def write_incomprehension(self, value):
+    def write_counter_of_number_of_user_incomprehension(self, value):
         """
             counter incomprehension in data database
         """
-        self.writing('nb_incomprehension', value)
+        self.writing('number_incomprehension', value)
 
     @property
-    def read_incomprehension(self):
+    def read_counter_of_number_of_user_incomprehension(self):
         """
             reading of incomprehension count in data database
         """
-        return self.str_int(self.reading('nb_incomprehension'))
+        return self.string_to_int_conversion(
+            self.reading('number_incomprehension')
+        )
 
     #----------------- GENERAL PROCESSING OF CHAT DATA -----------------
 
@@ -264,16 +274,17 @@ class AccessBehaviorDataBase(CreateBehaviorDataBase):
                 - write_comprehension()  ==> default initialization
                                              of comprehension value
                 - write_counter()        ==> default initialization
-                                             of counter value
+                                             of all counters value
         """
         self.deleting()
-        self.write_civility(False)
-        self.write_quotas(False)
-        self.write_decency(False)
-        self.write_comprehension(False)
-        self.write_counter(0)
-        self.write_incivility(0)
-        self.write_indecency(0)
+        self.write_user_civility(False)
+        self.write_user_request_quotas(False)
+        self.write_user_decency(False)
+        self.write_user_comprehension(False)
+        self.write_counter_of_number_of_user_request(0)
+        self.write_counter_of_number_of_user_incivility(0)
+        self.write_counter_of_number_of_user_indecency(0)
+        self.write_counter_of_number_of_user_incomprehension(0)
 
     def get_update_database(self):
         """
@@ -284,14 +295,20 @@ class AccessBehaviorDataBase(CreateBehaviorDataBase):
                 ]
         """
         local_data = BehaviorData()
-        self.write_quotas(local_data.quotas)
-        self.write_civility(local_data.civility)
-        self.write_decency(local_data.decency)
-        self.write_comprehension(local_data.comprehension)
-        self.write_counter(local_data.nb_request)
-        self.write_incivility(local_data.nb_incivility)
-        self.write_indecency(local_data.nb_indecency)
-        self.write_incomprehension(local_data.nb_incomprehension)
+        self.write_request_quotas(local_data.request_quotas)
+        self.write_user_civility(local_data.user_civility)
+        self.write_user_decency(local_data.user_decency)
+        self.write_user_comprehension(local_data.user_comprehension)
+        self.write_counter_of_number_of_user_request(local_data.number_request)
+        self.write_counter_of_number_of_user_incivility(
+            local_data.number_incivility
+        )
+        self.write_counter_of_number_of_user_indecency(
+            local_data.number_indecency
+        )
+        self.write_counter_of_number_of_user_incomprehension(
+            local_data.number_incomprehension
+        )
 
 # Initialization data chat
 class BehaviorData(AccessBehaviorDataBase):
@@ -315,30 +332,31 @@ class BehaviorData(AccessBehaviorDataBase):
         self.grandpy_code = ''
         # control of query expiration
         try:
-            self.nb_incomprehension = self.read_incomprehension
-            self.quotas = self.read_quotas
+            self.number_incomprehension =\
+                self.read_counter_of_number_of_user_incomprehension
+            self.request_quotas = self.read_user_request_quotas
         except (AttributeError, TypeError):
             self.get_initial_database()
             self.get_initial_attribute()
-        self.civility = self.read_civility
-        self.decency = self.read_decency
-        self.comprehension = self.read_comprehension
-        self.nb_request = self.read_counter
-        self.nb_incivility = self.read_incivility
-        self.nb_indecency = self.read_indecency
+        self.user_civility = self.read_user_civility
+        self.user_decency = self.read_user_decency
+        self.user_comprehension = self.read_user_comprehension
+        self.number_request = self.read_counter_of_number_of_user_request
+        self.number_incivility = self.read_counter_of_number_of_user_incivility
+        self.number_indecency = self.read_counter_of_number_of_user_indecency
 
     def get_initial_attribute(self):
         """
             Initialization all values
         """
-        self.civility = False
-        self.quotas = False
-        self.decency = False
-        self.comprehension = False
-        self.nb_request = 0
-        self.nb_incivility = 0
-        self.nb_indecency = 0
-        self.nb_incomprehension = 0
+        self.user_civility = False
+        self.request_quotas = False
+        self.user_decency = False
+        self.user_comprehension = False
+        self.number_request = 0
+        self.number_incivility = 0
+        self.number_indecency = 0
+        self.number_incomprehension = 0
 
     def get_display_data(self, ligne='Inconnu'):
         """
@@ -350,14 +368,14 @@ class BehaviorData(AccessBehaviorDataBase):
                 ]
         """
         print(f'\nN° de ligne = {ligne}')
-        print(f'Valeur de quotas = {self.quotas}')
-        print(f'Valeur de civility = {self.civility}')
-        print(f'valeur de decency = {self.decency}')
-        print(f'valeur de comprehension = {self.comprehension}')
-        print(f'Nombre de request = {self.nb_request}')
-        print(f'Nombre d\'incivility = {self.nb_incivility}')
-        print(f'Nombre d\'indecency = {self.nb_indecency}')
-        print(f'Nombre d\'incomprehension = {self.nb_incomprehension}')
+        print(f'Valeur de quotas = {self.request_quotas}')
+        print(f'Valeur de civility = {self.user_civility}')
+        print(f'valeur de decency = {self.user_decency}')
+        print(f'valeur de comprehension = {self.user_comprehension}')
+        print(f'Nombre de request = {self.number_request}')
+        print(f'Nombre d\'incivility = {self.number_incivility}')
+        print(f'Nombre d\'indecency = {self.number_indecency}')
+        print(f'Nombre d\'incomprehension = {self.number_incomprehension}')
         print(f'Réponse de grandpy = {self.grandpy_response}\n')
 
     def get_reset_behavior(self):
@@ -367,15 +385,15 @@ class BehaviorData(AccessBehaviorDataBase):
                                   | ==> False
                 - decency --------|
         """
-        self.decency = False
-        self.comprehension = False
+        self.user_decency = False
+        self.user_comprehension = False
 
     # Expiration data of request
     def get_expiration_data(self):
         """
             update quota data for its expiration
         """
-        self.quotas = True
+        self.request_quotas = True
         self.grandpy_code = 'exhausted'
         self.get_display_data()
 
@@ -384,30 +402,41 @@ class Chat:
     """
         object management user and grandpy chat
     """
-    def __init__(self, user, grandpy):
+    def __init__(self, user_question):
         """
             Initialization
                 - user object
                 - grandpy objet
         """
-        self.user = user
-        self.grandpy = grandpy
+        self.return_user_question = user_question
+        self.get_processing_of_user_behavior_data = BehaviorData()
+        self.return_user_behavior_data =\
+            Question(
+                self.return_user_question,
+                self.get_processing_of_user_behavior_data
+            )
+        self.get_processing_responses_by_grandpy = grandpyrobot
 
     #-------------------- user behavior --------------------------------
 
-    def get_question(self, check):
+    def obtain_processing_of_user_behavior_data(self, processing_key):
         """
             Processing user's questions
         """
-        return self.user.get_user_question(check)
+        user_behavior_data =\
+            self.return_user_behavior_data.get_user_behavior(processing_key)
+        return user_behavior_data 
 
     #------------------- grandpy robot behavior ------------------------
 
-    def get_answer(self, stage):
+    def get_grandpy_answer_processing(self, processing_key):
         """
             Processing grandpy's responses
         """
-        return self.grandpy.get_response_grandpy(stage)
+        grandpy_message =\
+            self.get_processing_responses_by_grandpy.\
+                get_response_grandpy(processing_key)
+        return grandpy_message
 
 if __name__ == '__main__':
     pass

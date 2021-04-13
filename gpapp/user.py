@@ -105,52 +105,52 @@ class Question:
         ]
     )
 #---------------- constructor ------------------------------------------
-    def __init__(self, question, data_discussion):
+    def __init__(self, user_question, processing_of_user_behavior_data):
         """
             constructor
                 organization of the user's question
         """
-        self.question = question
-        self.data_discussion = data_discussion
+        self.return_user_question = user_question
+        self.behavior_data = processing_of_user_behavior_data
 
 #----------------- user behavior check ---------------------------------
 
-    def user_civility(self):
+    def return_user_civility_value(self):
         """
             modification of attributes civility ==> parser
         """
         # list of words to find in questions
-        user_answer = self.question.split()
+        user_answer = self.return_user_question.split()
         # search civility
         result = bool(
             [
             w for w in user_answer if w.lower() in self.DONNEE_CIVILITY
             ]
         )
-        self.data_discussion.civility = result
-        return result
+        self.behavior_data.civility = result
+        return self.behavior_data.civility
 
-    def user_decency(self):
+    def return_user_decency_value(self):
         """
             modification of attributes decency ==> parser
         """
         # list of words to find in questions
-        user_answer = self.question.split()
+        user_answer = self.return_user_question.split()
         # search decency
         result = bool(
             [
             w for w in user_answer if w.lower() not in self.INDECENCY_LIST
             ]
         )
-        self.data_discussion.decency = result
+        self.behavior_data.decency = result
         return result
 
-    def user_comprehension(self):
+    def return_user_comprehension_value(self):
         """
             modification of attributes comprehension ==> parser
         """
         # list of words to find in questions
-        user_answer = self.question.split()
+        user_answer = self.return_user_question.split()
         # search comprehension
         result = bool(
             [
@@ -159,7 +159,7 @@ class Question:
                 or w.lower() in self.UNNECESSARY_LIST
             ]
         )
-        self.data_discussion.comprehension = result
+        self.behavior_data.comprehension = result
         return result
 
     def parser(self, list_question=''):
@@ -170,16 +170,16 @@ class Question:
         """
 
         # list of words to remove in questions
-        list_question = self.question.split()
+        list_question = self.return_user_question.split()
         result = [
             w for w in list_question if w.lower() not in self.UNNECESSARY_LIST
         ]
-        message = ' '.join(result)
-        return message
+        modified_message = ' '.join(result)
+        return modified_message
 
 #------------------------ Response User --------------------------------
 
-    def get_user_question(self, check):
+    def get_return_user_behavior_data(self, processing_key):
         """
             check result of the user question
         """
@@ -189,4 +189,4 @@ class Question:
             'comprehension': self.user_comprehension,
             'parser': self.parser
         }
-        return user_response[check]()
+        return user_response[processing_key]()
