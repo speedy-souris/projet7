@@ -41,8 +41,8 @@ class TestApiWikiMedia:
             A.P.I wikipedia test function (wikimedia) that returns a file
             Json containing the history of the requested address
         """
-        demand1 = self.wikimedia_value1.get_from_pages_api()
-        demand2 = self.wikimedia_value2.get_from_pages_api()
+        wiki1 = self.wikimedia_value1.get_from_pages_api()
+        wiki2 = self.wikimedia_value2.get_from_pages_api()
         result_history1 = {
             'batchcomplete': '',
             'query': {
@@ -107,19 +107,19 @@ class TestApiWikiMedia:
         }
         mockreturn = get_mockreturn('result_history1')
         monkeypatch.setattr(requests, 'get', mockreturn)
-        assert demand1 == result_history1
+        assert wiki1 == result_history1
 
         mockreturn = get_mockreturn('result_history2')
         monkeypatch.setattr(requests, 'get', mockreturn)
-        assert demand2 == result_history2
+        assert wiki2 == result_history2
 
     def test_wiki_page_content(self, monkeypatch):
         """
             A.P.I wikipedia (wikimedia) test function that returns a file
               Json containing the content of the requested page
         """
-        demand1 = self.wikimedia_value1.get_from_address_list_creation()
-        demand2 = self.wikimedia_value2.get_from_address_list_creation()
+        content1 = self.wikimedia_value1.get_from_address_list_creation()
+        content2 = self.wikimedia_value2.get_from_address_list_creation()
         result_content1 = [
             ['Quai', 'de', 'la', 'Gironde'],
             ['Parc', 'du', 'Pont', 'de', 'Flandre'],
@@ -138,11 +138,11 @@ class TestApiWikiMedia:
 
         mockreturn = get_mockreturn('result_content1')
         monkeypatch.setattr(requests, 'get', mockreturn)
-        assert demand1 == result_content1
+        assert content1 == result_content1
 
         mockreturn = get_mockreturn('result_content2')
         monkeypatch.setattr(requests, 'get', mockreturn)
-        assert demand2 == result_content2
+        assert content2 == result_content2
 
 class TestApiComparison:
     """
@@ -172,13 +172,15 @@ class TestApiComparison:
         self.api_comparison.get_from_list_address_convertion()
         result_conversion =\
             ['10', 'quai', 'de', 'la', 'charente', '75019', 'paris', 'france']
-        assert result_conversion
+
+        assert self.api_comparison.map_address == result_conversion
 
     def test_common_string(self):
         """
             found the string common
             to the Google Maps API and the wikimedia API
         """
-        demand = self.api_comparison.get_from_common_string_creation().lower()
+        create = self.api_comparison.get_from_common_string_creation().lower()
         result_common_string = 'quai de la charente'
-        assert demand == result_common_string
+
+        assert create == result_common_string
