@@ -1,36 +1,79 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-from ..main import CheckUserBehavior
+from ..chatdata import Chat
 
-class TestDatabaseValue:
+class TestLocalDataValue:
     def setup_method(self):
-        self.default_database_value = CheckUserBehavior(user_question='')
+        self.default_database_value = Chat(user_question='')
         self.initialized_value = \
-            self.default_database_value.get_processing_of_user_behavior_data
+            self.default_database_value.behavior_data
 
-    def test_initialization_dedault_behavior_value(self):
+    def test_initialization_dedault_database_value_by_database(self):
         self.initialized_value.get_initial_database()
-        result_user_civility = self.initialized_value.read_user_civility
-        result_user_decency = self.initialized_value.read_user_decency
-        result_user_comprehension = self.initialized_value.read_user_comprehension
+        result_database_quotas_value =\
+            self.initialized_value.read_user_request_quotas
+        result_database_incomprehension_value =\
+            self.initialized_value.read_counter_of_number_of_user_incomprehension
+        result_database_civility_value =\
+            self.initialized_value.read_user_civility
+        result_database_decency_value = self.initialized_value.read_user_decency
+        result_database_comprehension =\
+            self.initialized_value.read_user_comprehension
+        
+        assert result_database_quotas_value == False
+        assert result_database_incomprehension_value == False
+        assert result_database_civility_value == False
+        assert result_database_decency_value == False
+        assert result_database_comprehension == False
 
-        assert result_user_civility == False
-        assert result_user_decency == False
-        assert result_user_comprehension == False
-
-    def test_initialization_dedault_counter_value(self):
+    def test_initialization_dedault_database_counting_by_database(self):
         self.initialized_value.get_initial_database()
-        result_number_request = self.initialized_value.\
-            read_counter_of_number_of_user_request
-        result_number_incivility = self.initialized_value.\
-            read_counter_of_number_of_user_incivility
-        result_number_indecency = self.initialized_value.\
-            read_counter_of_number_of_user_indecency
-        result_number_incomprehension = self.initialized_value.\
-            read_counter_of_number_of_user_incomprehension
+        result_database_request_value =\
+            self.initialized_value.read_counter_of_number_of_user_request
+        result_database_incivility_value =\
+            self.initialized_value.read_counter_of_number_of_user_incivility
+        result_database_indecency_value =\
+            self.initialized_value.read_counter_of_number_of_user_indecency
+        result_database_incomprehension_value =\
+            self.initialized_value.read_counter_of_number_of_user_incomprehension
 
-        assert result_number_request == 0
-        assert result_number_incivility == 0
-        assert result_number_indecency == 0
-        assert result_number_incomprehension == 0
+        assert result_database_request_value == 0
+        assert result_database_incivility_value == 0
+        assert result_database_indecency_value == 0
+        assert result_database_incomprehension_value == 0
+
+    def test_initialization_dedault_database_value_by_local_data(self):
+        self.initialized_value.get_initial_attribute()
+        result_database_quotas_value =\
+            self.initialized_value.read_user_request_quotas
+        result_database_incomprehension_value =\
+            self.initialized_value.read_counter_of_number_of_user_incomprehension
+        result_database_civility_value =\
+            self.initialized_value.read_user_civility
+        result_database_decency_value = self.initialized_value.read_user_decency
+        result_database_comprehension =\
+            self.initialized_value.read_user_comprehension
+        
+        assert result_database_quotas_value == False
+        assert result_database_incomprehension_value == False
+        assert result_database_civility_value == False
+        assert result_database_decency_value == False
+        assert result_database_comprehension == False
+
+    def test_initialization_dedault_database_counting_by_local_data(self):
+        self.initialized_value.get_initial_attribute()
+        result_database_request_value =\
+            self.initialized_value.read_counter_of_number_of_user_request
+        result_database_incivility_value =\
+            self.initialized_value.read_counter_of_number_of_user_incivility
+        result_database_indecency_value =\
+            self.initialized_value.read_counter_of_number_of_user_indecency
+        result_database_incomprehension_value =\
+            self.initialized_value.read_counter_of_number_of_user_incomprehension
+
+        assert result_database_request_value == 0
+        assert result_database_incivility_value == 0
+        assert result_database_indecency_value == 0
+        assert result_database_incomprehension_value == 0
+

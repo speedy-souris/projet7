@@ -1,28 +1,44 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-from ..main import CheckUserBehavior
+from ..chatdata import Chat
 
 class TestUserBehavior:
     def setup_method(self):
-        self.polite_user_behavior = CheckUserBehavior('bonjour')
-        self.inpolite_user_behavior =\
-            CheckUserBehavior('ou se trouve openClassrooms')
-        self.incomprehension_user_behavior = CheckUserBehavior('xxxx')
-        self.rudeness_user_behavior = CheckUserBehavior('vieux')
+        self.polite_user_behavior = Chat('bonjour')
+        self.inpolite_user_behavior = Chat('ou se trouve openClassrooms')
+        self.incomprehension_user_behavior = Chat('xxxx')
+        self.rudeness_user_behavior = Chat('vieux')
 
     def test_should_return_the_parsed_user_query_value(self):
-        assert self.inpolite_user_behavior.\
-            user_request_parse() == 'openClassrooms'
+        parsed_content_return = self.inpolite_user_behavior.\
+            obtain_processing_of_user_behavior_data('parser')
+
+        assert parsed_content_return == 'openClassrooms'
 
     def test_should_return_user_civility(self):
-        assert self.polite_user_behavior.user_civility() == True
-        assert self.inpolite_user_behavior.user_civility() == False
+        return_civility_true = self.polite_user_behavior.\
+            obtain_processing_of_user_behavior_data('civility')
+        return_civility_false = self.inpolite_user_behavior.\
+            obtain_processing_of_user_behavior_data('civility')
+
+        assert return_civility_true == True
+        assert return_civility_false == False
 
     def test_should_return_user_decency(self):
-        assert self.polite_user_behavior.user_decency() == True
-        assert self.rudeness_user_behavior.user_decency() == False
+        return_decency_true = self.polite_user_behavior.\
+            obtain_processing_of_user_behavior_data('decency')
+        return_decency_false = self.rudeness_user_behavior.\
+            obtain_processing_of_user_behavior_data('decency')
+
+        assert return_decency_true == True
+        assert return_decency_false == False
 
     def test_should_return_user_comprehension(self):
-        assert self.polite_user_behavior.user_comprehension() == True
-        assert self.incomprehension_user_behavior.user_comprehension() == False
+        return_comprehension_true = self.polite_user_behavior.\
+            obtain_processing_of_user_behavior_data('comprehension')
+        return_comprehension_false = self.incomprehension_user_behavior.\
+            obtain_processing_of_user_behavior_data('comprehension')
+
+        assert return_comprehension_true == True
+        assert return_comprehension_false == False

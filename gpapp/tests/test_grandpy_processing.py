@@ -1,21 +1,34 @@
 #coding:utf-8
 #!/usr/bin/env python
 
-from ..main import grandpy_response
+from ..chatdata import Chat
 
 
 def test_should_return_grandpy_message():
-    key_message1 = grandpy_response('incomprehension')
-    key_message2 = grandpy_response('mannerless')
-    key_message3 = grandpy_response('disrespectful')
-    key_message4 = grandpy_response('response')
-    key_message5 = grandpy_response('quotas')
-    key_message6 = grandpy_response('invalid')
-    key_message7 = grandpy_response('incivility_limit')
-    key_message8 = grandpy_response('indecency_limit')
-    key_message9 = grandpy_response('incomprehension_limit')
-    key_message10 = grandpy_response('wait2')
-    key_message11 = grandpy_response('wait1')
+    grandpy_message_data = Chat(user_question='')
+    key_message1 =\
+        grandpy_message_data.get_grandpy_answer_processing('incomprehension')
+    key_message2 =\
+        grandpy_message_data.get_grandpy_answer_processing('mannerless')
+    key_message3 =\
+        grandpy_message_data.get_grandpy_answer_processing('disrespectful')
+    key_message4 =\
+        grandpy_message_data.get_grandpy_answer_processing('response')
+    key_message5 =\
+        grandpy_message_data.get_grandpy_answer_processing('quotas')
+    key_message6 =\
+        grandpy_message_data.get_grandpy_answer_processing('invalid')
+    key_message7 =\
+        grandpy_message_data.get_grandpy_answer_processing('incivility_limit')
+    key_message8 = \
+        grandpy_message_data.get_grandpy_answer_processing('indecency_limit')
+    key_message9 = \
+        grandpy_message_data.\
+        get_grandpy_answer_processing('incomprehension_limit')
+    key_message10 = \
+        grandpy_message_data.get_grandpy_answer_processing('wait2')
+    key_message11 =\
+        grandpy_message_data.get_grandpy_answer_processing('wait1')
     result_message1 =\
         "Ha, Je ne comprends pas, essaye d'être plus précis ... !"
     result_message2 =\

@@ -8,7 +8,7 @@ class Question:
         organization of the user's question
     """
     # Data for check civility
-    DONNEE_CIVILITY = set(
+    CIVILITY_LIST = set(
         [
         'bonjour', 'bonsoir','salut','hello','hi'
         ]
@@ -124,7 +124,7 @@ class Question:
         # search civility
         result = bool(
             [
-            w for w in user_answer if w.lower() in self.DONNEE_CIVILITY
+            w for w in user_answer if w.lower() in self.CIVILITY_LIST
             ]
         )
         self.behavior_data.civility = result
@@ -154,7 +154,7 @@ class Question:
         # search comprehension
         result = bool(
             [
-            w for w in user_answer if w.lower() in self.DONNEE_CIVILITY
+            w for w in user_answer if w.lower() in self.CIVILITY_LIST
                 or w.lower() in self.INDECENCY_LIST
                 or w.lower() in self.UNNECESSARY_LIST
             ]
@@ -184,9 +184,9 @@ class Question:
             check result of the user question
         """
         user_response = {
-            'civility': self.user_civility,
-            'decency': self.user_decency,
-            'comprehension': self.user_comprehension,
+            'civility': self.return_user_civility_value,
+            'decency': self.return_user_decency_value,
+            'comprehension': self.return_user_comprehension_value,
             'parser': self.parser
         }
         return user_response[processing_key]()
