@@ -5,8 +5,7 @@ from ..chatdata import Chat
 
 class TestDataConverter:
     def setup_method(self):
-        self.default_converter_data_parameter =\
-            Chat(user_question=None)
+        self.default_converter_data_parameter = Chat(None)
 
     def test_converter_string_to_booleen(self):
         value_true = self.default_converter_data_parameter.\

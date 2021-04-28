@@ -4,30 +4,8 @@
     main management menu
 """
 from .chatdata import Chat
-from . import grandpyrobot  
+  
 # ~ from . import answersearch
-
-
-def civility_behavior(data_discussion):
-    user_behavior_data = data_discussion.behavior_data
-    user_behavior_limit = data_discussion.behavior_limit_data
-    civility_value =\
-        data_discussion.obtain_processing_of_user_behavior_data('civility')
-    if civility_value:
-        user_behavior_limit.user_request_civility()
-        user_behavior_data.grandpy_response =\
-            data_discussion.get_grandpy_answer_processing('wait1')
-    else:
-        user_behavior_data.number_incivility += 1
-        user_behavior_data.grandpy_response =\
-            data_discussion.get_grandpy_answer_processing('mannerless')
-        user_behavior_data.grandpy_code = 'mannerless'
-    if user_behavior_data.number_incivility >= 3:
-        user_behavior_limit.user_request_limit()
-        user_behavior_data.grandpy_response =\
-            data_discussion.get_grandpy_answer_processing('quotas')
-    print(f'incivility main = {user_behavior_data.number_incivility}')
-    return user_behavior_data
 
 
 # script execution
@@ -37,10 +15,8 @@ def main(user_question):
         from the user after politeness check
         and without coarseness
     """
-    data_discussion = Chat(user_question)
-
-    user_behavior_data = civility_behavior(data_discussion)
-        
+    user_behavior_data = Chat(user_question)
+    user_behavior_data.behavior_data.get_update_database()
     return user_behavior_data
 
     # awaits the courtesy of the user

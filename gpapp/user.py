@@ -127,8 +127,8 @@ class Question:
             w for w in user_answer if w.lower() in self.CIVILITY_LIST
             ]
         )
-        self.behavior_data.civility = result
-        return self.behavior_data.civility
+        self.behavior_data.user_civility = result
+        return result
 
     def return_user_decency_value(self):
         """
@@ -142,7 +142,7 @@ class Question:
             w for w in user_answer if w.lower() not in self.INDECENCY_LIST
             ]
         )
-        self.behavior_data.decency = result
+        self.behavior_data.user_decency = result
         return result
 
     def return_user_comprehension_value(self):
@@ -159,7 +159,7 @@ class Question:
                 or w.lower() in self.UNNECESSARY_LIST
             ]
         )
-        self.behavior_data.comprehension = result
+        self.behavior_data.user_comprehension = result
         return result
 
     def parser(self, list_question=''):

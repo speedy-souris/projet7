@@ -13,14 +13,17 @@ class BehaviorDatabase:
     """
         Management for initializing configuration database data
           - get_data_access() ==> data initialization for the data database
-          - bool_convers()
-          - str_convers()
-          - int_convers()
+          - boolean_to_string_conversion()--
+                                            |
+          - string_to_boolean_conversion()--|-- ==> converter between
+                                            |       database and local data
+          - string_to_int_conversion()------
     """
     def __init__(self):
         """
             database initialization
         """
+        self.return_grandpy_response = grandpyrobot
         self._api_config = ApiDataConfig()
         self.status_prod = self._api_config.get_keys['status_prod']
         self.data = self.get_data_access()
@@ -288,14 +291,15 @@ class AccessBehaviorDataBase(CreateBehaviorDataBase):
 class BehaviorData(AccessBehaviorDataBase):
     """
         default variables data
-            - quotas           ==> initialisation of quotas attribut
-            - nb_indecency     ==> number of user indecency
-            - nb_request       ==> number of user requests
+            - request_quotas       ==> user behavior limit
+            - number_incivility    ==> number of user incivlity
+            - number_indecency     ==> number of user indecency
+            - number_request       ==> number of user requests
             - initial_status() ==> initialization of data values
                                    from the data database
-            - civility
-            - decency
-            - comprehension
+            - user_civility
+            - user_decency
+            - user_comprehension
     """
     def __init__(self):
         """
@@ -321,7 +325,7 @@ class BehaviorData(AccessBehaviorDataBase):
 
     def get_initial_attribute(self):
         """
-            Initialization all values
+            Initialization all local values
         """
         self.user_civility = False
         self.request_quotas = False
@@ -335,11 +339,10 @@ class BehaviorData(AccessBehaviorDataBase):
     def get_display_data(self, ligne='Inconnu'):
         """
             display of data values in the question
-                - Args Value ==> [
-                    tmp (user question), quotas, civility, decency, comprehension,
-                    nb_request, nb_incivility, nb_indecency, nb_incomprehension,
-                    grandpy_response (grandpy's response)
-                ]
+                - Args Value ==>
+                    request_quotas, user_civility, user_decency,
+                    user_comprehension, number_request , number_incivility,
+                    number_indecency, number_incomprehension, grandpy_response
         """
         print(f'\nN° de ligne = {ligne}')
         print(f'Valeur de quotas = {self.request_quotas}')
@@ -354,11 +357,11 @@ class BehaviorData(AccessBehaviorDataBase):
 
     def get_update_database(self):
         """
-            update for database data
-                - Args Value ==> [
-                    quotas, civility, decency, comprehension, nb_request,
-                    nb_incivility, nb_indecency, nb_incomprehension
-                ]
+            update for database values
+                - Args Value ==> 
+                    request_quotas, user_civility, user_decency,
+                    user_comprehension, number_request, number_incivility,
+                    number_indecency, number_incomprehension
         """
         self.write_user_request_quotas(self.request_quotas)
         self.write_user_civility(self.user_civility)
@@ -380,6 +383,10 @@ class BehaviorData(AccessBehaviorDataBase):
         """
         self.user_decency = False
         self.user_comprehension = False
+        self.user_civility = False
+        self.number_incivility = 0
+        self.number_indecency = 0
+        self.number_incomprehension = 0
 
     # Expiration data of request
     def get_expiration_data(self):
@@ -390,40 +397,35 @@ class BehaviorData(AccessBehaviorDataBase):
         self.grandpy_code = 'exhausted'
         self.get_display_data()
 
-class UserBehaviorLimit(BehaviorData):
-    def __init__(self, user_question):
-        super().__init__()
-        self.user_question = user_question
-        self.grandpy_behavior_data = grandpyrobot
-        self.data_civility = Question(user_question, super()).CIVILITY_LIST
-        self.data_indecency = Question(user_question, super()).INDECENCY_LIST
-
-    def user_request_civility(self):
-        if self.user_question in self.data_civility:
-            self.user_civility = True
-
-    def user_request_limit(self):
-        if self.number_request >= 10:
-            self.get_expiration_data()
-            
-    def user_incivility_limit(self):
+    def user_behavior_limited(self):
+        """
+            user  behavior limited a 
+                - 3 incivilities     ==> number_incivility
+                - 3 indecencies      ==> number_indecency
+                - 3 incomprehensions ==> number_indecency
+                - 10 requests        ==> limit of request before saturation of grandpy
+            user behavior journey 
+            up to 4 requests no fatigue from grandpy
+            at the 5th request grandpy starts to get tired
+        """
         if self.number_incivility >= 3:
-            self.get_expiration_data()
-
-    def user_indecency_limit(self):
+            self.return_grandpy_response.get_response_grandpy('incivility_limit')
         if self.number_indecency >= 3:
-            self.get_expiration_data()
-
-    def user_incomprehension_limit(self):
+            self.return_grandpy_response.get_response_grandpy('indecency_limit')
         if self.number_incomprehension >= 3:
+            self.return_grandpy_response.get_response_grandpy('incomprehension_limit')
+        if self.number_request == 0:
+            self.return_grandpy_response.get_response_grandpy('wait1')
+            self.grandpy_code = ''
+        elif 1 <= self.number_request <= 4 or 6 <= self.number_request <= 9 :
+            self.return_grandpy_response.get_response_grandpy('response')
+            self.grandpy_code = 'response'
+        elif self.number_request == 5:
+            self.return_grandpy_response.get_response_grandpy('response')
+            self.grandpy_code = 'tired'
+        else:
             self.get_expiration_data()
-            self.grandpy_response =\
-                self.grandpy_behavior_data.get_response_grandpy('incomprehension_limit')
-        return self.request_quotas
-
-    def user_request_parse(self):
-        user_behavior_processing = self.chat_processing .parser()
-        return user_behavior_processing
+            self.return_grandpy_response.get_response_grandpy('quotas')
 
 # chat organization
 class Chat:
@@ -436,33 +438,36 @@ class Chat:
                 - user object
                 - grandpy objet
         """
-        self.return_grandpy_response = grandpyrobot
         self.behavior_data = BehaviorData()
-        self.behavior_limit_data = UserBehaviorLimit(user_question)
-        self.return_user_question = user_question
-        self.return_user_behavior_data =\
-            Question(self.return_user_question, self.behavior_data)
+        self.return_grandpy_response =\
+            self.behavior_data.return_grandpy_response
+        self.return_user_behavior_data = Question(
+            user_question, self.behavior_data
+        )
 
     #-------------------- user behavior --------------------------------
 
-    def obtain_processing_of_user_behavior_data(self, processing_key):
+    def obtain_processing_of_user_behavior_data(
+        self, user_behavior_processing_key
+    ):
         """
             Processing user's questions
         """
         user_behavior_data =\
             self.return_user_behavior_data.\
-            get_return_user_behavior_data(processing_key)
+            get_return_user_behavior_data(user_behavior_processing_key)
             
         return user_behavior_data
 
     #------------------- grandpy robot behavior ------------------------
 
-    def get_grandpy_answer_processing(self, processing_key):
+    def get_grandpy_answer_processing(self, grandpy_response_processing_key):
         """
             Processing grandpy's responses
         """
         grandpy_message =\
-            self.return_grandpy_response.get_response_grandpy(processing_key)
+            self.return_grandpy_response.\
+            get_response_grandpy(grandpy_response_processing_key)
         return grandpy_message
 
 if __name__ == '__main__':
